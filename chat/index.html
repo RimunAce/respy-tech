@@ -794,15 +794,12 @@
         let abortController = null;
 
         function createNewConversation() {
-            // Check if it's the initial conversation creation (on page load)
-            const isInitialConversation = conversations.length === 0;
-
-            // Allow creation if it's the initial conversation or if the current conversation has messages
             if (isInitialConversation || currentConversation.messages.length > 0) {
                 currentConversation = {
                     id: Date.now(),
                     title: "New Conversation",
-                    messages: []
+                    messages: [],
+                    model: currentModel // Add this line
                 };
                 conversations.unshift(currentConversation);
                 updateConversationList();
@@ -1144,7 +1141,7 @@
                         userMessage,
                         currentConversation,
                         uploadedFiles,
-                        model: currentModel,
+                        model: currentModel, // Add this line
                     })
                 });
 

@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
-    const { userMessage, currentConversation, uploadedFiles } = JSON.parse(event.body);
+    const { userMessage, currentConversation, uploadedFiles, model } = JSON.parse(event.body);
 
     // Validate the incoming payload
     if (!userMessage || (!uploadedFiles.length && userMessage.trim() === '')) {
@@ -33,7 +33,7 @@ exports.handler = async (event) => {
                 'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: currentConversation.model, // Ensure the correct model is included here
+                model: model || 'claude-3.5-sonnet', // Use the provided model or a default
                 messages: [...currentConversation.messages, { role: 'user', content: messageContent }],
                 context: ragContext,
                 stream: true
