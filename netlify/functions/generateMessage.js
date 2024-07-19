@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 exports.handler = async (event) => {
     const { userMessage, currentConversation, uploadedFiles } = JSON.parse(event.body);
 
+    // Validate the incoming payload
     if (!userMessage || (!uploadedFiles.length && userMessage.trim() === '')) {
         return {
             statusCode: 400,
@@ -18,11 +19,11 @@ exports.handler = async (event) => {
         }
     }
 
-    // Construct the RAG Context here if needed (you can pass uploadedFile contents if required)
-    const ragContext = ''; // populate as necessary, this example does not handle file content
+    // Construct the RAG Context if needed.
+    const ragContext = ''; // populate it with necessary data if required
 
-    const apiEndpoint = process.env.apiEndpoint;
-    const apiKey = process.env.apiKey;
+    const apiEndpoint = process.env.apiEndpoint; // Environment variables for your API endpoint
+    const apiKey = process.env.apiKey; // API key from environment variables
     
     try {
         const response = await fetch(apiEndpoint, {
@@ -32,8 +33,9 @@ exports.handler = async (event) => {
                 'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: currentConversation.model,
-                messages: [...currentConversation.messages, { role: 'system', content: `RAG Context: ${ragContext}` }],
+                model: currentConversation.model, // Ensure the correct model is included here
+                messages: [...currentConversation.messages, { role: 'user', content: messageContent }],
+                context: ragContext,
                 stream: true
             })
         });
