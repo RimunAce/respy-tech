@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Respire Stuff Goes Here</title>
+    <title>Respy.Tech | Landing Page</title>
+    <link rel="icon" type="image/png" href="shikanoko.png">
+    <meta name="description" content="This is where my stuff goes. Always Free. Maybe. I think. Nya~">
+    <meta property="og:title" content="Respy.Tech | Landing Page">
+    <meta property="og:description" content="This is where my stuff goes. Always Free. Maybe. I think. Nya~">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://respy.tech">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <style>
         * {
@@ -13,31 +19,28 @@
             font-family: 'Arial', sans-serif;
         }
 
-        body {
+        body, html {
+            height: 100%;
+            overflow: hidden;
             background-color: #000;
             color: #fff;
-            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .hero {
+            height: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            height: 100vh;
+            align-items: center;
+            padding: 20px;
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
 
         .logo {
-            font-size: 48px;
+            font-size: 5vw;
             font-weight: bold;
-            text-align: center;
             margin-bottom: 20px;
             position: relative;
         }
@@ -69,7 +72,7 @@
         }
 
         .discord-contact {
-            font-size: 18px;
+            font-size: 1.5vw;
             margin-bottom: 30px;
             opacity: 0;
         }
@@ -79,12 +82,13 @@
             color: #fff;
             border: none;
             padding: 15px 30px;
-            font-size: 18px;
+            font-size: 1.5vw;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
             opacity: 0;
+            border-radius: 25px;
         }
 
         .cta-button:hover {
@@ -98,29 +102,53 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 0;
             overflow: hidden;
         }
 
-        .star {
+        .star, .planet, .asteroid, .galaxy {
             position: absolute;
             background-color: #fff;
+        }
+
+        .star {
             width: 2px;
             height: 2px;
         }
 
+        .planet {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #4a89dc, #000);
+        }
+
+        .asteroid {
+            width: 5px;
+            height: 5px;
+            background-color: #8b4513;
+            clip-path: polygon(50% 0%, 80% 40%, 100% 70%, 70% 90%, 30% 100%, 0 70%);
+        }
+
+        .galaxy {
+            width: 100px;
+            height: 50px;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(45deg);
+        }
+
         @media (max-width: 768px) {
             .logo {
-                font-size: 36px;
+                font-size: 8vw;
             }
 
             .discord-contact {
-                font-size: 16px;
+                font-size: 3vw;
             }
 
             .cta-button {
-                font-size: 16px;
-                padding: 12px 24px;
+                font-size: 3vw;
+                padding: 10px 20px;
             }
         }
     </style>
@@ -128,67 +156,85 @@
 <body>
     <div class="animated-bg"></div>
     <div class="container">
-        <main>
-            <section class="hero">
-                <h1 class="logo">
-                    <span data-text="R">R</span>
-                    <span data-text="e">e</span>
-                    <span data-text="s">s</span>
-                    <span data-text="p">p</span>
-                    <span data-text="i">i</span>
-                    <span data-text="r">r</span>
-                    <span data-text="e">e</span>
-                    <span data-text=" "> </span>
-                    <span data-text="S">S</span>
-                    <span data-text="t">t</span>
-                    <span data-text="u">u</span>
-                    <span data-text="f">f</span>
-                    <span data-text="f">f</span>
-                    <span data-text=" "> </span>
-                    <span data-text="G">G</span>
-                    <span data-text="o">o</span>
-                    <span data-text="e">e</span>
-                    <span data-text="s">s</span>
-                    <span data-text=" "> </span>
-                    <span data-text="H">H</span>
-                    <span data-text="e">e</span>
-                    <span data-text="r">r</span>
-                    <span data-text="e">e</span>
-                </h1>
-                <p class="discord-contact">Discord: respire (188610034849021952)</p>
-                <a href="/api-providers" class="cta-button">API Providers</a>
-            </section>
-        </main>
+        <h1 class="logo">
+            <span data-text="R">R</span>
+            <span data-text="e">e</span>
+            <span data-text="s">s</span>
+            <span data-text="p">p</span>
+            <span data-text="i">i</span>
+            <span data-text="r">r</span>
+            <span data-text="e">e</span>
+            <span data-text="'">&#39;</span>
+            <span data-text="s">s</span>
+            <span data-text=" "> </span>
+            <span data-text="S">S</span>
+            <span data-text="t">t</span>
+            <span data-text="u">u</span>
+            <span data-text="f">f</span>
+            <span data-text="f">f</span>
+            <span data-text=" "> </span>
+            <span data-text="G">G</span>
+            <span data-text="o">o</span>
+            <span data-text="e">e</span>
+            <span data-text="s">s</span>
+            <span data-text=" "> </span>
+            <span data-text="H">H</span>
+            <span data-text="e">e</span>
+            <span data-text="r">r</span>
+            <span data-text="e">e</span>
+        </h1>
+        <p class="discord-contact">Discord: respire (188610034849021952)</p>
+        <a href="/api-providers" class="cta-button">API Providers</a>
     </div>
     <script>
         // Animated background
         const bg = document.querySelector('.animated-bg');
         const starCount = 200;
-        const stars = [];
+        const planetCount = 3;
+        const asteroidCount = 10;
+        const galaxyCount = 2;
 
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            star.classList.add('star');
-            star.style.left = `${Math.random() * 100}%`;
-            star.style.top = `${Math.random() * 100}%`;
-            bg.appendChild(star);
-            stars.push(star);
-        }
-
-        function animateStars() {
-            stars.forEach((star, index) => {
-                const speed = 0.05 + Math.random() * 0.05; // Reduced speed
-                const currentTop = parseFloat(star.style.top);
-                star.style.top = currentTop + speed + '%';
-
-                if (currentTop > 100) {
-                    star.style.top = '-1%';
+        function createSpaceObject(className, count, speedMultiplier = 1) {
+            for (let i = 0; i < count; i++) {
+                const obj = document.createElement('div');
+                obj.classList.add(className);
+                obj.style.left = `${Math.random() * 100}%`;
+                obj.style.top = `${Math.random() * 100}%`;
+                if (className === 'planet') {
+                    const size = 20 + Math.random() * 30;
+                    obj.style.width = `${size}px`;
+                    obj.style.height = `${size}px`;
+                    const hue = Math.random() * 360;
+                    obj.style.background = `radial-gradient(circle at 30% 30%, hsl(${hue}, 70%, 50%), #000)`;
+                } else if (className === 'galaxy') {
+                    const size = 100 + Math.random() * 100;
+                    obj.style.width = `${size}px`;
+                    obj.style.height = `${size / 2}px`;
+                    obj.style.transform = `rotate(${Math.random() * 360}deg)`;
                 }
-            });
-            requestAnimationFrame(animateStars);
+                bg.appendChild(obj);
+                animateObject(obj, speedMultiplier);
+            }
         }
 
-        animateStars();
+        function animateObject(obj, speedMultiplier) {
+            const speed = (0.05 + Math.random() * 0.05) * speedMultiplier;
+            function move() {
+                const currentTop = parseFloat(obj.style.top);
+                obj.style.top = `${currentTop + speed}%`;
+                if (currentTop > 100) {
+                    obj.style.top = '-5%';
+                    obj.style.left = `${Math.random() * 100}%`;
+                }
+                requestAnimationFrame(move);
+            }
+            move();
+        }
+
+        createSpaceObject('star', starCount);
+        createSpaceObject('planet', planetCount, 0.5);
+        createSpaceObject('asteroid', asteroidCount, 1.5);
+        createSpaceObject('galaxy', galaxyCount, 0.2);
 
         // Text animation
         const logoSpans = document.querySelectorAll('.logo span');
