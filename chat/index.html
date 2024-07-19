@@ -794,12 +794,13 @@
         let abortController = null;
 
         function createNewConversation() {
-            if (isInitialConversation || currentConversation.messages.length > 0) {
+            const isInitialConversation = conversations.length === 0;
+            if (isInitialConversation || (currentConversation && currentConversation.messages.length > 0)) {
                 currentConversation = {
                     id: Date.now(),
                     title: "New Conversation",
                     messages: [],
-                    model: currentModel // Add this line
+                    model: currentModel
                 };
                 conversations.unshift(currentConversation);
                 updateConversationList();
@@ -1088,13 +1089,17 @@
         }
 
         function updateConversationTitle() {
-            const newTitle = currentConversation.title;
-            conversationTitle.textContent = newTitle;
-            
-            // Center the conversation title
-            const mainWidth = main.offsetWidth;
-            const sidebarWidth = isSidebarVisible ? 260 : 0;
-            conversationTitle.style.transform = `translateX(-50%) translateX(${sidebarWidth / 2}px)`;
+            if (currentConversation) {
+                const newTitle = currentConversation.title;
+                conversationTitle.textContent = newTitle;
+                
+                // Center the conversation title
+                const mainWidth = main.offsetWidth;
+                const sidebarWidth = isSidebarVisible ? 260 : 0;
+                conversationTitle.style.transform = `translateX(-50%) translateX(${sidebarWidth / 2}px)`;
+            } else {
+                conversationTitle.textContent = "New Conversation";
+            }
         }
 
 
@@ -1364,7 +1369,13 @@
             }
         });
 
-        createNewConversation();
+        // Replace the existing createNewConversation() call with:
+        if (conversations.length === 0) {
+            createNewConversation();
+        } else {
+            currentConversation = conversations[0];
+            loadConversation(currentConversation);
+        }
         adjustLayout();
     </script>
 </body>
