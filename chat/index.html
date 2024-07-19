@@ -784,9 +784,6 @@
         const main = document.getElementById('main');
         const copyright = document.getElementById('copyright');
 
-        const apiEndpoint = 'https://api.convoai.tech/v1/chat/completions';
-        const apiKey = 'sk-zjb3km3zkxixvloogu2jtwyb4e6zcx1udjxa6tk9mql0og';
-
         let conversations = [];
         let currentConversation = null;
         let uploadedFiles = [];
@@ -1134,99 +1131,46 @@
                 createNewConversation();
             }
 
-            let messageContent = userMessage;
-            if (uploadedFiles.length > 0) {
-                messageContent += "\n\nAttached files:\n";
-                for (const file of uploadedFiles) {
-                    messageContent += `- ${file.name}\n`;
-                }
-            }
-
-            addMessage('user', messageContent);
-            currentConversation.messages.push({ role: 'user', content: messageContent });
-            
-            userInput.value = '';
-            userInput.style.height = 'auto';
-
-            document.getElementById('loading-indicator').style.display = 'block';
-
+            // Prepare to call the Netlify function
             try {
-                const fileContents = await Promise.all(uploadedFiles.map(readFile));
-                const ragContext = fileContents.join('\n\n');
+                document.getElementById('loading-indicator').style.display = 'block';
 
-                abortController = new AbortController();
-                const response = await fetch(apiEndpoint, {
+                const response = await fetch('/.netlify/functions/generateMessage', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
                     },
                     body: JSON.stringify({
-                        model: currentModel,
-                        messages: [...currentConversation.messages, { role: 'system', content: `RAG Context: ${ragContext}` }],
-                        stream: true
-                    }),
-                    signal: abortController.signal
+                        userMessage,
+                        currentConversation, // Send the necessary data from currentConversation
+                        uploadedFiles
+                    })
                 });
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(`API Error: ${response.status} - ${JSON.stringify(errorData)}`);
+                    throw new Error(`Failed to send message: ${errorData.error}`);
                 }
 
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let aiResponse = '';
-                let messageDiv = null;
+                const data = await response.json();
+                const aiResponse = data.aiResponse;
 
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
-                    
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            try {
-                                const data = JSON.parse(line.slice(6));
-                                if (data.choices && data.choices[0].delta.content) {
-                                    aiResponse += data.choices[0].delta.content;
-                                    if (!messageDiv) {
-                                        messageDiv = addMessage('assistant', aiResponse, true);
-                                    } else {
-                                        updateMessage(messageDiv, aiResponse, true);
-                                    }
-                                }
-                            } catch (jsonError) {
-                                console.error('Error parsing JSON:', jsonError);
-                            }
-                        }
-                    }
-                }
-
-                if (messageDiv) {
-                    updateMessage(messageDiv, aiResponse, false);
-                }
-
+                addMessage('user', userMessage);
+                addMessage('assistant', aiResponse); // Assuming addMessage handles adding the assistant's response
+                
+                currentConversation.messages.push({ role: 'user', content: userMessage });
                 currentConversation.messages.push({ role: 'assistant', content: aiResponse });
 
-                // Generate the title after each assistant's message
-                await generateTitle(messageContent, aiResponse); 
+                await generateTitle(userMessage, aiResponse);
 
-                uploadedFiles = [];
-                updateFileList();
             } catch (error) {
-                if (error.name === 'AbortError') {
-                    console.log('Request was aborted');
-                } else {
-                    console.error('Error:', error);
-                    addMessage('assistant', `Something went wrong. Error details: ${error.message}`);
-                }
+                console.error('Error:', error);
+                addMessage('assistant', `Something went wrong. Error details: ${error.message}`);
             } finally {
                 isSending = false;
-                abortController = null;
                 document.getElementById('loading-indicator').style.display = 'none';
+                userInput.value = '';
+                userInput.style.height = 'auto';
             }
         }
 
