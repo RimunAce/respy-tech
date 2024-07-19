@@ -1131,10 +1131,10 @@
                 createNewConversation();
             }
 
-            // Prepare to call the Netlify function
-            try {
-                document.getElementById('loading-indicator').style.display = 'block';
+            // Show loading indicator
+            document.getElementById('loading-indicator').style.display = 'block';
 
+            try {
                 const response = await fetch('/.netlify/functions/generateMessage', {
                     method: 'POST',
                     headers: {
@@ -1142,11 +1142,12 @@
                     },
                     body: JSON.stringify({
                         userMessage,
-                        currentConversation, // Send the necessary data from currentConversation
+                        currentConversation,
                         uploadedFiles
                     })
                 });
 
+                // Handle response from generateMessage
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(`Failed to send message: ${errorData.error}`);
@@ -1155,12 +1156,13 @@
                 const data = await response.json();
                 const aiResponse = data.aiResponse;
 
+                // Add messages to chat
                 addMessage('user', userMessage);
-                addMessage('assistant', aiResponse); // Assuming addMessage handles adding the assistant's response
-                
+                addMessage('assistant', aiResponse);
                 currentConversation.messages.push({ role: 'user', content: userMessage });
                 currentConversation.messages.push({ role: 'assistant', content: aiResponse });
-
+                
+                // Generate title for current conversation
                 await generateTitle(userMessage, aiResponse);
 
             } catch (error) {
@@ -1173,6 +1175,7 @@
                 userInput.style.height = 'auto';
             }
         }
+
 
         function readFile(file) {
             return new Promise((resolve, reject) => {
