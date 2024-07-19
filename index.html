@@ -8,6 +8,7 @@
     <meta name="description" content="This is where my stuff goes. Always Free. Maybe. I think. Nya~">
     <meta property="og:title" content="Respy.Tech | Landing Page">
     <meta property="og:description" content="This is where my stuff goes. Always Free. Maybe. I think. Nya~">
+    <meta property="og:image" content="https://respy.tech/shikanoko.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://respy.tech">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
@@ -43,6 +44,7 @@
             font-weight: bold;
             margin-bottom: 20px;
             position: relative;
+            user-select: none;
         }
 
         .logo span {
@@ -71,29 +73,68 @@
             z-index: -1;
         }
 
-        .discord-contact {
-            font-size: 1.5vw;
-            margin-bottom: 30px;
-            opacity: 0;
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
         }
 
-        .cta-button {
-            background-color: #ff6b6b;
+        .cta-button, .discord-button {
+            background-color: rgba(255, 255, 255, 0.1);
             color: #fff;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.5vw;
+            padding: 12px 24px;
+            font-size: 1.2vw;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
-            opacity: 0;
-            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .cta-button:hover {
-            background-color: #ff8787;
-            transform: scale(1.05);
+        .cta-button:hover, .discord-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .cta-button::before, .discord-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(90deg, #ff00de, #00ffff, #ff00de);
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cta-button:hover::before, .discord-button:hover::before {
+            opacity: 1;
+            animation: neonGlow 1.5s linear infinite;
+        }
+
+        @keyframes neonGlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        .discord-button img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
         }
 
         .animated-bg {
@@ -137,18 +178,32 @@
             transform: rotate(45deg);
         }
 
+        .credit {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8vw;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
         @media (max-width: 768px) {
             .logo {
                 font-size: 8vw;
             }
 
-            .discord-contact {
-                font-size: 3vw;
-            }
-
-            .cta-button {
+            .cta-button, .discord-button {
                 font-size: 3vw;
                 padding: 10px 20px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .credit {
+                font-size: 2vw;
             }
         }
     </style>
@@ -183,8 +238,14 @@
             <span data-text="r">r</span>
             <span data-text="e">e</span>
         </h1>
-        <p class="discord-contact">Discord: respire (188610034849021952)</p>
-        <a href="/api-providers" class="cta-button">API Providers</a>
+        <div class="button-container">
+            <a href="/api-providers" class="cta-button">API Providers</a>
+            <a href="https://discordapp.com/users/188610034849021952" target="_blank" class="discord-button">
+                <img src="https://downloadr2.apkmirror.com/wp-content/uploads/2018/03/5aab4a4cdddc1.png" alt="Discord">
+                respire
+            </a>
+        </div>
+        <div class="credit">Created with Claude 3.5 Sonnet Ability</div>
     </div>
     <script>
         // Animated background
@@ -256,19 +317,19 @@
             });
         });
 
-        gsap.to('.discord-contact', {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            delay: 2.5,
-            ease: "power2.out"
-        });
-
-        gsap.to('.cta-button', {
+        gsap.to('.button-container', {
             opacity: 1,
             y: 0,
             duration: 1,
             delay: 3,
+            ease: "power2.out"
+        });
+
+        gsap.to('.credit', {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            delay: 3.5,
             ease: "power2.out"
         });
     </script>
