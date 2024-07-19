@@ -1068,7 +1068,7 @@
             Assistant: ${assistantMessage}`
 
             try {
-                const response = await fetch('/netlify/functions/generateTitle', {
+                const response = await fetch('/.netlify/functions/generateTitle', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1135,7 +1135,7 @@
             document.getElementById('loading-indicator').style.display = 'block';
 
             try {
-                const response = await fetch('/netlify/functions/generateMessage', {
+                const response = await fetch('/.netlify/functions/generateMessage', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1143,7 +1143,8 @@
                     body: JSON.stringify({
                         userMessage,
                         currentConversation,
-                        uploadedFiles
+                        uploadedFiles,
+                        model: currentModel,
                     })
                 });
 
