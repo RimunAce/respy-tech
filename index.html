@@ -105,44 +105,46 @@
             transform: translateY(-2px);
         }
 
-        .cta-button::before, .discord-button::before {
-            content: '';
+        .button-border {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 52px;
             background: linear-gradient(90deg, #ff00de, #00ffff, #ff00de);
             background-size: 200% 100%;
-            top: 0;
-            left: -100%;
-            transition: 0.5s;
+            z-index: -1;
             opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .cta-button:hover::before, .discord-button:hover::before {
+        .cta-button:hover .button-border, .discord-button:hover .button-border {
             opacity: 1;
             animation: moveGradient 2s linear infinite;
         }
 
         @keyframes moveGradient {
             0% {
-                left: -100%;
+                background-position: 0% 0%;
             }
             100% {
-                left: 100%;
+                background-position: 200% 0%;
             }
         }
 
-        .cta-button span, .discord-button span {
+        .button-content {
             position: relative;
             z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .discord-button img {
             width: 24px;
             height: 24px;
             margin-right: 8px;
-            position: relative;
-            z-index: 2;
         }
 
         .animated-bg {
@@ -187,11 +189,13 @@
         }
 
         .shikanoko {
+            position: absolute;
             width: 50px;
             height: 50px;
             background-image: url('shikanoko.png');
             background-size: contain;
             background-repeat: no-repeat;
+            background-position: center;
             animation: spin 10s linear infinite;
         }
 
@@ -263,10 +267,16 @@
             <span data-text="e">e</span>
         </h1>
         <div class="button-container">
-            <a href="/api-providers" class="cta-button"><span>API Providers</span></a>
+            <a href="/api-providers" class="cta-button">
+                <div class="button-border"></div>
+                <div class="button-content">API Providers</div>
+            </a>
             <a href="https://discordapp.com/users/188610034849021952" target="_blank" class="discord-button">
-                <img src="https://downloadr2.apkmirror.com/wp-content/uploads/2018/03/5aab4a4cdddc1.png" alt="Discord">
-                <span>respire</span>
+                <div class="button-border"></div>
+                <div class="button-content">
+                    <img src="https://downloadr2.apkmirror.com/wp-content/uploads/2018/03/5aab4a4cdddc1.png" alt="Discord">
+                    respire
+                </div>
             </a>
         </div>
         <div class="credit">Created with Claude 3.5 Sonnet Ability</div>
