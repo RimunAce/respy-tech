@@ -202,6 +202,20 @@
             color: #aaa;
             font-size: 0.9em;
         }
+        .disclaimer {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
         #scrollToTop {
             position: fixed;
             bottom: 20px;
@@ -235,6 +249,7 @@
     <div class="container">
         <h1><span class="title-text" id="dynamicTitle">AI Generative Text Models</span></h1>
         <div class="subtitle">Explore AI models from multiple providers, including text, image, and audio generation capabilities.</div>
+        <div class="disclaimer">Disclaimer: The listed API providers are not affiliated with me. This is for informational purposes only.</div>
         <div class="api-buttons">
             <button class="api-button active" data-api="fresedgpt">FreesedAPI</button>
             <button class="api-button" data-api="convoai">ConvoAI</button>
@@ -251,6 +266,7 @@
     </div>
     <footer>
         &copy; 2024 Respire. All rights reserved.
+        <div class="contact-info">Discord: respire (188610034849021952)</div>
     </footer>
     <button id="scrollToTop" title="Scroll to Top">↑</button>
 
@@ -396,9 +412,9 @@
                 if (i > nextTitle.length) {
                     clearInterval(intervalId);
                     currentTitleIndex = (currentTitleIndex + 1) % titles.length;
-                    setTimeout(animateTitle, 3000); // Wait for 3 seconds before changing again
+                    setTimeout(animateTitle, 1500); // Wait for 1.5 seconds before changing again (faster animation)
                 }
-            }, 100);
+            }, 50); // Reduced from 100ms to 50ms for faster typing effect
         }
 
         // Scroll to top functionality
@@ -421,19 +437,14 @@
         };
 
         scrollToTopButton.addEventListener("click", function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'instant' // This makes the scroll instant
+            });
             scrollToTopButton.style.animation = 'fadeOut 0.3s ease';
             setTimeout(() => {
                 scrollToTopButton.style.display = 'none';
             }, 300);
-
-            const scrollStep = -window.scrollY / (500 / 15);
-            const scrollInterval = setInterval(function() {
-                if (window.scrollY !== 0) {
-                    window.scrollBy(0, scrollStep);
-                } else {
-                    clearInterval(scrollInterval);
-                }
-            }, 15);
         });
 
         // Initial fetch and display of models
