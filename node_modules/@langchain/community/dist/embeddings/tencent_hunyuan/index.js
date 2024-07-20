@@ -1,0 +1,10 @@
+import { sign } from "../../utils/tencent_hunyuan/index.js";
+import { TencentHunyuanEmbeddings as BaseTencentHunyuanEmbeddings, } from "./base.js";
+/**
+ * Class for generating embeddings using the Tencent Hunyuan API.
+ */
+export class TencentHunyuanEmbeddings extends BaseTencentHunyuanEmbeddings {
+    constructor(fields) {
+        super({ ...fields, sign } ?? { sign });
+    }
+}

@@ -1,0 +1,172 @@
+import { test, expect } from "@jest/globals";
+import { OpenAPIV3 } from "openapi-types";
+import { OpenAPISpec } from "../../../util/openapi.js";
+import { convertOpenAPISchemaToJSONSchema } from "../openapi.js";
+test("Test convert OpenAPI params to JSON Schema", async () => {
+    const spec = new OpenAPISpec({
+        openapi: "3.1.0",
+        info: {
+            title: "A fake spec for testing",
+            version: "0.0.1",
+        },
+        paths: {
+            "/widgets": {
+                post: {
+                    operationId: "createWidget",
+                    description: "Create a widget",
+                    parameters: [
+                        {
+                            name: "stringParam",
+                            in: "query",
+                            schema: {
+                                type: "string",
+                            },
+                        },
+                        {
+                            name: "objectParam",
+                            in: "query",
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    foo: {
+                                        type: "string",
+                                    },
+                                    bar: {
+                                        type: "number",
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            name: "stringArrayParam",
+                            in: "query",
+                            schema: {
+                                type: "array",
+                                items: {
+                                    type: "string",
+                                },
+                            },
+                        },
+                        {
+                            name: "nestedObjectInArrayParam",
+                            in: "query",
+                            schema: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        baz: {
+                                            type: "number",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            name: "nestedArrayInObjectParam",
+                            in: "query",
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    qux: {
+                                        type: "array",
+                                        items: {
+                                            type: "string",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            name: "inceptionParam",
+                            in: "query",
+                            schema: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        nestedArray: {
+                                            type: "array",
+                                            items: {
+                                                type: "object",
+                                                properties: {
+                                                    nestedObject: {
+                                                        type: "object",
+                                                        properties: {
+                                                            inception: {
+                                                                type: "number",
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                    responses: {
+                        "200": {
+                            description: "OK",
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        properties: {
+                                            success: {
+                                                type: "boolean",
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+    const createWidget = spec.getOperation("/widgets", OpenAPIV3.HttpMethods.POST);
+    expect(createWidget).not.toBeUndefined();
+    if (!createWidget) {
+        throw new Error(`Operation not found`);
+    }
+    function getParamSchema(operation, paramName) {
+        const param = spec
+            .getParametersForOperation(operation)
+            .find((param) => param.name === paramName);
+        if (!param) {
+            throw new Error(`Param not found`);
+        }
+        if (!param.schema) {
+            throw new Error(`Param schema not found`);
+        }
+        return spec.getSchema(param.schema);
+    }
+    function expectType(type, schema) {
+        if (!schema || !("type" in schema)) {
+            throw new Error(`Schema has no type`);
+        }
+        if (schema.type !== type) {
+            throw new Error(`Unexpected type: ${schema.type}`);
+        }
+        return schema;
+    }
+    const stringParamSchema = convertOpenAPISchemaToJSONSchema(getParamSchema(createWidget, "stringParam"), spec);
+    expectType("string", stringParamSchema);
+    const objectParamSchema = convertOpenAPISchemaToJSONSchema(getParamSchema(createWidget, "objectParam"), spec);
+    const typedObjectParamSchema = expectType("object", objectParamSchema);
+    expectType("string", typedObjectParamSchema.properties.foo);
+    expectType("number", typedObjectParamSchema.properties.bar);
+    const stringArrayParamSchema = convertOpenAPISchemaToJSONSchema(getParamSchema(createWidget, "stringArrayParam"), spec);
+    const typedStringArrayParamSchema = expectType("array", stringArrayParamSchema);
+    expect(typedStringArrayParamSchema.items).not.toBeUndefined();
+    expectType("string", typedStringArrayParamSchema.items);
+    const nestedObjectInArrayParamSchema = convertOpenAPISchemaToJSONSchema(getParamSchema(createWidget, "nestedObjectInArrayParam"), spec);
+    expectType("number", expectType("object", expectType("array", nestedObjectInArrayParamSchema).items).properties.baz);
+    const nestedArrayInObjectParamSchema = convertOpenAPISchemaToJSONSchema(getParamSchema(createWidget, "nestedArrayInObjectParam"), spec);
+    expectType("string", expectType("array", expectType("object", nestedArrayInObjectParamSchema).properties.qux).items);
+    const inceptionParamSchema = convertOpenAPISchemaToJSONSchema(getParamSchema(createWidget, "inceptionParam"), spec);
+    expectType("number", expectType("object", expectType("object", expectType("array", expectType("object", expectType("array", inceptionParamSchema).items)
+        .properties.nestedArray).items).properties.nestedObject).properties.inception);
+});

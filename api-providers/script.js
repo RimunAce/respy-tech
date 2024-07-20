@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         convoai: 'https://api.convoai.tech/v1/models',
         shardai: 'https://shard-ai.xyz/v1/models',
         zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
-        shadowjourney: 'https://shadowjourney.xyz/v1/models' // Added ShadowJourney endpoint
+        shadowjourney: 'https://shadowjourney.xyz/v1/models'
     };
 
     const apiDescriptions = {
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         convoai: "Website: https://convoai.tech/",
         shardai: "Website: https://shard-ai.xyz/",
         zukijourney: "Discord: https://discord.gg/zukijourney",
-        shadowjourney: "Website: https://shadowjourney.xyz/" // Added ShadowJourney description
+        shadowjourney: "Website: https://shadowjourney.xyz/"
     };
 
     async function fetchModels(apiProvider) {

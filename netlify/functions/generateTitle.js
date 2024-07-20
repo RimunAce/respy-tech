@@ -6,7 +6,7 @@ exports.handler = async (event) => {
     User: ${userMessage}
     Assistant: ${assistantMessage}`;
 
-    const apiEndpoint = process.env.apiEndpoint2 || 'https://api.convoai.tech/v1/chat/completions';
+    const apiEndpoint = process.env.apiEndpoint2 || 'https://fresedgpt.space/v1/chat/completions';
     const apiKey = process.env.apiKey2;
 
     console.log('API Endpoint:', apiEndpoint);
@@ -22,7 +22,7 @@ exports.handler = async (event) => {
 
     try {
         const requestBody = {
-            model: 'gpt-4o', // Changed from 'claude-3.5-sonnet' to 'gpt-3.5-turbo'
+            model: 'gpt-4o',
             messages: [{ role: 'user', content: titlePrompt }]
         };
 

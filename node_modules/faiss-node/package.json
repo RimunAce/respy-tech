@@ -1,0 +1,64 @@
+{
+  "name": "faiss-node",
+  "version": "0.5.1",
+  "description": "Node.js bindings for faiss",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "gypfile": true,
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "binary": {
+    "napi_versions": [
+      6,
+      7,
+      8
+    ]
+  },
+  "scripts": {
+    "build:debug": "cmake-js compile -DCMAKE_BUILD_TYPE=Debug",
+    "build": "cmake-js compile",
+    "build:clean": "cmake-js clean",
+    "build:test": "npm run build && npm run test",
+    "prebuild-package": "prebuild --verbose --runtime napi --include-regex \"^(faiss-node\\.node)|(mkl_sequential\\.2\\.dll)|(faiss\\.lib)|(libfaiss\\.a)|(libmkl_intel_lp64\\.so)|(libmkl_sequential\\.so)|(libmkl_core\\.so)|(libomp\\.dylib)|(libgomp\\.so\\.1)|(libopenblas\\.so\\.3)|(libopenblas\\.so\\.0)|(libgfortran\\.so\\.5)|(libquadmath\\.so\\.0)$\" --backend cmake-js",
+    "install": "prebuild-install --runtime napi --verbose || (git clone -b v1.7.4 --depth 1 https://github.com/facebookresearch/faiss.git deps/faiss && npm i cmake-js && npm run build)",
+    "test": "jest",
+    "doc": "typedoc --includeVersion"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ewfian/faiss-node.git"
+  },
+  "author": "ewfian",
+  "license": "MIT",
+  "keywords": [
+    "faiss",
+    "approximate",
+    "nearest",
+    "neighbor",
+    "search",
+    "face",
+    "matching",
+    "machine learning",
+    "feature",
+    "vector",
+    "indexing",
+    "similarity search",
+    "embeddings"
+  ],
+  "bugs": {
+    "url": "https://github.com/ewfian/faiss-node/issues"
+  },
+  "homepage": "https://github.com/ewfian/faiss-node#readme",
+  "devDependencies": {
+    "cmake-js": "^7.2.1",
+    "jest": "^29.5.0",
+    "prebuild": "^11.0.4",
+    "typedoc": "^0.23.28"
+  },
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "node-addon-api": "^6.0.0",
+    "prebuild-install": "^7.1.1"
+  }
+}
