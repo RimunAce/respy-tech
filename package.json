@@ -2,7 +2,6 @@
   "dependencies": {
     "@langchain/community": "^0.2.20",
     "@langchain/openai": "^0.2.4",
-    "axios": "^1.7.2",
     "faiss-node": "^0.5.1"
   }
 }

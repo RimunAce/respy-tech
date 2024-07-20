@@ -1,73 +1,68 @@
-const axios = require('axios');
-const { OpenAIEmbeddings } = require('@langchain/openai');
-const { FaissStore } = require('@langchain/community/vectorstores/faiss');
-const { Document } = require('langchain/document');
+const https = require('https');
 
 const apiEndpoint = process.env.apiEndpoint || 'https://fresedgpt.space/v1/chat/completions';
 const apiKey = process.env.apiKey;
-const openAiKey = process.env.openAiKey;
 
-let vectorStore = null;
-
-async function initializeVectorStore() {
-  if (!vectorStore) {
-    const embeddings = new OpenAIEmbeddings({ apiKey: openAiKey, model: 'text-embedding-ada-002' });
-    try {
-      vectorStore = await FaissStore.load('/tmp/vector-store', embeddings);
-    } catch (error) {
-      console.error('Failed to load vector store:', error);
-      vectorStore = await FaissStore.fromTexts(['Fallback document'], [], embeddings);
-    }
-  }
-}
-
-async function processRequest(event) {
-  const { userMessage, currentConversation, uploadedFiles, model } = JSON.parse(event.body);
-
-  await initializeVectorStore();
-
-  let messageContent = userMessage;
-  if (uploadedFiles?.length) {
-    await Promise.all(uploadedFiles.map(file => 
-      vectorStore.addDocuments([new Document({ pageContent: file.content, metadata: { filename: file.name } })])
-    ));
-    const relevantContext = await vectorStore.similaritySearch(userMessage, 5);
-    messageContent += "\n\nAttached files:\n" + uploadedFiles.map(file => `- ${file.name}`).join('\n');
-    if (relevantContext.length) {
-      messageContent += "\n\nRelevant information:\n" + 
-        relevantContext.map((doc, index) => `${index + 1}. ${doc.pageContent}`).join('\n');
-    }
-  }
-
-  const messages = [...currentConversation.messages, { role: 'user', content: messageContent }];
-  const response = await axios.post(apiEndpoint, {
-    model: model || "gpt-4o",
-    messages,
-    temperature: 0.7,
-  }, {
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-    timeout: 50000
+function httpsRequest(url, options, data) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(url, options, (res) => {
+      let body = '';
+      res.on('data', (chunk) => body += chunk);
+      res.on('end', () => resolve({ statusCode: res.statusCode, body: JSON.parse(body) }));
+    });
+    req.on('error', reject);
+    if (data) req.write(data);
+    req.end();
   });
-
-  return { aiResponse: response.data.choices[0].message.content };
 }
 
 exports.handler = async (event) => {
   try {
-    const result = await Promise.race([
-      processRequest(event),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Function timed out')), 9000))
-    ]);
-    return { statusCode: 200, body: JSON.stringify(result) };
+    const { userMessage, currentConversation, uploadedFiles, model } = JSON.parse(event.body);
+
+    let messageContent = userMessage;
+    if (uploadedFiles?.length) {
+      const vectorStoreResponse = await httpsRequest('/.netlify/functions/vectorStore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      }, JSON.stringify({
+        action: 'search',
+        data: { query: userMessage, k: 5 }
+      }));
+
+      if (vectorStoreResponse.statusCode === 200) {
+        const relevantContext = JSON.parse(vectorStoreResponse.body);
+        messageContent += "\n\nRelevant information:\n" + 
+          relevantContext.map((doc, index) => `${index + 1}. ${doc.pageContent}`).join('\n');
+      }
+    }
+
+    const messages = [...currentConversation.messages, { role: 'user', content: messageContent }];
+    const response = await httpsRequest(apiEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      }
+    }, JSON.stringify({
+      model: model || "gpt-4o",
+      messages,
+      temperature: 0.7,
+    }));
+
+    if (response.statusCode === 200) {
+      return { 
+        statusCode: 200, 
+        body: JSON.stringify({ aiResponse: response.body.choices[0].message.content })
+      };
+    } else {
+      throw new Error(`API request failed with status ${response.statusCode}`);
+    }
   } catch (error) {
     console.error('Error in generateMessage:', error);
     return {
-      statusCode: error.message === 'Function timed out' ? 202 : (error.response?.status || 500),
-      body: JSON.stringify({
-        error: "Failed to generate response",
-        details: error.message,
-        retryAfter: error.message === 'Function timed out' ? 5 : undefined
-      })
+      statusCode: 500,
+      body: JSON.stringify({ error: "Failed to generate response", details: error.message })
     };
   }
 };
