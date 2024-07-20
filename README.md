@@ -6,7 +6,6 @@
 
 Welcome to Respy.Tech, a place for me to dump whatever I created with AI! (Shika Shika Shika)
 
-
 ## 🌟 Features
 
 - 🎨 Sleek and intuitive user interface
@@ -14,18 +13,15 @@ Welcome to Respy.Tech, a place for me to dump whatever I created with AI! (Shika
 - 📁 Chat Interface for Public Use:
   - 🌓 Light and dark mode support
   - 🔄 Conversation forking and regeneration
-  - 🧠 Multiple AI models to choose from (Mainly  Claude, gpt-4o fallback for fail)
-
+  - 🧠 Multiple AI models to choose from (Mainly Claude, gpt-4 fallback for fail)
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
+This project is licensed under the MIT License. For details, see the [LICENSE](LICENSE) file.
 
 ## 📞 Support
 
 If you encounter any issues or have questions, please file an issue on our [GitHub issue tracker](https://github.com/RimunAce/llm-api-provider/issues).
-
 
 ## 🙏 Acknowledgements
 
