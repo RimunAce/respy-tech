@@ -3,7 +3,6 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["@langchain/community", "@langchain/openai", "faiss-node"]
 
 [build.environment]
   NODE_VERSION = "18"

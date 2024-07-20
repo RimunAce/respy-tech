@@ -18,26 +18,9 @@ function httpsRequest(url, options, data) {
 
 exports.handler = async (event) => {
   try {
-    const { userMessage, currentConversation, uploadedFiles, model } = JSON.parse(event.body);
+    const { userMessage, currentConversation, model } = JSON.parse(event.body);
 
-    let messageContent = userMessage;
-    if (uploadedFiles?.length) {
-      const vectorStoreResponse = await httpsRequest('/.netlify/functions/vectorStore', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      }, JSON.stringify({
-        action: 'search',
-        data: { query: userMessage, k: 5 }
-      }));
-
-      if (vectorStoreResponse.statusCode === 200) {
-        const relevantContext = JSON.parse(vectorStoreResponse.body);
-        messageContent += "\n\nRelevant information:\n" + 
-          relevantContext.map((doc, index) => `${index + 1}. ${doc.pageContent}`).join('\n');
-      }
-    }
-
-    const messages = [...currentConversation.messages, { role: 'user', content: messageContent }];
+    const messages = [...currentConversation.messages, { role: 'user', content: userMessage }];
     const response = await httpsRequest(apiEndpoint, {
       method: 'POST',
       headers: {
