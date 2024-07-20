@@ -1133,7 +1133,6 @@
                 createNewConversation();
             }
 
-            // Show loading indicator
             document.getElementById('loading-indicator').style.display = 'block';
 
             try {
@@ -1146,11 +1145,10 @@
                         userMessage,
                         currentConversation,
                         uploadedFiles,
-                        model: currentModel, // Add this line
+                        model: currentModel,
                     })
                 });
 
-                // Handle response from generateMessage
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(`Failed to send message: ${errorData.error}`);
@@ -1159,13 +1157,11 @@
                 const data = await response.json();
                 const aiResponse = data.aiResponse;
 
-                // Add messages to chat
                 addMessage('user', userMessage);
                 addMessage('assistant', aiResponse);
                 currentConversation.messages.push({ role: 'user', content: userMessage });
                 currentConversation.messages.push({ role: 'assistant', content: aiResponse });
                 
-                // Generate title for current conversation
                 await generateTitle(userMessage, aiResponse);
 
             } catch (error) {
