@@ -6,14 +6,16 @@ document.addEventListener('DOMContentLoaded', function() {
         fresedgpt: 'https://fresedgpt.space/v1/models',
         convoai: 'https://api.convoai.tech/v1/models',
         shardai: 'https://shard-ai.xyz/v1/models',
-        zukijourney: 'https://zukijourney.xyzbot.net/v1/models'
+        zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
+        shadowjourney: 'https://shadowjourney.xyz/v1/models' // Added ShadowJourney endpoint
     };
 
     const apiDescriptions = {
         fresedgpt: "Docs: https://fresed-api.gitbook.io/fresed-api",
         convoai: "Website: https://convoai.tech/",
         shardai: "Website: https://shard-ai.xyz/",
-        zukijourney: "Discord: https://discord.gg/zukijourney"
+        zukijourney: "Discord: https://discord.gg/zukijourney",
+        shadowjourney: "Website: https://shadowjourney.xyz/" // Added ShadowJourney description
     };
 
     async function fetchModels(apiProvider) {
@@ -64,6 +66,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p>Type: ${model.type}</p>
                     <p>Supports Vision: ${model.supports_vision ? 'Yes' : 'No'}</p>
                     <p>Is Free: ${model.is_free ? 'Yes' : 'No'}</p>
+                `;
+                break;
+            case 'shadowjourney':
+                content += `
+                    <p>Owned By: ${model.owned_by}</p>
+                    <p>Object: ${model.object}</p>
+                    <p>Endpoint: <a href="${model.endpoint.replace('https://shadowjourney.xyz/', '')}" target="_blank">${model.endpoint.replace('https://shadowjourney.xyz/', '')}</a></p>
                 `;
                 break;
         }
