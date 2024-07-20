@@ -1,0 +1,179 @@
+:root {
+    --primary-color: #ff00de;
+    --secondary-color: #00ffff;
+    --background-color: #000;
+    --text-color: #fff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.logo {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: bold;
+    margin-bottom: 20px;
+    position: relative;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.logo span {
+    position: relative;
+    display: inline-block;
+    opacity: 0;
+}
+
+.logo span.space-after {
+    margin-right: 0.3em; /* Adjust this value for desired spacing */
+}
+
+.logo span::before,
+.logo span::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+    filter: blur(0.02em);
+}
+
+.logo span::before {
+    color: var(--primary-color);
+    z-index: -2;
+}
+
+.logo span::after {
+    color: var(--secondary-color);
+    z-index: -1;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    opacity: 0;
+}
+
+.cta-button, .discord-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 24px;
+    font-size: clamp(1rem, 1.2vw, 1.5rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+.cta-button:hover, .discord-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.cta-button::before, .discord-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.cta-button:hover::before, .discord-button:hover::before {
+    opacity: 1;
+    animation: moveGradient 2s linear infinite;
+}
+
+@keyframes moveGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.cta-button span, .discord-button span, .discord-button img {
+    position: relative;
+    z-index: 2;
+}
+
+.discord-button img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.animated-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.star, .planet, .asteroid, .galaxy, .shikanoko {
+    position: absolute;
+    background-color: var(--text-color);
+}
+
+.star { width: 2px; height: 2px; }
+.planet { border-radius: 50%; }
+.asteroid { clip-path: polygon(50% 0%, 80% 40%, 100% 70%, 70% 90%, 30% 100%, 0 70%); }
+.galaxy { background: radial-gradient(ellipse at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%); }
+.shikanoko {
+    background-image: url('shikanoko.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.credit {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: clamp(0.7rem, 0.8vw, 1rem);
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .button-container {
+        flex-direction: column;
+    }
+}
