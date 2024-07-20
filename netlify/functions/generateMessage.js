@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const url = require('url');
 
 exports.handler = async (event) => {
     const { userMessage, currentConversation, uploadedFiles, model } = JSON.parse(event.body);
@@ -18,11 +19,22 @@ exports.handler = async (event) => {
         });
     }
 
-    const apiEndpoint = process.env.API_ENDPOINT;
-    const apiKey = process.env.API_KEY;
+    const apiEndpoint = process.env.apiEndpoint;
+    const apiKey = process.env.apiKey;
+
+    if (!apiEndpoint || !apiKey) {
+        console.error('API endpoint or key is missing');
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Server configuration error' })
+        };
+    }
+
+    // Ensure the API endpoint is an absolute URL
+    const fullApiEndpoint = url.resolve('https://', apiEndpoint);
     
     try {
-        const response = await fetch(apiEndpoint, {
+        const response = await fetch(fullApiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
