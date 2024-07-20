@@ -6,7 +6,7 @@
 
 # Git directory
 .git/
-
+node_modules/
 
 # OS generated files
 .DS_Store
