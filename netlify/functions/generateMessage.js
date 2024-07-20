@@ -1,15 +1,11 @@
 const fetch = require('node-fetch');
-const url = require('url');
 
 exports.handler = async (event) => {
+    console.log('Received event:', JSON.stringify(event, null, 2));
+
     const { userMessage, currentConversation, uploadedFiles, model } = JSON.parse(event.body);
 
-    if (!userMessage && uploadedFiles.length === 0) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: 'User message cannot be empty' })
-        };
-    }
+    console.log('Parsed request body:', { userMessage, currentConversation, uploadedFiles, model });
 
     let messageContent = userMessage;
     if (uploadedFiles.length > 0) {
@@ -19,47 +15,56 @@ exports.handler = async (event) => {
         });
     }
 
-    const apiEndpoint = process.env.apiEndpoint;
+    const apiEndpoint = process.env.apiEndpoint || 'https://api.convoai.tech/v1/chat/completions';
     const apiKey = process.env.apiKey;
 
-    if (!apiEndpoint || !apiKey) {
-        console.error('API endpoint or key is missing');
+    console.log('API Endpoint:', apiEndpoint);
+    console.log('API Key (first 5 chars):', apiKey ? apiKey.substring(0, 5) + '...' : 'undefined');
+
+    if (!apiKey) {
+        console.error('API key is missing');
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Server configuration error' })
         };
     }
 
-    // Ensure the API endpoint is an absolute URL
-    const fullApiEndpoint = url.resolve('https://', apiEndpoint);
-    
     try {
-        const response = await fetch(fullApiEndpoint, {
+        const messages = [
+            ...currentConversation.messages,
+            { role: 'user', content: messageContent }
+        ];
+
+        const requestBody = {
+            messages: messages,
+            model: model || 'claude-3.5-sonnet',
+            temperature: 0.7
+        };
+
+        console.log('Request body:', JSON.stringify(requestBody, null, 2));
+
+        const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${apiKey}`
             },
-            body: JSON.stringify({
-                model: model || 'claude-3.5-sonnet',
-                messages: [
-                    ...currentConversation.messages,
-                    { role: 'user', content: messageContent }
-                ],
-                max_tokens: 1000,
-                temperature: 0.7,
-                stream: false
-            })
+            body: JSON.stringify(requestBody)
         });
 
+        console.log('Response status:', response.status);
+        console.log('Response headers:', JSON.stringify(response.headers.raw(), null, 2));
+
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('API Error Response:', errorData);
+            const errorData = JSON.parse(responseText);
             throw new Error(`API Error: ${response.status} - ${JSON.stringify(errorData)}`);
         }
 
-        const data = await response.json();
-        console.log('API Success Response:', data);
+        const data = JSON.parse(responseText);
+        console.log('Parsed API response:', JSON.stringify(data, null, 2));
 
         let aiResponse;
         if (data.choices && data.choices[0] && data.choices[0].message) {
