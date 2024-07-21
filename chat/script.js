@@ -534,3 +534,5 @@ observer.observe(chatArea, {
     childList: true,
     subtree: true
 });
+
+// stuff
