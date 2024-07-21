@@ -1,6 +1,8 @@
 const https = require('https');
 
 exports.handler = async function(event, context) {
+    console.log("Function invoked with event:", JSON.stringify(event));
+    
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -9,6 +11,7 @@ exports.handler = async function(event, context) {
     }
 
     const { messages } = JSON.parse(event.body);
+    console.log("Received messages:", JSON.stringify(messages));
 
     const data = JSON.stringify({
         model: "gpt-4o-mini",
@@ -31,8 +34,12 @@ exports.handler = async function(event, context) {
         }
     };
 
+    console.log("Sending request to OpenAI with options:", JSON.stringify(options));
+
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
+            console.log("Received response from OpenAI with status:", res.statusCode);
+            
             if (res.statusCode === 200) {
                 resolve({
                     statusCode: 200,
@@ -49,6 +56,7 @@ exports.handler = async function(event, context) {
                     responseBody += chunk;
                 });
                 res.on('end', () => {
+                    console.log("Error response from OpenAI:", responseBody);
                     resolve({
                         statusCode: res.statusCode,
                         body: JSON.stringify({
