@@ -9,7 +9,7 @@ exports.handler = async function(event, context) {
     const { userFirstMessage, assistantFirstMessage } = JSON.parse(event.body);
     
     const response = await axios.post(
-      `${process.env.apiEndpoint}`,
+      `https://api.openai.com/v1/chat/completions`,
       {
         messages: [
           {
@@ -25,7 +25,7 @@ exports.handler = async function(event, context) {
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.apiKey}`
+          'Authorization': `Bearer ${process.env.openAiKey}`
         }
       }
     );

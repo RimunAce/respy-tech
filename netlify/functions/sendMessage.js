@@ -9,7 +9,7 @@ exports.handler = async function(event, context) {
     const { messages } = JSON.parse(event.body);
     
     const response = await axios.post(
-      `${process.env.apiEndpoint}`,
+      `https://api.openai.com/v1/chat/completions`,
       {
         model: "gpt-4o-mini",
         messages: [
@@ -20,7 +20,7 @@ exports.handler = async function(event, context) {
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.apiKey}`
+          'Authorization': `Bearer ${process.env.openAiKey}`
         }
       }
     );
