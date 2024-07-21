@@ -341,7 +341,6 @@ async function sendMessage(isRegenerating = false) {
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let botReply = "";
-            let partialLine = "";
 
             const botMessageDiv = document.createElement("div");
             botMessageDiv.className = "message bot-message";
@@ -359,29 +358,25 @@ async function sendMessage(isRegenerating = false) {
                 const { value, done } = await reader.read();
                 if (done) break;
 
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = (partialLine + chunk).split('\n');
-                partialLine = lines.pop();
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
 
                 for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    if (trimmedLine === "" || !trimmedLine.startsWith('data: ')) continue;
+                    if (line.startsWith('data: ')) {
+                        const jsonData = line.slice(6);
+                        if (jsonData === '[DONE]') break;
 
-                    const jsonData = trimmedLine.slice(6);
-                    if (jsonData === '[DONE]') break;
-
-                    try {
-                        const parsedData = JSON.parse(jsonData);
-                        if (parsedData && parsedData.choices && parsedData.choices[0] && parsedData.choices[0].delta) {
-                            const { content } = parsedData.choices[0].delta;
-                            if (content) {
+                        try {
+                            const parsedData = JSON.parse(jsonData);
+                            if (parsedData.choices && parsedData.choices[0].delta && parsedData.choices[0].delta.content) {
+                                const content = parsedData.choices[0].delta.content;
                                 botReply += content;
                                 botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
                                 chatArea.scrollTop = chatArea.scrollHeight;
                             }
+                        } catch (error) {
+                            console.warn("Failed to parse JSON:", jsonData, error);
                         }
-                    } catch (error) {
-                        console.warn("Failed to parse JSON:", jsonData, error);
                     }
                 }
             }

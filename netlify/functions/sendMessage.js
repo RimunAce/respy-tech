@@ -33,11 +33,7 @@ exports.handler = async function(event, context) {
 
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
-            let responseBody = '';
-
-            res.on('data', (chunk) => {
-                responseBody += chunk.toString();
-                // Immediately return chunked data to the client
+            if (res.statusCode === 200) {
                 resolve({
                     statusCode: 200,
                     headers: {
@@ -45,12 +41,14 @@ exports.handler = async function(event, context) {
                         'Cache-Control': 'no-cache',
                         'Connection': 'keep-alive'
                     },
-                    body: chunk.toString()
+                    body: res
                 });
-            });
-
-            res.on('end', () => {
-                if (res.statusCode !== 200) {
+            } else {
+                let responseBody = '';
+                res.on('data', (chunk) => {
+                    responseBody += chunk;
+                });
+                res.on('end', () => {
                     resolve({
                         statusCode: res.statusCode,
                         body: JSON.stringify({
@@ -58,8 +56,8 @@ exports.handler = async function(event, context) {
                             details: responseBody
                         })
                     });
-                }
-            });
+                });
+            }
         });
 
         req.on('error', (error) => {
