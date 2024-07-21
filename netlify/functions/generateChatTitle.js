@@ -9,7 +9,7 @@ exports.handler = async function(event, context) {
     const { userFirstMessage, assistantFirstMessage } = JSON.parse(event.body);
     
     const response = await axios.post(
-      `https://api.openai.com/v1/chat/completions`,
+      'https://api.openai.com/v1/chat/completions',
       {
         messages: [
           {

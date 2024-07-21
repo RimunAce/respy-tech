@@ -338,10 +338,11 @@ async function sendMessage(isRegenerating = false) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
-            const botReply = data.choices[0].message.content;
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let botReply = "";
+            let partialLine = "";
 
-            // Handling bot reply
             const botMessageDiv = document.createElement("div");
             botMessageDiv.className = "message bot-message";
             const botIcon = document.createElement("div");
@@ -353,8 +354,40 @@ async function sendMessage(isRegenerating = false) {
             botContentDiv.className = "message-content";
             botMessageDiv.appendChild(botContentDiv);
             chatArea.appendChild(botMessageDiv);
-            
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = (partialLine + chunk).split('\n');
+                partialLine = lines.pop();
+
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (trimmedLine === "" || !trimmedLine.startsWith('data: ')) continue;
+
+                    const jsonData = trimmedLine.slice(6);
+                    if (jsonData === '[DONE]') break;
+
+                    try {
+                        const parsedData = JSON.parse(jsonData);
+                        if (parsedData && parsedData.choices && parsedData.choices[0] && parsedData.choices[0].delta) {
+                            const { content } = parsedData.choices[0].delta;
+                            if (content) {
+                                botReply += content;
+                                botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
+                                chatArea.scrollTop = chatArea.scrollHeight;
+                            }
+                        }
+                    } catch (error) {
+                        console.warn("Failed to parse JSON:", jsonData, error);
+                    }
+                }
+            }
+
             botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
+            addCopyButtonToCodeBlocks();
             chatArea.scrollTop = chatArea.scrollHeight;
 
             const endTime = Date.now();
@@ -396,7 +429,7 @@ async function sendMessage(isRegenerating = false) {
                 .messages.push({
                     role: "assistant",
                     content: botReply,
-                    timestamp: new Date().toLocaleString()
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 });
 
             await generateChatTitle();
