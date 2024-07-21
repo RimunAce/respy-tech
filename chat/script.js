@@ -338,8 +338,8 @@ async function sendMessage(isRegenerating = false) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
+            const responseText = await response.text();
+            const lines = responseText.split('\n');
             let botReply = "";
 
             const botMessageDiv = document.createElement("div");
@@ -354,29 +354,21 @@ async function sendMessage(isRegenerating = false) {
             botMessageDiv.appendChild(botContentDiv);
             chatArea.appendChild(botMessageDiv);
 
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const jsonData = line.slice(6);
+                    if (jsonData === '[DONE]') break;
 
-                const chunk = decoder.decode(value);
-                const lines = chunk.split('\n');
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const jsonData = line.slice(6);
-                        if (jsonData === '[DONE]') break;
-
-                        try {
-                            const parsedData = JSON.parse(jsonData);
-                            if (parsedData.choices && parsedData.choices[0].delta && parsedData.choices[0].delta.content) {
-                                const content = parsedData.choices[0].delta.content;
-                                botReply += content;
-                                botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
-                                chatArea.scrollTop = chatArea.scrollHeight;
-                            }
-                        } catch (error) {
-                            console.warn("Failed to parse JSON:", jsonData, error);
+                    try {
+                        const parsedData = JSON.parse(jsonData);
+                        if (parsedData.choices && parsedData.choices[0].delta && parsedData.choices[0].delta.content) {
+                            const content = parsedData.choices[0].delta.content;
+                            botReply += content;
+                            botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
+                            chatArea.scrollTop = chatArea.scrollHeight;
                         }
+                    } catch (error) {
+                        console.warn("Failed to parse JSON:", jsonData, error);
                     }
                 }
             }
@@ -447,7 +439,6 @@ async function sendMessage(isRegenerating = false) {
         }
     }
 }
-
 function showSettings() {
     console.log("Settings button clicked");
 }

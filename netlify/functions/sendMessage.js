@@ -40,22 +40,24 @@ exports.handler = async function(event, context) {
         const req = https.request(options, (res) => {
             console.log("Received response from OpenAI with status:", res.statusCode);
             
-            if (res.statusCode === 200) {
-                resolve({
-                    statusCode: 200,
-                    headers: {
-                        'Content-Type': 'text/event-stream',
-                        'Cache-Control': 'no-cache',
-                        'Connection': 'keep-alive'
-                    },
-                    body: res
-                });
-            } else {
-                let responseBody = '';
-                res.on('data', (chunk) => {
-                    responseBody += chunk;
-                });
-                res.on('end', () => {
+            let responseBody = '';
+
+            res.on('data', (chunk) => {
+                responseBody += chunk.toString();
+            });
+
+            res.on('end', () => {
+                if (res.statusCode === 200) {
+                    resolve({
+                        statusCode: 200,
+                        headers: {
+                            'Content-Type': 'text/event-stream',
+                            'Cache-Control': 'no-cache',
+                            'Connection': 'keep-alive'
+                        },
+                        body: responseBody
+                    });
+                } else {
                     console.log("Error response from OpenAI:", responseBody);
                     resolve({
                         statusCode: res.statusCode,
@@ -64,8 +66,8 @@ exports.handler = async function(event, context) {
                             details: responseBody
                         })
                     });
-                });
-            }
+                }
+            });
         });
 
         req.on('error', (error) => {
