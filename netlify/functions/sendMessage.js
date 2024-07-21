@@ -4,13 +4,11 @@ exports.handler = async function(event, context) {
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
-            body: 'Method Not Allowed'
+            body: JSON.stringify({ error: 'Method Not Allowed' })
         };
     }
 
-    const {
-        messages
-    } = JSON.parse(event.body);
+    const { messages } = JSON.parse(event.body);
 
     const data = JSON.stringify({
         model: "gpt-4o-mini",
@@ -35,7 +33,11 @@ exports.handler = async function(event, context) {
 
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
-            if (res.statusCode === 200) {
+            let responseBody = '';
+
+            res.on('data', (chunk) => {
+                responseBody += chunk.toString();
+                // Immediately return chunked data to the client
                 resolve({
                     statusCode: 200,
                     headers: {
@@ -43,14 +45,12 @@ exports.handler = async function(event, context) {
                         'Cache-Control': 'no-cache',
                         'Connection': 'keep-alive'
                     },
-                    body: res
+                    body: chunk.toString()
                 });
-            } else {
-                let responseBody = '';
-                res.on('data', (chunk) => {
-                    responseBody += chunk;
-                });
-                res.on('end', () => {
+            });
+
+            res.on('end', () => {
+                if (res.statusCode !== 200) {
                     resolve({
                         statusCode: res.statusCode,
                         body: JSON.stringify({
@@ -58,8 +58,8 @@ exports.handler = async function(event, context) {
                             details: responseBody
                         })
                     });
-                });
-            }
+                }
+            });
         });
 
         req.on('error', (error) => {
