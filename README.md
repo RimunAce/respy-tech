@@ -10,10 +10,7 @@ Welcome to Respy.Tech, a place for me to dump whatever I created with AI! (Shika
 
 - 🎨 Sleek and intuitive user interface
 - 💬 Listings of API Providers for multiple LLM
-- 📁 Chat Interface for Public Use:
-  - 🌓 Light and dark mode support
-  - 🔄 Conversation forking and regeneration
-  - 🧠 Multiple AI models to choose from (Mainly Claude, gpt-4 fallback for fail)
+- 📁 Chat Interface for Public Use
 
 ## 📄 License
 
@@ -25,6 +22,6 @@ If you encounter any issues or have questions, please file an issue on our [GitH
 
 ## 🙏 Acknowledgements
 
-- Thanks to [ConvoAI](https://convoai.tech) for providing the AI backend.
+- Thanks to [Multiple providers](https://respy.tech/api-providers/).
 - Icons provided by [Lucide](https://lucide.dev/).
 - Syntax highlighting by [highlight.js](https://highlightjs.org/).
