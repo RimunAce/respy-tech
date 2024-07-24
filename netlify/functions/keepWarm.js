@@ -2,7 +2,7 @@
 const https = require('https');
 
 exports.handler = async function(event, context) {
-  const functions = ['sendMessage', 'generateChatTitle'];
+  const functions = ['sendMessage', 'generateChatTitle', 'generateTitle', 'generateMessage', 'zenithResponse'];
   
   for (const func of functions) {
     await new Promise((resolve, reject) => {
