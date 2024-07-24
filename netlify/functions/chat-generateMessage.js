@@ -1,8 +1,6 @@
 const https = require('https');
 
 exports.handler = async function(event, context) {
-    console.log("Function invoked with event:", JSON.stringify(event));
-    
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,

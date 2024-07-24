@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchModels(apiProvider) {
         try {
             const response = await fetch(apiEndpoints[apiProvider]);
+            if (!response.ok) throw new Error('Network response was not ok');
             const data = await response.json();
             return data.data;
         } catch (error) {
@@ -32,7 +33,31 @@ document.addEventListener('DOMContentLoaded', function() {
     function createModelBox(model, apiProvider) {
         const modelBox = document.createElement('div');
         modelBox.className = 'model-box';
-        let content = `<div class="model-id">${model.id}</div><div class="model-details">`;
+
+        const modelIdElement = createModelIdElement(model);
+        const modelDetailsElement = createModelDetailsElement(model, apiProvider);
+
+        modelBox.appendChild(modelIdElement);
+        modelBox.appendChild(modelDetailsElement);
+
+        const copyButton = createCopyButton(model);
+        modelBox.appendChild(copyButton);
+
+        return modelBox;
+    }
+
+    function createModelIdElement(model) {
+        const modelIdElement = document.createElement('div');
+        modelIdElement.className = 'model-id';
+        modelIdElement.textContent = model.id;
+        return modelIdElement;
+    }
+
+    function createModelDetailsElement(model, apiProvider) {
+        const modelDetailsElement = document.createElement('div');
+        modelDetailsElement.className = 'model-details';
+
+        let content = '';
 
         switch(apiProvider) {
             case 'fresedgpt':
@@ -77,9 +102,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
         }
 
-        content += '</div>';
-        modelBox.innerHTML = content;
+        modelDetailsElement.innerHTML = content;
+        return modelDetailsElement;
+    }
 
+    function createCopyButton(model) {
         const copyButton = document.createElement('button');
         copyButton.className = 'copy-button';
         copyButton.title = 'Copy Model ID';
@@ -87,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tooltip.className = 'tooltip';
         tooltip.textContent = 'Copy Model ID';
         copyButton.appendChild(tooltip);
+
         copyButton.onclick = function() {
             navigator.clipboard.writeText(model.id).then(() => {
                 copyButton.classList.add('copied');
@@ -97,11 +125,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     tooltip.textContent = 'Copy Model ID';
                     tooltip.style.opacity = '0';
                 }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
             });
         };
-        modelBox.appendChild(copyButton);
-
-        return modelBox;
+        return copyButton;
     }
 
     function displayModels(filter = '') {
@@ -148,9 +176,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const nextTitle = titles[(currentTitleIndex + 1) % titles.length];
         const currentColor = colors[currentTitleIndex];
         const nextColor = colors[(currentTitleIndex + 1) % colors.length];
-        
+
         titleElement.style.backgroundImage = currentColor;
-        
+
+        deleteTitle(titleElement, currentTitle);
+    }
+
+    function deleteTitle(titleElement, currentTitle) {
         let i = currentTitle.length;
         const deleteInterval = setInterval(() => {
             if (i > 0) {
@@ -158,18 +190,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 i--;
             } else {
                 clearInterval(deleteInterval);
-                titleElement.style.backgroundImage = nextColor;
-                let j = 0;
-                const typeInterval = setInterval(() => {
-                    if (j <= nextTitle.length) {
-                        titleElement.textContent = nextTitle.substring(0, j);
-                        j++;
-                    } else {
-                        clearInterval(typeInterval);
-                        currentTitleIndex = (currentTitleIndex + 1) % titles.length;
-                        setTimeout(animateTitle, 1500); // Wait for 1.5 seconds before changing again
-                    }
-                }, 50);
+                typeTitle(titleElement, currentTitle);
+            }
+        }, 50);
+    }
+
+    function typeTitle(titleElement, currentTitle) {
+        const nextTitle = titles[(currentTitleIndex + 1) % titles.length];
+        const nextColor = colors[(currentTitleIndex + 1) % colors.length];
+
+        titleElement.style.backgroundImage = nextColor;
+
+        let j = 0;
+        const typeInterval = setInterval(() => {
+            if (j <= nextTitle.length) {
+                titleElement.textContent = nextTitle.substring(0, j);
+                j++;
+            } else {
+                clearInterval(typeInterval);
+                currentTitleIndex = (currentTitleIndex + 1) % titles.length;
+                setTimeout(animateTitle, 1500); // Wait for 1.5 seconds before changing again
             }
         }, 50);
     }
@@ -182,6 +222,10 @@ document.addEventListener('DOMContentLoaded', function() {
         titleElement.style.backgroundImage = initialColor;
         titleElement.textContent = '';
         
+        typeInitialTitle(titleElement, initialTitle);
+    }
+
+    function typeInitialTitle(titleElement, initialTitle) {
         let i = 0;
         const typeInterval = setInterval(() => {
             if (i <= initialTitle.length) {
@@ -198,18 +242,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const scrollToTopButton = document.getElementById("scrollToTop");
 
     window.onscroll = function() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            if (scrollToTopButton.style.display !== "block") {
-                scrollToTopButton.style.display = "block";
-                scrollToTopButton.style.animation = 'fadeIn 0.3s ease';
-            }
-        } else {
-            if (scrollToTopButton.style.display === "block") {
-                scrollToTopButton.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => {
-                    scrollToTopButton.style.display = 'none';
-                }, 300);
-            }
+        const shouldShowButton = document.body.scrollTop > 20 || document.documentElement.scrollTop > 20;
+        
+        if (shouldShowButton && scrollToTopButton.style.display !== "block") {
+            scrollToTopButton.style.display = "block";
+            scrollToTopButton.style.animation = 'fadeIn 0.3s ease';
+        } else if (!shouldShowButton && scrollToTopButton.style.display === "block") {
+            scrollToTopButton.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => {
+                scrollToTopButton.style.display = 'none';
+            }, 300);
         }
     };
 

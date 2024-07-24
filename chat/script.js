@@ -35,36 +35,43 @@ function updateChatHistory() {
         li.className = "chat-history-item";
         li.dataset.id = chat.id;
 
-        const chatTitle = document.createElement("span");
-        chatTitle.className = "chat-title";
-        chatTitle.textContent = chat.title || `Chat ${index + 1}`;
-        chatTitle.onclick = () => loadChat(chat.id);
-        li.appendChild(chatTitle);
+        const chatTitleElement = document.createElement("span");
+        chatTitleElement.className = "chat-title";
+        chatTitleElement.textContent = chat.title || `Chat ${index + 1}`;
+        chatTitleElement.onclick = () => loadChat(chat.id);
+        li.appendChild(chatTitleElement);
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.className = "delete-btn";
-        let deleteConfirmTimeout;
-        deleteBtn.onclick = (event) => {
-            event.stopPropagation();
-            if (deleteBtn.classList.contains("confirm")) {
-                clearTimeout(deleteConfirmTimeout);
-                deleteChat(chat.id, li);
-            } else {
-                deleteBtn.textContent = "Sure?";
-                deleteBtn.classList.add("confirm");
-                deleteConfirmTimeout = setTimeout(() => {
-                    deleteBtn.textContent = "Delete";
-                    deleteBtn.classList.remove("confirm");
-                }, 2000);
-            }
-        };
+        const deleteBtn = createDeleteButton(chat.id, li);
         li.appendChild(deleteBtn);
 
         chatHistoryEl.appendChild(li);
     });
 
     initSortable();
+}
+
+function createDeleteButton(chatId, listItem) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "delete-btn";
+    let deleteConfirmTimeout;
+
+    deleteBtn.onclick = (event) => {
+        event.stopPropagation();
+        if (deleteBtn.classList.contains("confirm")) {
+            clearTimeout(deleteConfirmTimeout);
+            deleteChat(chatId, listItem);
+        } else {
+            deleteBtn.textContent = "Sure?";
+            deleteBtn.classList.add("confirm");
+            deleteConfirmTimeout = setTimeout(() => {
+                deleteBtn.textContent = "Delete";
+                deleteBtn.classList.remove("confirm");
+            }, 2000);
+        }
+    };
+
+    return deleteBtn;
 }
 
 function initSortable() {
@@ -192,27 +199,10 @@ function appendMessage(role, content, timestamp = new Date().toLocaleTimeString(
     timestampDiv.className = "timestamp";
     timestampDiv.textContent = timestamp;
     contentDiv.appendChild(timestampDiv);
-    if (role === "user") {
-        const copyBtn = document.createElement("button");
-        copyBtn.textContent = "Copy";
-        copyBtn.className = "copy-btn";
-        copyBtn.onclick = () => {
-            navigator.clipboard.writeText(content);
-            showNotification("Message copied to clipboard!");
-        };
-        contentDiv.appendChild(copyBtn);
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.className = "delete-msg-btn";
-        deleteBtn.onclick = () => {
-            messageDiv.remove();
-            const chat = chatHistory.find((c) => c.id === currentChatId);
-            if (chat) {
-                chat.messages = chat.messages.filter((m) => m.content !== content);
-            }
-        };
-        contentDiv.appendChild(deleteBtn);
+    if (role === "user") {
+        contentDiv.appendChild(createCopyMessageButton(content));
+        contentDiv.appendChild(createDeleteMessageButton(messageDiv, content));
     }
 
     chatArea.appendChild(messageDiv);
@@ -231,6 +221,30 @@ function appendMessage(role, content, timestamp = new Date().toLocaleTimeString(
     }
 }
 
+function createCopyMessageButton(content) {
+    const copyBtn = document.createElement("button");
+    copyBtn.textContent = "Copy";
+    copyBtn.className = "copy-btn";
+    copyBtn.onclick = () => {
+        navigator.clipboard.writeText(content);
+        showNotification("Message copied to clipboard!");
+    };
+    return copyBtn;
+}
+
+function createDeleteMessageButton(messageDiv, content) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "delete-msg-btn";
+    deleteBtn.onclick = () => {
+        messageDiv.remove();
+        const chat = chatHistory.find((c) => c.id === currentChatId);
+        if (chat) {
+            chat.messages = chat.messages.filter((m) => m.content !== content);
+        }
+    };
+    return deleteBtn;
+}
 
 function showRegenerateButton() {
     regenerateBtn.classList.add("visible");
@@ -249,12 +263,13 @@ async function updateTitleWithAnimation(title) {
 }
 
 async function generateChatTitle() {
-    if (chatHistory.find((c) => c.id === currentChatId).messages.length >= 2 && !isChatTitleGenerated) {
-        const userFirstMessage = chatHistory.find((c) => c.id === currentChatId).messages[0].content;
-        const assistantFirstMessage = chatHistory.find((c) => c.id === currentChatId).messages[1].content;
+    const currentChat = chatHistory.find((c) => c.id === currentChatId);
+    if (currentChat.messages.length >= 2 && !isChatTitleGenerated) {
+        const userFirstMessage = currentChat.messages[0].content;
+        const assistantFirstMessage = currentChat.messages[1].content;
 
         try {
-            const response = await fetch('/.netlify/functions/generateChatTitle', {
+            const response = await fetch('/.netlify/functions/chat-generateTitle', {
                 method: 'POST',
                 body: JSON.stringify({ userFirstMessage, assistantFirstMessage }),
             });
@@ -266,14 +281,14 @@ async function generateChatTitle() {
             const data = await response.json();
             const limitedTitle = data.title;
 
-            chatHistory.find((c) => c.id === currentChatId).title = limitedTitle;
+            currentChat.title = limitedTitle;
             await updateTitleWithAnimation(limitedTitle);
             isChatTitleGenerated = true;
             updateChatHistory();
         } catch (titleError) {
             console.error("Error generating title:", titleError);
             const fallbackTitle = userFirstMessage.split(' ').slice(0, 5).join(' ');
-            chatHistory.find((c) => c.id === currentChatId).title = fallbackTitle;
+            currentChat.title = fallbackTitle;
             await updateTitleWithAnimation(fallbackTitle);
             isChatTitleGenerated = true;
             updateChatHistory();
@@ -283,13 +298,11 @@ async function generateChatTitle() {
 
 async function sendMessage(isRegenerating = false) {
     if (isAssistantResponding) {
-        showNotification("Please wait until the assistant responds.");
+        showNotification("Please wait for the current response to finish.");
         return;
     }
 
-    const userMessage = isRegenerating ?
-        chatHistory.find((c) => c.id === currentChatId).messages.slice(-1)[0].content :
-        userInput.value.trim();
+    const userMessage = isRegenerating ? chatHistory.find((c) => c.id === currentChatId).messages.slice(-1)[0].content : userInput.value.trim();
 
     if (userMessage !== "") {
         if (!currentChatId) {
@@ -297,37 +310,18 @@ async function sendMessage(isRegenerating = false) {
         }
 
         if (!isRegenerating) {
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            appendMessage("user", userInput.value, timestamp);
-
-            let currentChat = chatHistory.find((c) => c.id === currentChatId);
-            if (!currentChat) {
-                currentChat = {
-                    id: currentChatId,
-                    messages: [],
-                    title: null
-                };
-                chatHistory.push(currentChat);
-            }
-            currentChat.messages.push({
-                role: "user",
-                content: userInput.value,
-                timestamp
-            });
+            appendUserMessage(userMessage);
         }
 
         userInput.value = "";
-        userInput.disabled = true;
-        sendButton.disabled = true;
-        sendButton.classList.add("loading");
-        regenerateBtn.disabled = true;
+        disableInput();
 
         isAssistantResponding = true;
 
         try {
             const startTime = Date.now();
 
-            const response = await fetch('/.netlify/functions/sendMessage', {
+            const response = await fetch('/.netlify/functions/chat-generateMessage', {
                 method: 'POST',
                 body: JSON.stringify({
                     messages: chatHistory.find((c) => c.id === currentChatId).messages
@@ -337,90 +331,8 @@ async function sendMessage(isRegenerating = false) {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            const responseText = await response.text();
-            const lines = responseText.split('\n');
-            let botReply = "";
-
-            const botMessageDiv = document.createElement("div");
-            botMessageDiv.className = "message bot-message";
-            const botIcon = document.createElement("div");
-            botIcon.className = "profile-icon";
-            botIcon.style.backgroundImage = "url('https://i.imgur.com/EN1RnD2.png')";
-            botMessageDiv.appendChild(botIcon);
-
-            const botContentDiv = document.createElement("div");
-            botContentDiv.className = "message-content";
-            botMessageDiv.appendChild(botContentDiv);
-            chatArea.appendChild(botMessageDiv);
-
-            for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                    const jsonData = line.slice(6);
-                    if (jsonData === '[DONE]') break;
-
-                    try {
-                        const parsedData = JSON.parse(jsonData);
-                        if (parsedData.choices && parsedData.choices[0].delta && parsedData.choices[0].delta.content) {
-                            const content = parsedData.choices[0].delta.content;
-                            botReply += content;
-                            botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
-                            chatArea.scrollTop = chatArea.scrollHeight;
-                        }
-                    } catch (error) {
-                        console.warn("Failed to parse JSON:", jsonData, error);
-                    }
-                }
-            }
-
-            botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
-            addCopyButtonToCodeBlocks();
-            chatArea.scrollTop = chatArea.scrollHeight;
-
-            const endTime = Date.now();
-            const duration = (endTime - startTime) / 1000;
-            const wordCount = botReply.split(/\s+/).length;
-            const tps = Math.round(wordCount / duration);
-
-            tpsDisplay.textContent = `TPS: ${tps}`;
-            timeTakenDisplay.textContent = `Time Taken: ${duration.toFixed(2)}s`;
-
-            const botTimestamp = document.createElement("div");
-            botTimestamp.className = "timestamp";
-            botTimestamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            botContentDiv.appendChild(botTimestamp);
-
-            const copyBtn = document.createElement("button");
-            copyBtn.textContent = "Copy";
-            copyBtn.className = "copy-btn";
-            copyBtn.onclick = () => {
-                navigator.clipboard.writeText(botReply);
-                showNotification("Message copied to clipboard!");
-            };
-            botContentDiv.appendChild(copyBtn);
-
-            const deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "Delete";
-            deleteBtn.className = "delete-msg-btn";
-            deleteBtn.onclick = () => {
-                botMessageDiv.remove();
-                const chat = chatHistory.find((c) => c.id === currentChatId);
-                if (chat) {
-                    chat.messages = chat.messages.filter((m) => m.content !== botReply);
-                }
-            };
-            botContentDiv.appendChild(deleteBtn);
-
-            chatHistory
-                .find((c) => c.id === currentChatId)
-                .messages.push({
-                    role: "assistant",
-                    content: botReply,
-                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-
+            await streamAndDisplayBotResponse(response, startTime);
             await generateChatTitle();
-
             updateChatHistory();
             showRegenerateButton();
         } catch (error) {
@@ -430,15 +342,133 @@ async function sendMessage(isRegenerating = false) {
                 "I apologize, but I'm having trouble connecting. Please try again later."
             );
         } finally {
-            isAssistantResponding = false;
-            sendButton.classList.remove("loading");
-            userInput.disabled = false;
-            sendButton.disabled = false;
-            regenerateBtn.disabled = false;
-            userInput.focus();
+            enableInput();
         }
     }
 }
+
+function appendUserMessage(userMessage) {
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    appendMessage("user", userMessage, timestamp);
+
+    let currentChat = chatHistory.find((c) => c.id === currentChatId);
+    if (!currentChat) {
+        currentChat = {
+            id: currentChatId,
+            messages: [],
+            title: null
+        };
+        chatHistory.push(currentChat);
+    }
+    currentChat.messages.push({
+        role: "user",
+        content: userMessage,
+        timestamp
+    });
+}
+
+function disableInput() {
+    userInput.disabled = true;
+    sendButton.disabled = true;
+    sendButton.classList.add("loading");
+    regenerateBtn.disabled = true;
+}
+
+function enableInput() {
+    isAssistantResponding = false;
+    sendButton.classList.remove("loading");
+    userInput.disabled = false;
+    sendButton.disabled = false;
+    regenerateBtn.disabled = false;
+    userInput.focus();
+}
+
+async function streamAndDisplayBotResponse(response, startTime) {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let botReply = "";
+    const botMessageDiv = createBotMessageDiv();
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+            break;
+        }
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+        for (const line of lines) {
+            if (line.startsWith('data: ')) {
+                const jsonData = line.slice(6);
+                if (jsonData === '[DONE]') break;
+
+                try {
+                    const parsedData = JSON.parse(jsonData);
+                    if (parsedData.choices && parsedData.choices[0].delta && parsedData.choices[0].delta.content) {
+                        const content = parsedData.choices[0].delta.content;
+                        botReply += content;
+                        updateBotMessageContent(botMessageDiv, botReply);
+                    }
+                } catch (error) {
+                    console.warn("Failed to parse JSON:", jsonData, error);
+                }
+            }
+        }
+    }
+    finalizeBotMessage(botMessageDiv, botReply, startTime);
+}
+
+function createBotMessageDiv() {
+    const botMessageDiv = document.createElement("div");
+    botMessageDiv.className = "message bot-message";
+    const botIcon = document.createElement("div");
+    botIcon.className = "profile-icon";
+    botIcon.style.backgroundImage = "url('https://i.imgur.com/EN1RnD2.png')";
+    botMessageDiv.appendChild(botIcon);
+
+    const botContentDiv = document.createElement("div");
+    botContentDiv.className = "message-content";
+    botMessageDiv.appendChild(botContentDiv);
+    chatArea.appendChild(botMessageDiv);
+    return botMessageDiv;
+}
+
+function updateBotMessageContent(botMessageDiv, botReply) {
+    const botContentDiv = botMessageDiv.querySelector(".message-content");
+    botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function finalizeBotMessage(botMessageDiv, botReply, startTime) {
+    const botContentDiv = botMessageDiv.querySelector(".message-content");
+    botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
+    addCopyButtonToCodeBlocks();
+    chatArea.scrollTop = chatArea.scrollHeight;
+
+    const endTime = Date.now();
+    const duration = (endTime - startTime) / 1000;
+    const wordCount = botReply.split(/\s+/).length;
+    const tps = Math.round(wordCount / duration);
+
+    tpsDisplay.textContent = `TPS: ${tps}`;
+    timeTakenDisplay.textContent = `Time Taken: ${duration.toFixed(2)}s`;
+
+    const botTimestamp = document.createElement("div");
+    botTimestamp.className = "timestamp";
+    botTimestamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    botContentDiv.appendChild(botTimestamp);
+    botContentDiv.appendChild(createCopyMessageButton(botReply));
+    botContentDiv.appendChild(createDeleteMessageButton(botMessageDiv, botReply));
+
+    chatHistory
+        .find((c) => c.id === currentChatId)
+        .messages.push({
+            role: "assistant",
+            content: botReply,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+}
+
 function showSettings() {
     console.log("Settings button clicked");
 }
