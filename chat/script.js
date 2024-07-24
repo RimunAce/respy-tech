@@ -31,23 +31,28 @@ function startNewChat() {
 function updateChatHistory() {
     chatHistoryEl.innerHTML = "";
     chatHistory.forEach((chat, index) => {
-        const li = document.createElement("li");
-        li.className = "chat-history-item";
-        li.dataset.id = chat.id;
-
-        const chatTitleElement = document.createElement("span");
-        chatTitleElement.className = "chat-title";
-        chatTitleElement.textContent = chat.title || `Chat ${index + 1}`;
-        chatTitleElement.onclick = () => loadChat(chat.id);
-        li.appendChild(chatTitleElement);
-
-        const deleteBtn = createDeleteButton(chat.id, li);
-        li.appendChild(deleteBtn);
-
+        const li = createChatHistoryItem(chat, index);
         chatHistoryEl.appendChild(li);
     });
 
     initSortable();
+}
+
+function createChatHistoryItem(chat, index) {
+    const li = document.createElement("li");
+    li.className = "chat-history-item";
+    li.dataset.id = chat.id;
+
+    const chatTitleElement = document.createElement("span");
+    chatTitleElement.className = "chat-title";
+    chatTitleElement.textContent = chat.title || `Chat ${index + 1}`;
+    chatTitleElement.onclick = () => loadChat(chat.id);
+    li.appendChild(chatTitleElement);
+
+    const deleteBtn = createDeleteButton(chat.id, li);
+    li.appendChild(deleteBtn);
+
+    return li;
 }
 
 function createDeleteButton(chatId, listItem) {
@@ -87,16 +92,12 @@ function initSortable() {
             const newIndex = evt.newIndex;
             const chatId = itemEl.dataset.id;
             
-            // Find the chat in the chatHistory array
             const chatIndex = chatHistory.findIndex(chat => chat.id === chatId);
             if (chatIndex !== -1) {
-                // Remove the chat from its old position
                 const [chat] = chatHistory.splice(chatIndex, 1);
-                // Insert the chat at its new position
                 chatHistory.splice(newIndex, 0, chat);
             }
             
-            // Update the chat history display
             updateChatHistory();
         }
     });
@@ -134,26 +135,7 @@ function addCopyButtonToCodeBlocks() {
 
     codeBlocks.forEach((block) => {
         if (!block.querySelector('.copy-code-btn')) {
-            const button = document.createElement('button');
-            button.className = 'copy-code-btn';
-            button.textContent = 'Copy';
-            button.style.zIndex = '1000';
-            button.style.display = 'block';
-
-            button.addEventListener('click', function() {
-                const code = block.querySelector('code').textContent;
-                navigator.clipboard.writeText(code).then(() => {
-                    showNotification('Code copied to clipboard!');
-                    button.textContent = 'Copied!';
-                    setTimeout(() => {
-                        button.textContent = 'Copy';
-                    }, 2000);
-                }, (err) => {
-                    console.error('Failed to copy code: ', err);
-                    showNotification('Failed to copy code');
-                });
-            });
-
+            const button = createCopyCodeButton(block);
             block.insertBefore(button, block.firstChild);
             newButtonsAdded++;
         }
@@ -162,6 +144,30 @@ function addCopyButtonToCodeBlocks() {
     if (newButtonsAdded > 0) {
         console.log(`Added ${newButtonsAdded} new copy button(s) to code blocks`);
     }
+}
+
+function createCopyCodeButton(block) {
+    const button = document.createElement('button');
+    button.className = 'copy-code-btn';
+    button.textContent = 'Copy';
+    button.style.zIndex = '1000';
+    button.style.display = 'block';
+
+    button.addEventListener('click', function() {
+        const code = block.querySelector('code').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            showNotification('Code copied to clipboard!');
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }, (err) => {
+            console.error('Failed to copy code: ', err);
+            showNotification('Failed to copy code');
+        });
+    });
+
+    return button;
 }
 
 function appendMessage(role, content, timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) {
@@ -179,19 +185,9 @@ function appendMessage(role, content, timestamp = new Date().toLocaleTimeString(
 
     messageDiv.appendChild(contentDiv);
 
-    // Add copy button to code blocks
     contentDiv.querySelectorAll('pre code').forEach((block) => {
         hljs.highlightBlock(block);
-
-        const copyBtn = document.createElement("button");
-        copyBtn.textContent = "Copy";
-        copyBtn.className = "copy-code-btn";
-        copyBtn.style.backgroundColor = "#4CAF50"; // Green background
-        copyBtn.onclick = () => {
-            navigator.clipboard.writeText(block.textContent);
-            showNotification("Code copied to clipboard!");
-        };
-
+        const copyBtn = createCopyCodeButton(block.parentNode);
         block.parentNode.insertBefore(copyBtn, block);
     });
 
@@ -208,12 +204,10 @@ function appendMessage(role, content, timestamp = new Date().toLocaleTimeString(
     chatArea.appendChild(messageDiv);
     chatArea.scrollTop = chatArea.scrollHeight;
 
-    // Highlight code blocks
     contentDiv.querySelectorAll('pre code').forEach((block) => {
         hljs.highlightBlock(block);
     });
 
-    // Add copy buttons after highlighting
     addCopyButtonToCodeBlocks();
 
     if (role === "assistant") {
@@ -498,43 +492,47 @@ function showNotification(message) {
     }, 3000);
 }
 
-userInput.addEventListener("keypress", function(event) {
+function handleUserInput(event) {
     if (event.shiftKey && event.key === " ") {
         event.preventDefault();
         const cursorPos = userInput.selectionStart;
         userInput.value = userInput.value.slice(0, cursorPos) + "\n" + userInput.value.slice(cursorPos);
         userInput.selectionStart = userInput.selectionEnd = cursorPos + 1;
-    }
-
-    if (!event.shiftKey && event.key === "Enter") {
+    } else if (!event.shiftKey && event.key === "Enter") {
         event.preventDefault();
         sendMessage();
     }
-});
+}
 
-sendButton.addEventListener("click", () => {
+function handleSendButtonClick() {
     if (isAssistantResponding) {
         showNotification("Response is still ongoing.");
-        return;
     } else {
         sendMessage();
     }
-});
+}
 
-document.getElementById("newChatBtn").addEventListener("click", () => {
+function handleNewChatButtonClick() {
     if (isAssistantResponding) {
         showNotification("Please wait for the current response to finish before starting a new chat.");
     } else {
         startNewChat();
     }
-});
+}
+
+// Event Listeners
+userInput.addEventListener("keypress", handleUserInput);
+sendButton.addEventListener("click", handleSendButtonClick);
+document.getElementById("newChatBtn").addEventListener("click", handleNewChatButtonClick);
 
 document.addEventListener('DOMContentLoaded', (event) => {
     addCopyButtonToCodeBlocks();
 });
 
+// Initialize
 startNewChat();
 
+// MutationObserver setup
 const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
