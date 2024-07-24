@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
         convoai: 'https://api.convoai.tech/v1/models',
         shardai: 'https://shard-ai.xyz/v1/models',
         zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
-        shadowjourney: 'https://shadowjourney.xyz/v1/models'
+        shadowjourney: 'https://shadowjourney.xyz/v1/models',
+        shuttleai: 'https://api.shuttleai.app/v1/models'
     };
 
     const apiDescriptions = {
@@ -15,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
         convoai: "Website: https://convoai.tech/",
         shardai: "Website: https://shard-ai.xyz/",
         zukijourney: "Discord: https://discord.gg/zukijourney",
-        shadowjourney: "Website: https://shadowjourney.xyz/"
+        shadowjourney: "Website: https://shadowjourney.xyz/",
+        shuttleai: 'Website: https://shuttleai.app'
     };
 
     async function fetchModels(apiProvider) {
@@ -98,6 +100,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p>Owned By: ${model.owned_by}</p>
                     <p>Object: ${model.object}</p>
                     <p>Endpoint: <a href="${model.endpoint.replace('https://shadowjourney.xyz/', '')}" target="_blank">${model.endpoint.replace('https://shadowjourney.xyz/', '')}</a></p>
+                `;
+                break;
+            case 'shuttleai':
+                content += `
+                    <p>Cost: ${model.cost ? model.cost : "N/A"}/req</p>
+                    <p>Model: ${model.object}</p>
+                    <p>Premium: ${model.premium ? model.premium : "N/A"}</p>
+                    <p>Owned: ${model.owned_by ? model.owned_by : "N/A"}</p>
+
                 `;
                 break;
         }
