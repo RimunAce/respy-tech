@@ -2,7 +2,7 @@ const axios = require('axios');
 
 exports.handler = async (event) => {
   const { messages } = JSON.parse(event.body);
-  const openAiKey = process.env.groqApiKey;
+  const openAiKey = process.env.apiKey;
 
   if (!openAiKey) {
     return {
@@ -13,9 +13,9 @@ exports.handler = async (event) => {
 
   try {
     const response = await axios.post(
-      'https://api.groq.com/openai/v1/chat/completions',
+      'https://fresedgpt.space/v1/chat/completions',
       {
-        model: "llama-3.1-70b-versatile",
+        model: "gpt-4o",
         messages: [
           {
             role: "system",
