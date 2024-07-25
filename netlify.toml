@@ -1,5 +1,6 @@
 [build]
-  functions = "netlify/functions"
+  functions = "src/netlify/functions"
+  publish = "src"  # Specify the folder containing your static site files
 
 [functions]
   node_bundler = "esbuild"

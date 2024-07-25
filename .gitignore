@@ -1,13 +1,36 @@
-# Ignore
+# Ignore environment variables
 .env
 
 # Local Netlify folder
 .netlify/
 
+# Build output
+/dist/
+build/
+
 # Git directory
 .git/
+
+# Node.js packages
 node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Coverage directory for test results 
+coverage/
+
+# Other temporary files
+*.log
+*.tmp
+*~

@@ -6,7 +6,7 @@ exports.handler = async function(event, context) {
   
   for (const func of functions) {
     await new Promise((resolve, reject) => {
-      const req = https.get(`${process.env.URL}/.netlify/functions/${func}`, (res) => {
+      const req = https.get(`https://respy.tech/.netlify/functions/${func}`, (res) => {
         res.on('data', () => {});
         res.on('end', resolve);
       });

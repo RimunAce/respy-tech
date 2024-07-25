@@ -1,8 +1,8 @@
 # 🤖 Respy.Tech
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/d44acd85-173f-495e-bb6a-9288cfac1932/deploy-status)](https://app.netlify.com/sites/respy/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d44acd85-173f-495e-bb6a-9288cfac1932/deploy-status)](https://respy.tech/)
 
-![Respy.Tech](https://respy.tech/shikanoko.png)
+![Respy.Tech](https://respy.tech/images/shikanoko.png)
 
 Welcome to Respy.Tech, a place for me to dump whatever I created with AI! (Shika Shika Shika)
 

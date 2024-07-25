@@ -9,7 +9,7 @@ exports.handler = async function(event, context) {
     }
 
     const { messages } = JSON.parse(event.body);
-    console.log("Received messages:", JSON.stringify(messages));
+    // console.log("Received messages:", JSON.stringify(messages));
 
     const data = JSON.stringify({
         model: "gpt-4o-mini",
@@ -23,20 +23,20 @@ exports.handler = async function(event, context) {
     });
 
     const options = {
-        hostname: 'api.openai.com',
+        hostname: 'shadowjourney.us.to',
         path: '/v1/chat/completions',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.openAiKey}`
+            'Authorization': `Bearer ${process.env.apiKey2}`
         }
     };
 
-    console.log("Sending request to OpenAI with options:", JSON.stringify(options));
+    // console.log("Sending request to OpenAI with options:", JSON.stringify(options));
 
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
-            console.log("Received response from OpenAI with status:", res.statusCode);
+            // console.log("Received response from OpenAI with status:", res.statusCode);
             
             let responseBody = '';
 

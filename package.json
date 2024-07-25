@@ -1,5 +1,16 @@
 {
+  "name": "respy-tech",
+  "version": "1.1.0",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "esbuild src/index.html --bundle --outdir=dist",
+    "start": "netlify dev" 
+  },
   "dependencies": {
     "axios": "^1.7.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.14.0" 
   }
 }
