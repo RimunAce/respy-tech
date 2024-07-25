@@ -2,7 +2,7 @@ const axios = require('axios');
 
 exports.handler = async (event) => {
   const { messages } = JSON.parse(event.body);
-  const openAiKey = process.env.apiKey;
+  const openAiKey = process.env.apiKey2;
 
   if (!openAiKey) {
     return {
@@ -13,9 +13,9 @@ exports.handler = async (event) => {
 
   try {
     const response = await axios.post(
-      'https://fresedgpt.space/v1/chat/completions',
+      process.env.apiEndpoint2,
       {
-        model: "gpt-4o",
+        model: "meta-llama/Meta-Llama-3.1-405B-Instruct",
         messages: [
           {
             role: "system",
