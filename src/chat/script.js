@@ -313,22 +313,7 @@ async function sendMessage(isRegenerating = false) {
         isAssistantResponding = true;
 
         try {
-            const startTime = Date.now();
-
-            const response = await fetch('/.netlify/functions/chat-generateMessage', {
-                method: 'POST',
-                body: JSON.stringify({
-                    messages: chatHistory.find((c) => c.id === currentChatId).messages
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            await streamAndDisplayBotResponse(response, startTime);
-            await generateChatTitle();
-            updateChatHistory();
-            showRegenerateButton();
+            await fetchAssistantResponse(userMessage);
         } catch (error) {
             console.error("Error:", error);
             appendMessage(
@@ -339,6 +324,28 @@ async function sendMessage(isRegenerating = false) {
             enableInput();
         }
     }
+}
+
+async function fetchAssistantResponse(userMessage) {
+    const startTime = Date.now();
+
+    const response = await fetch('/.netlify/functions/chat-generateMessage', {
+        method: 'POST',
+        body: JSON.stringify({
+            messages: chatHistory.find((c) => c.id === currentChatId).messages
+        }),
+    });
+
+    console.log("Response from fetch: ", response);
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    await streamAndDisplayBotResponse(response, startTime);
+    await generateChatTitle();
+    updateChatHistory();
+    showRegenerateButton();
 }
 
 function appendUserMessage(userMessage) {
@@ -381,35 +388,67 @@ async function streamAndDisplayBotResponse(response, startTime) {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let botReply = "";
+    let hasValidContent = false;
     const botMessageDiv = createBotMessageDiv();
 
+    try {
+        await processStream(reader, decoder, (content) => {
+            botReply += content;
+            hasValidContent = true;
+            updateBotMessageContent(botMessageDiv, botReply);
+        });
+    } catch (error) {
+        console.error("Error reading stream:", error);
+    }
+
+    finalizeBotMessage(botMessageDiv, botReply, startTime, hasValidContent);
+}
+
+async function processStream(reader, decoder, onContent) {
+    let buffer = '';
     while (true) {
         const { done, value } = await reader.read();
-        if (done) {
-            break;
-        }
+        if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
-        for (const line of lines) {
-            if (line.startsWith('data: ')) {
-                const jsonData = line.slice(6);
-                if (jsonData === '[DONE]') break;
+        buffer += chunk;
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
 
-                try {
-                    const parsedData = JSON.parse(jsonData);
-                    if (parsedData.choices && parsedData.choices[0].delta && parsedData.choices[0].delta.content) {
-                        const content = parsedData.choices[0].delta.content;
-                        botReply += content;
-                        updateBotMessageContent(botMessageDiv, botReply);
-                    }
-                } catch (error) {
-                    console.warn("Failed to parse JSON:", jsonData, error);
-                }
-            }
+        lines.forEach(line => processLine(line, onContent));
+    }
+    if (buffer) processLine(buffer, onContent);
+}
+
+function processChunk(chunk, onContent) {
+    const lines = chunk.split('\n');
+    lines.forEach(line => processLine(line, onContent));
+}
+
+function processLine(line, onContent) {
+    if (!line.startsWith('data: ')) return;
+
+    const jsonData = line.slice(6).trim();
+    if (jsonData === '[DONE]') return;
+
+    try {
+        const parsedData = JSON.parse(jsonData);
+        const content = extractContent(parsedData);
+        if (content) onContent(content);
+    } catch (error) {
+        console.warn("Failed to parse JSON:", jsonData, error);
+    }
+}
+
+function extractContent(parsedData) {
+    const choices = parsedData.choices;
+    if (Array.isArray(choices) && choices.length > 0) {
+        const delta = choices[0].delta;
+        if (delta && delta.content) {
+            return delta.content;  // Remove trim() to preserve spaces
         }
     }
-    finalizeBotMessage(botMessageDiv, botReply, startTime);
+    return "";
 }
 
 function createBotMessageDiv() {
@@ -433,9 +472,14 @@ function updateBotMessageContent(botMessageDiv, botReply) {
     chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-function finalizeBotMessage(botMessageDiv, botReply, startTime) {
+function finalizeBotMessage(botMessageDiv, botReply, startTime, hasValidContent) {
     const botContentDiv = botMessageDiv.querySelector(".message-content");
+    
+    botReply = hasValidContent ? botReply.trim() : "Sorry, the assistant did not generate a valid reply.";
+    if (botReply === "") botReply = "The assistant generated an empty response.";
+
     botContentDiv.innerHTML = DOMPurify.sanitize(marked.parse(botReply));
+
     addCopyButtonToCodeBlocks();
     chatArea.scrollTop = chatArea.scrollHeight;
 
@@ -444,16 +488,27 @@ function finalizeBotMessage(botMessageDiv, botReply, startTime) {
     const wordCount = botReply.split(/\s+/).length;
     const tps = Math.round(wordCount / duration);
 
+    updateMetrics(tps, duration);
+    appendTimestampAndButtons(botContentDiv, botReply);
+    logChatHistory(botReply);
+}
+
+function updateMetrics(tps, duration) {
     tpsDisplay.textContent = `TPS: ${tps}`;
     timeTakenDisplay.textContent = `Time Taken: ${duration.toFixed(2)}s`;
+}
 
+function appendTimestampAndButtons(botContentDiv, botReply) {
     const botTimestamp = document.createElement("div");
     botTimestamp.className = "timestamp";
     botTimestamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     botContentDiv.appendChild(botTimestamp);
+    
     botContentDiv.appendChild(createCopyMessageButton(botReply));
-    botContentDiv.appendChild(createDeleteMessageButton(botMessageDiv, botReply));
+    botContentDiv.appendChild(createDeleteMessageButton(botContentDiv.parentNode, botReply));
+}
 
+function logChatHistory(botReply) {
     chatHistory
         .find((c) => c.id === currentChatId)
         .messages.push({
@@ -461,6 +516,8 @@ function finalizeBotMessage(botMessageDiv, botReply, startTime) {
             content: botReply,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
+
+    console.log("Final bot message logged in chat history:", botReply);
 }
 
 function showSettings() {
