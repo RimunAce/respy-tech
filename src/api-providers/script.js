@@ -96,10 +96,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
                 break;
             case 'shadowjourney':
+                let cost = ""
+                if (model.cost === "free") {
+                    cost = "False"
+                } else if (model.cost === "premium") {
+                    cost = "True"
+                } else {
+                    cost = "False"
+                }
+
                 content += `
                     <p>Owned By: ${model.owned_by}</p>
                     <p>Object: ${model.object}</p>
-                    <p>Endpoint: <a href="${model.endpoint.replace('https://shadowjourney.xyz/', '')}" target="_blank">${model.endpoint.replace('https://shadowjourney.xyz/', '')}</a></p>
+                    <p>Premium: ${cost}</p>
                 `;
                 break;
             case 'shuttleai':
