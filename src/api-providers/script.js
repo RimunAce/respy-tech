@@ -59,71 +59,57 @@ document.addEventListener('DOMContentLoaded', function() {
         const modelDetailsElement = document.createElement('div');
         modelDetailsElement.className = 'model-details';
 
-        let content = '';
+        const contentGenerator = getContentGenerator(apiProvider);
+        const content = contentGenerator(model);
 
-        switch(apiProvider) {
-            case 'fresedgpt':
-                content += `
-                    <p>Owner: ${model.owned_by}</p>
-                    <p>Token Coefficient: ${model.token_coefficient}</p>
-                    <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
-                `;
-                break;
-            case 'convoai':
-                content += `
-                    <p>Name: ${model.name}</p>
-                    <p>Max Context: ${model.knowledge.max_context}</p>
-                    <p>Input Cost: ${model.cost.input_tokens}/1k tokens</p>
-                    <p>Output Cost: ${model.cost.output_tokens}/1k tokens</p>
-                    <p>Scope: ${model.scope}</p>
-                    <p>Membership: ${model.membership.join(', ')}</p>
-                `;
-                break;
-            case 'shardai':
-                content += `
-                    <p>Owner: ${model.owned_by}</p>
-                    <p>Type: ${model.type}</p>
-                    <p>Cost: ${model.cost}/1k tokens</p>
-                    <p>Access: ${Object.entries(model.access).filter(([k, v]) => v).map(([k]) => k).join(', ')}</p>
-                `;
-                break;
-            case 'zukijourney':
-                content += `
-                    <p>Owner: ${model.owned_by}</p>
-                    <p>Type: ${model.type}</p>
-                    <p>Supports Vision: ${model.supports_vision ? 'Yes' : 'No'}</p>
-                    <p>Is Free: ${model.is_free ? 'Yes' : 'No'}</p>
-                `;
-                break;
-            case 'shadowjourney':
-                let cost = ""
-                if (model.cost === "free") {
-                    cost = "False"
-                } else if (model.cost === "premium") {
-                    cost = "True"
-                } else {
-                    cost = "False"
-                }
+        modelDetailsElement.innerHTML = content;
+        return modelDetailsElement;
+    }
 
-                content += `
+    function getContentGenerator(apiProvider) {
+        const contentGenerators = {
+            fresedgpt: (model) => `
+                <p>Owner: ${model.owned_by}</p>
+                <p>Token Coefficient: ${model.token_coefficient}</p>
+                <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
+            `,
+            convoai: (model) => `
+                <p>Name: ${model.name}</p>
+                <p>Max Context: ${model.knowledge.max_context}</p>
+                <p>Input Cost: ${model.cost.input_tokens}/1k tokens</p>
+                <p>Output Cost: ${model.cost.output_tokens}/1k tokens</p>
+                <p>Scope: ${model.scope}</p>
+                <p>Membership: ${model.membership.join(', ')}</p>
+            `,
+            shardai: (model) => `
+                <p>Owner: ${model.owned_by}</p>
+                <p>Type: ${model.type}</p>
+                <p>Cost: ${model.cost}/1k tokens</p>
+                <p>Access: ${Object.entries(model.access).filter(([k, v]) => v).map(([k]) => k).join(', ')}</p>
+            `,
+            zukijourney: (model) => `
+                <p>Owner: ${model.owned_by}</p>
+                <p>Type: ${model.type}</p>
+                <p>Supports Vision: ${model.supports_vision ? 'Yes' : 'No'}</p>
+                <p>Is Free: ${model.is_free ? 'Yes' : 'No'}</p>
+            `,
+            shadowjourney: (model) => {
+                const cost = model.cost === "free" ? "False" : model.cost === "premium" ? "True" : "False";
+                return `
                     <p>Owned By: ${model.owned_by}</p>
                     <p>Object: ${model.object}</p>
                     <p>Premium: ${cost}</p>
                 `;
-                break;
-            case 'shuttleai':
-                content += `
-                    <p>Cost: ${model.cost ? model.cost : "N/A"}/req</p>
-                    <p>Model: ${model.object}</p>
-                    <p>Premium: ${model.premium ? model.premium : "N/A"}</p>
-                    <p>Owned: ${model.owned_by ? model.owned_by : "N/A"}</p>
+            },
+            shuttleai: (model) => `
+                <p>Cost: ${model.cost ? model.cost : "N/A"}/req</p>
+                <p>Model: ${model.object}</p>
+                <p>Premium: ${model.premium ? model.premium : "N/A"}</p>
+                <p>Owned: ${model.owned_by ? model.owned_by : "N/A"}</p>
+            `
+        };
 
-                `;
-                break;
-        }
-
-        modelDetailsElement.innerHTML = content;
-        return modelDetailsElement;
+        return contentGenerators[apiProvider] || (() => '');
     }
 
     function createCopyButton(model) {

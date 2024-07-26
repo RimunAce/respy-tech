@@ -31,11 +31,13 @@ body, html {
     z-index: 1;
 }
 
+.header {
+    margin-bottom: 20px;
+}
+
 .logo {
     font-size: clamp(2rem, 5vw, 4rem);
     font-weight: bold;
-    margin-bottom: 20px;
-    position: relative;
     user-select: none;
     white-space: nowrap;
 }
@@ -77,11 +79,12 @@ body, html {
     opacity: 0;
 }
 
-.cta-button, .discord-button {
+.cta-button,
+.discord-button {
     background-color: rgba(255, 255, 255, 0.1);
     color: var(--text-color);
     border: none;
-    padding: 12px 24px;
+    padding: 1rem 2rem;
     font-size: clamp(1rem, 1.2vw, 1.5rem);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -97,12 +100,14 @@ body, html {
     user-select: none;
 }
 
-.cta-button:hover, .discord-button:hover {
+.cta-button:hover,
+.discord-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
 
-.cta-button::before, .discord-button::before {
+.cta-button::before,
+.discord-button::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -113,23 +118,20 @@ body, html {
     mix-blend-mode: overlay;
 }
 
-.cta-button:hover::before, .discord-button:hover::before {
+.cta-button:hover::before,
+.discord-button:hover::before {
     opacity: 0.7;
     animation: moveGradient 2s linear infinite;
 }
 
-.cta-button:hover span, .discord-button:hover span {
+.cta-button:hover span,
+.discord-button:hover span {
     text-shadow: 0 0 5px var(--text-color), 0 0 10px var(--text-color);
 }
 
 @keyframes moveGradient {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
-}
-
-.cta-button span, .discord-button span, .discord-button img {
-    position: relative;
-    z-index: 2;
 }
 
 .discord-button img {
@@ -146,7 +148,11 @@ body, html {
     overflow: hidden;
 }
 
-.star, .planet, .asteroid, .galaxy, .shikanoko {
+.star,
+.planet,
+.asteroid,
+.galaxy,
+.shikanoko {
     position: absolute;
     background-color: var(--text-color);
 }

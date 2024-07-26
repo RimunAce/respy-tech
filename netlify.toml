@@ -1,6 +1,6 @@
 [build]
   functions = "src/netlify/functions"
-  publish = "src"  # Specify the folder containing your static site files
+  publish = "src"
 
 [functions]
   node_bundler = "esbuild"
@@ -19,3 +19,4 @@
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    x-robots-tag = "index"
