@@ -451,15 +451,16 @@ textarea {
     border-radius: 20px;
     padding: 10px 20px;
     font-size: 14px;
-    cursor: pointer;
+    cursor: default;
     display: flex;
     align-items: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 10;
     width: 150px;
     height: 40px;
     justify-content: center;
+    pointer-events: none;
 }
 
 .regenerate-btn:hover {
@@ -468,6 +469,12 @@ textarea {
 
 .regenerate-btn.visible {
     opacity: 1;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.regenerate-btn.visible:hover {
+    transform: translateX(-50%) scale(1.05);
 }
 
 .regenerate-btn .loading-icon {
