@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
         shardai: 'https://shard-ai.xyz/v1/models',
         zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
         shadowjourney: 'https://shadowjourney.xyz/v1/models',
-        shuttleai: 'https://api.shuttleai.app/v1/models'
+        shuttleai: 'https://api.shuttleai.app/v1/models',
+        electronhub: 'https://api.electronhub.top/v1/models' // Added Electron Hub endpoint
     };
 
     const apiDescriptions = {
@@ -17,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
         shardai: "Website: https://shard-ai.xyz/",
         zukijourney: "Discord: https://discord.gg/zukijourney",
         shadowjourney: "Website: https://shadowjourney.xyz/",
-        shuttleai: 'Website: https://shuttleai.app'
+        shuttleai: 'Website: https://shuttleai.app',
+        electronhub: 'Discord: https://discord.com/invite/k73Uw36p' // Added Electron Hub description
     };
 
     async function fetchModels(apiProvider) {
@@ -106,6 +108,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Model: ${model.object}</p>
                 <p>Premium: ${model.premium ? model.premium : "N/A"}</p>
                 <p>Owned: ${model.owned_by ? model.owned_by : "N/A"}</p>
+            `,
+            electronhub: (model) => `
+                <p>Object: ${model.object ? model.object : "N/A"}</p>
+                <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
+                <p>Max Tokens: ${model.tokens ? model.tokens : "N/A"}</p>
+                <p>Cost: ${model.cost ? model.cost : "N/A"}</p>
             `
         };
 
@@ -141,16 +149,28 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayModels(filter = '') {
         const modelContainer = document.getElementById('modelContainer');
         modelContainer.innerHTML = ''; // Clear previous content
-        const filteredModels = modelData.filter(model => 
-            model.id.toLowerCase().includes(filter.toLowerCase()) ||
-            JSON.stringify(model).toLowerCase().includes(filter.toLowerCase())
-        );
+        
+        const normalizedFilter = filter.toLowerCase().trim();
+        const filterWords = normalizedFilter.split(/\s+/);
+        
+        const filteredModels = modelData.filter(model => {
+            const modelString = JSON.stringify(model).toLowerCase();
+            return filterWords.every(word => modelString.includes(word));
+        });
         
         filteredModels.forEach((model, index) => {
             const modelBox = createModelBox(model, currentProvider);
             modelBox.style.animationDelay = `${index * 0.1}s`;
             modelContainer.appendChild(modelBox);
         });
+    
+        // Display a message if no models are found
+        if (filteredModels.length === 0) {
+            const noResultsMessage = document.createElement('div');
+            noResultsMessage.textContent = 'No models found matching your search.';
+            noResultsMessage.className = 'no-results-message';
+            modelContainer.appendChild(noResultsMessage);
+        }
     }
 
     document.getElementById('searchInput').addEventListener('input', (e) => {

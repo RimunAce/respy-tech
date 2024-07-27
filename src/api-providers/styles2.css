@@ -1,3 +1,4 @@
+/* Font Faces */
 @font-face {
     font-family: 'Roboto';
     src: url('../fonts/Roboto-Light.ttf') format('truetype');
@@ -38,6 +39,7 @@
     font-display: swap;
 }
 
+/* Global Styles */
 body, html {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -56,6 +58,7 @@ body, html {
     flex-grow: 1;
 }
 
+/* Typography */
 h1 {
     text-align: center;
     font-size: 3em;
@@ -71,11 +74,6 @@ h1 {
     -webkit-background-clip: text;
     color: transparent;
     animation: glowingEffect 5s infinite;
-}
-
-@keyframes glowingEffect {
-    0%, 100% { filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
-    50% { filter: drop-shadow(0 0 20px rgba(255,255,255,0.5)); }
 }
 
 .subtitle {
@@ -98,6 +96,7 @@ h1 {
     background: linear-gradient(90deg, transparent, #fff, transparent);
 }
 
+/* Search Container */
 .search-container {
     display: flex;
     justify-content: center;
@@ -139,23 +138,36 @@ h1 {
     cursor: pointer;
 }
 
+/* API Buttons */
 .api-buttons {
     display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .api-button {
-    padding: 10px 20px;
-    font-size: 1em;
+    width: 180px;
+    height: 40px;
+    padding: 8px 12px;
+    font-size: 0.9em;
     border: none;
-    border-radius: 25px;
+    border-radius: 20px;
     background-color: rgba(255,255,255,0.1);
     color: #fff;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 24px;
+    flex: 0 0 auto;
 }
 
 .api-button:hover {
@@ -175,11 +187,13 @@ h1 {
     font-style: italic;
 }
 
+/* Model Container */
 #modelContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
+    min-height: 400px;
+    padding-top: 20px;
 }
 
 .model-box {
@@ -192,13 +206,7 @@ h1 {
     transform: translateY(20px);
     animation: fadeInUp 0.5s ease forwards;
     position: relative;
-}
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    margin: 0 auto;
 }
 
 .model-box:hover {
@@ -222,6 +230,7 @@ h1 {
     margin: 5px 0;
 }
 
+/* Copy Button */
 .copy-button {
     position: absolute;
     top: 10px;
@@ -274,13 +283,29 @@ h1 {
     opacity: 1;
 }
 
+/* Loading and No Results */
 #loading {
     text-align: center;
     font-size: 1.2em;
     color: #fff;
     margin-bottom: 20px;
+    height: 1.5em;
+    line-height: 1.5em;
+    grid-column: 1 / -1;
+    position: absolute;
+    width: 100%;
+    left: 0;
 }
 
+.no-results-message {
+    text-align: center;
+    color: #fff;
+    font-size: 1.2em;
+    margin-top: 20px;
+    grid-column: 1 / -1;
+}
+
+/* Footer */
 footer {
     text-align: center;
     padding: 20px;
@@ -304,6 +329,7 @@ footer {
     margin-top: 10px;
 }
 
+/* Scroll to Top Button */
 #scrollToTop {
     position: fixed;
     bottom: 20px;
@@ -325,6 +351,19 @@ footer {
     background-color: rgba(255,255,255,0.3);
 }
 
+/* Animations */
+@keyframes glowingEffect {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+    50% { filter: drop-shadow(0 0 20px rgba(255,255,255,0.5)); }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -335,6 +374,19 @@ footer {
     to { opacity: 0; }
 }
 
+/* Media Queries */
+@media (max-width: 1023px) and (min-width: 768px) {
+    #modelContainer {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .model-box {
+        width: 100%;
+        max-width: 280px;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;
@@ -343,20 +395,37 @@ footer {
         font-size: 2em;
     }
     .api-buttons {
-        flex-direction: column;
-        align-items: center;
+        gap: 5px;
     }
     .api-button {
-        width: 80%;
-        margin-bottom: 10px;
+        width: calc(20% - 4px);
+        font-size: 0.8em;
+        padding: 6px 10px;
+        height: 36px;
+        line-height: 22px;
+    }
+    #modelContainer {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
     }
     .model-box {
-        width: 90%;
+        width: 100%;
+        max-width: 280px;
     }
     footer {
         text-align: center;
     }
     .contact-info {
         margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .api-button {
+        width: calc(33.33% - 4px);
+        font-size: 0.7em;
+        padding: 4px 8px;
+        height: 32px;
+        line-height: 20px;
     }
 }
