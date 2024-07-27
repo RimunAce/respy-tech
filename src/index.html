@@ -13,12 +13,64 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://respy.tech">
     <link rel="stylesheet" href="styles.css">
+    <link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" defer></script>
     <script src="main.js" defer></script>
 
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://scripts.simpleanalyticscdn.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://downloadr2.apkmirror.com https://queue.simpleanalyticscdn.com; connect-src 'self'; form-action 'self'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <style>
+        /* Critical CSS inline */
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .logo {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: bold;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            opacity: 0;
+        }
+        .cta-button, .discord-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: clamp(1rem, 1.2vw, 1.5rem);
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
     <div class="animated-bg"></div>

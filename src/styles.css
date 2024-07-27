@@ -52,6 +52,7 @@ body, html {
     margin-right: 0.3em; /* Adjust this value for desired spacing */
 }
 
+/* Non-critical styles */
 .logo span::before,
 .logo span::after {
     content: attr(data-text);
@@ -63,12 +64,12 @@ body, html {
 }
 
 .logo span::before {
-    color: var(--primary-color);
+    color: #ff00de;
     z-index: -2;
 }
 
 .logo span::after {
-    color: var(--secondary-color);
+    color: #00ffff;
     z-index: -1;
 }
 
@@ -111,7 +112,7 @@ body, html {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+    background: linear-gradient(90deg, #ff00de, #00ffff, #ff00de);
     background-size: 200% 100%;
     opacity: 0;
     transition: opacity 0.5s;
@@ -138,7 +139,7 @@ body, html {
     width: 24px;
     height: 24px;
     margin-right: 8px;
-    filter: drop-shadow(0 0 2px var(--text-color));
+    filter: drop-shadow(0 0 2px #fff);
 }
 
 .animated-bg {

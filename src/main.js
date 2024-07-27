@@ -24,14 +24,13 @@ function animateObject(obj, speedMultiplier, className) {
     let currentTop = parseFloat(obj.style.top);
     
     function move() {
-        currentTop += speed;
-        if (currentTop > 100) {
-            currentTop = -5;
-        }
+        currentTop = updatePosition(currentTop, speed);
         obj.style.top = `${currentTop}%`;
+        if (currentTop <= -5) {
+            resetObjectPosition(obj, className);
+        }
         requestAnimationFrame(move);
     }
-    
     move();
 }
 
@@ -76,21 +75,6 @@ function createGalaxyStyle() {
     };
 }
 
-function animateObject(obj, speedMultiplier, className) {
-    const speed = (0.05 + Math.random() * 0.05) * speedMultiplier;
-    let currentTop = parseFloat(obj.style.top);
-    
-    function move() {
-        currentTop = updatePosition(currentTop, speed);
-        obj.style.top = `${currentTop}%`;
-        if (currentTop <= -5) {
-            resetObjectPosition(obj, className);
-        }
-        requestAnimationFrame(move);
-    }
-    move();
-}
-
 function updatePosition(currentTop, speed) {
     currentTop += speed;
     if (currentTop > 100) {
@@ -101,7 +85,7 @@ function updatePosition(currentTop, speed) {
 
 function resetObjectPosition(obj, className) {
     obj.style.left = `${Math.random() * 100}%`;
-    if (className === './images/shikanoko.png') {
+    if (className === 'shikanoko') {
         obj.style.display = Math.random() < 0.2 ? 'block' : 'none';
     }
 }
