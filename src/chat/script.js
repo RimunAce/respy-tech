@@ -377,16 +377,17 @@ const API = {
     
         try {
             const response = await API.fetchAssistantResponseFromAPI(userMessage);
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-    
-            let botReply = "";
             const botMessageDiv = UI.createBotMessageDiv();
+            let botReply = "";
     
-            await API.processStream(reader, decoder, (content) => {
-                botReply += content;
-                UI.updateBotMessageContent(botMessageDiv, botReply);
-            });
+            await API.processStream(
+                response.body.getReader(),
+                new TextDecoder(),
+                (content) => {
+                    botReply += content;
+                    UI.updateBotMessageContent(botMessageDiv, botReply);
+                }
+            );
     
             API.finalizeBotMessage(botMessageDiv, botReply, startTime);
             await API.generateChatTitle();
@@ -400,7 +401,7 @@ const API = {
     },
     
     fetchAssistantResponseFromAPI: async (userMessage) => {
-        const response = await fetch('https://faas-sgp1-18bc02ac.doserverless.co/api/v1/web/fn-9d095de4-62e3-4a1b-a290-261e62fc3e98/axios/chat-generateMessage', {
+        const response = await fetch('/.netlify/functions/chatProxy', {
             method: 'POST',
             body: JSON.stringify({
                 messages: State.chatHistory.find((c) => c.id === State.currentChatId).messages

@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+:root {
+    --bg-color: #000810;
+    --primary-color: #00ffff;
+    --secondary-color: #ff00ff;
+    --tertiary-color: #ffff00;
+    --text-color: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Orbitron', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+#update-log-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--text-color);
+}
+
+.update-log-toggle {
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.update-log-toggle:hover {
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+.update-log-toggle svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--primary-color);
+}
+
+.update-log-content {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 10px;
+    max-width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.update-log-content h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+.update-log-content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.update-log-content li {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.update-log-content li strong {
+    color: var(--secondary-color);
+}
+
+.hidden .update-log-content {
+    display: none;
+}
+
+/* Scrollbar styles */
+.update-log-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.update-log-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.update-log-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.update-log-content::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+#neural-constellation {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+#synaptic-web, #thought-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#cosmic-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-color) 0%, var(--secondary-color) 100%);
+    box-shadow: 0 0 50px var(--primary-color), 0 0 100px var(--secondary-color);
+    opacity: 0.8;
+    transition: all 0.5s ease;
+}
+
+#energy-field {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 0%, rgba(0, 255, 255, 0.1) 50%, transparent 100%);
+    opacity: 0.5;
+    animation: pulse 4s infinite alternate;
+}
+
+#ai-response {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 800px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    font-size: 18px;
+    text-align: center;
+    opacity: 0;
+    transition: all 0.5s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#status-indicator {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    color: var(--tertiary-color);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#thought-input {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    max-width: 600px;
+    padding: 15px 20px;
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    border-radius: 30px;
+    color: var(--text-color);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+#thought-input:focus {
+    outline: none;
+    box-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--secondary-color);
+    background: rgba(0, 255, 255, 0.2);
+    border-color: var(--primary-color);
+}
+
+.synapse-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+    100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.7; }
+}
+
+#welcome-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#welcome-text {
+    font-size: 3rem;
+    color: white;
+    opacity: 0;
+    user-select: none;
+}
+
+#constellation-text {
+    font-size: 4rem;
+    background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    opacity: 0;
+    user-select: none;
+    display: inline-block;
+}
+
+#audio-control {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#audio-control svg {
+    width: 30px;
+    height: 30px;
+    fill: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    #thought-input {
+        width: 90%;
+        font-size: 16px;
+    }
+
+    #ai-response {
+        width: 90%;
+        font-size: 16px;
+    }
+
+    #welcome-text {
+        font-size: 2rem;
+    }
+
+    #constellation-text {
+        font-size: 3rem;
+    }
+}
