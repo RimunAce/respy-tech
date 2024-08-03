@@ -20,3 +20,37 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     x-robots-tag = "index"
+
+[dev]
+  framework = "#custom"
+  command = "npm run start"
+  targetPort = 8000
+  port = 8888
+  publish = "src"
+  autoLaunch = true
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[functions."chat-generateMessage"]
+  included_files = ["src/netlify/functions/chat-generateMessage.js"]
+
+[functions."chat-generateTitle"]
+  included_files = ["src/netlify/functions/chat-generateTitle.js"]
+
+[functions."zenithProxy"]
+  included_files = ["src/netlify/functions/zenithProxy.js"]
+
+[functions."chatProxy"]
+  included_files = ["src/netlify/functions/chatProxy.js"]
+
+[functions."keepWarm"]
+  included_files = ["src/netlify/functions/keepWarm.js"]
+  schedule = "*/5 * * * *"

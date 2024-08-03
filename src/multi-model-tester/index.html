@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respy.Tech | LLM Multi-Model Comparison</title>
+    <link rel="icon" type="image/png" href="../images/shikanoko.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+    <link rel="stylesheet" href="../multi-model-tester/styles.css">
+    
+    <meta name="description" content="Compare multiple LLM models responses. Powered by ElectronHub API">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Respy.Tech | LLM Multi-Model Comparison">
+    <meta property="og:description" content="Compare multiple LLM models responses. Powered by ElectronHub API">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://respy.tech/multi-model-tester">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.electronhub.top; img-src 'self' https:; font-src 'self'; upgrade-insecure-requests;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+</head>
+<body class="bg-neo-gradient text-blue-100 min-h-screen flex flex-col font-sans antialiased">
+    <header class="bg-gray-900 p-6 neo-glow">
+        <h1 class="text-5xl font-extrabold text-center text-blue-300 tracking-wide float">LLM Multi Model Comparison</h1>
+        <p class="text-center text-blue-200 mt-2">Powered by ElectronHub API</p>
+    </header>
+    <main class="flex-grow container mx-auto p-8">
+        <div class="mb-8 bg-gray-800 p-6 rounded-lg neo-glow">
+            <textarea id="userInput" rows="4" class="w-full p-4 bg-gray-700 rounded-md text-blue-100 placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out" placeholder="Enter your message..."></textarea>
+            <div class="mt-4 flex items-center">
+                <div class="relative w-64 mr-4">
+                    <input type="text" id="modelSearch" class="w-full p-2 bg-gray-700 rounded-md text-blue-100 placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search models...">
+                    <div id="modelDropdown" class="hidden absolute z-10 w-full mt-1 bg-gray-800 rounded-md shadow-lg max-h-60 overflow-auto">
+                        <!-- Model options will be dynamically populated here -->
+                    </div>
+                </div>
+                <span id="selectedModelsCount" class="mr-4 text-blue-300">0/9 models selected</span>
+                <button id="submitBtn" class="px-6 py-3 bg-blue-600 rounded-md hover:bg-blue-700 transition-all duration-300 ease-in-out text-lg font-semibold transform hover:scale-105 hover:rotate-1">Submit</button>
+            </div>
+        </div>
+        <div id="loadingIndicator" class="hidden flex flex-col justify-center items-center my-8">
+            <div class="spinner w-20 h-20 border-8 border-blue-500 border-t-transparent rounded-full neo-glow"></div>
+            <p id="progressText" class="mt-4 text-blue-300 text-lg font-semibold">Processing... [0%]</p>
+        </div>
+        <div id="results" class="space-y-8"></div>
+    </main>
+    <footer class="bg-gray-900 p-4 text-center text-blue-300">
+        <p>&copy; 2024 Respire. All rights reserved | Powered by ElectronHub API</p>
+    </footer>
+    <script src="../multi-model-tester/script.js"></script>
+</body>
+</html>

@@ -4,11 +4,14 @@
   "main": "main.js",
   "license": "MIT",
   "scripts": {
-    "build": "esbuild src/index.html --bundle --outdir=dist",
-    "start": "netlify dev"
+    "build": "esbuild src/main.js --bundle --outfile=src/dist/bundle.js",
+    "start": "esbuild src/main.js --bundle --outfile=src/dist/bundle.js --servedir=src",
+    "dev": "netlify dev"
   },
   "dependencies": {
-    "axios": "^1.7.2"
+    "@netlify/blobs": "^8.0.0",
+    "axios": "^1.7.2",
+    "respy-tech": "file:"
   },
   "devDependencies": {
     "esbuild": "^0.14.0"

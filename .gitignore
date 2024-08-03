@@ -1,23 +1,23 @@
-# Ignore environment variables
+# Environment variables
 .env
+.env.*
 
-# Local Netlify folder
+# Netlify
 .netlify/
 
 # Build output
 /dist/
-build/
+/build/
+/out/
 
-# Git directory
-.git/
-
-# Node.js packages
-node_modules/
+# Dependencies
+/node_modules/
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
 # OS generated files
 .DS_Store
@@ -27,10 +27,23 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Coverage directory for test results 
-coverage/
+# Test coverage
+/coverage/
 
-# Other temporary files
-*.log
+# Temporary files
 *.tmp
 *~
+
+# Legacy Folder
+/legacy/
+
+# esbuild output
+/src/dist/
+
+# Cache directories
+.cache/
+.netlify/
+
+# Misc
+*.bak
+*.swp

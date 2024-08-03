@@ -96,16 +96,15 @@ function splitTextIntoSpans(elementId) {
     element.textContent = '';
     
     for (let i = 0; i < text.length; i++) {
-        if (text[i] === '|') continue; // Skip the spacing indicator
+        if (text[i] === '|') {
+            // Add a space element
+            element.appendChild(document.createTextNode(' '));
+            continue;
+        }
         
         const span = document.createElement('span');
         span.textContent = text[i];
         span.setAttribute('data-text', text[i]);
-        
-        // Add extra class for characters before the spacing indicator
-        if (i < text.length - 1 && text[i + 1] === '|') {
-            span.classList.add('space-after');
-        }
         
         element.appendChild(span);
     }

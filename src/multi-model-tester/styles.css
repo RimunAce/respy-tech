@@ -1,0 +1,153 @@
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.95); }
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(66, 153, 225, 0.5), 0 0 40px rgba(66, 153, 225, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(66, 153, 225, 0.7), 0 0 60px rgba(66, 153, 225, 0.5); }
+}
+.spinner {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.pulse {
+    animation: pulse 1s ease-in-out infinite;
+}
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+.neo-glow {
+    animation: glow 3s infinite;
+}
+.bg-neo-gradient {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+}
+.model-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* New styles for model dropdown and selection */
+#modelDropdown {
+    max-height: 200px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #4a5568 #2d3748;
+}
+
+#modelDropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+#modelDropdown::-webkit-scrollbar-track {
+    background: #2d3748;
+}
+
+#modelDropdown::-webkit-scrollbar-thumb {
+    background-color: #4a5568;
+    border-radius: 4px;
+}
+
+#modelDropdown div {
+    transition: background-color 0.2s ease;
+}
+
+#modelDropdown div:hover {
+    background-color: #4a5568;
+}
+
+#selectedModelsCount {
+    transition: all 0.3s ease;
+}
+
+#selectedModelsCount.warning {
+    color: #ed8936;
+}
+
+#selectedModelsCount.error {
+    color: #f56565;
+}
+
+/* Additional styles for better responsiveness and aesthetics */
+@media (max-width: 768px) {
+    .flex-wrap {
+        flex-wrap: wrap;
+    }
+    
+    .w-\[32\%\] {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+.transition-transform {
+    transition: transform 0.3s ease;
+}
+
+.hover\:scale-105:hover {
+    transform: scale(1.05);
+}
+
+.hover\:rotate-1:hover {
+    transform: rotate(1deg);
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.result-box {
+    transition: all 0.3s ease-in-out;
+}
+
+.result-box:hover {
+    transform: scale(1.05) rotate(1deg);
+}
+
+.select-none {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-open {
+    animation: slideDown 0.3s ease-out forwards;
+}
+
+#modelDropdown div {
+    transition: all 0.3s ease;
+}
+
+#modelDropdown div:hover {
+    background-color: #4a5568;
+    transform: translateX(5px);
+}
+
+#modelDropdown input[type="checkbox"] {
+    cursor: pointer;
+}
+
+#modelDropdown label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}

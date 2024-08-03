@@ -185,6 +185,10 @@ body, html {
     user-select: none;
 }
 
+#animatedTitle {
+    white-space: pre-wrap;
+}
+
 @media (max-width: 768px) {
     .button-container {
         flex-direction: column;
