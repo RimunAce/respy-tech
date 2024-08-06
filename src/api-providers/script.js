@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
         zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
         shadowjourney: 'https://shadowjourney.xyz/v1/models',
         shuttleai: 'https://api.shuttleai.app/v1/models',
-        electronhub: 'https://api.electronhub.top/v1/models' // Added Electron Hub endpoint
+        electronhub: 'https://api.electronhub.top/v1/models',
+        oxygen: 'https://app.oxyapi.uk/v1/models'
     };
 
     const apiDescriptions = {
@@ -19,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
         zukijourney: "Discord: https://discord.gg/zukijourney",
         shadowjourney: "Website: https://shadowjourney.xyz/",
         shuttleai: 'Website: https://shuttleai.app',
-        electronhub: 'Discord: https://discord.com/invite/k73Uw36p' // Added Electron Hub description
+        electronhub: 'Discord: https://discord.com/invite/k73Uw36p',
+        oxygen: 'Website: https://www.oxyapi.uk/'
     };
 
     async function fetchModels(apiProvider) {
@@ -114,6 +116,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
                 <p>Max Tokens: ${model.tokens ? model.tokens : "N/A"}</p>
                 <p>Cost: ${model.cost ? model.cost : "N/A"}</p>
+            `,
+            oxygen: (model) => `
+                <p>Name: ${model.name ? model.name : "N/A"}</p>
+                <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
+                <p>Type: ${model.type ? model.type : "N/A"}</p>
+                <p>Multi-Gen: ${model.multiple_generations ? model.multiple_generations : "N/A"}</p>
             `
         };
 
