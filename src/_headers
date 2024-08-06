@@ -1,2 +1,7 @@
 /*
-  x-robots-tag: index
+  X-Robots-Tag: index
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/multi-model-tester/*
+  X-Robots-Tag: index, follow
