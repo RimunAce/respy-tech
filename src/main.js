@@ -140,13 +140,25 @@ function animateSpan(span, index, lastSpanIndex) {
 }
 
 function addGlowEffect(span) {
-    gsap.to(span, {
-        textShadow: "0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de, 0 0 100px #ff00de, 0 0 150px #ff00de",
-        repeat: -1,
-        yoyo: true,
-        duration: 1.5,
-        ease: "power1.inOut"
+    // Reduced number of shadow layers for better performance
+    const glowTimeline = gsap.timeline({ repeat: -1, yoyo: true });
+    
+    glowTimeline.to(span, {
+        textShadow: "0 0 5px #fff, 0 0 10px #ff00de, 0 0 15px #ff00de",
+        duration: 0.75,
+        ease: "sine.inOut"
+    }).to(span, {
+        textShadow: "0 0 3px #fff, 0 0 7px #ff00de",
+        duration: 0.75,
+        ease: "sine.inOut"
     });
+
+    // Use requestAnimationFrame for smoother animation
+    function updateGlow() {
+        glowTimeline.progress(glowTimeline.progress());
+        requestAnimationFrame(updateGlow);
+    }
+    requestAnimationFrame(updateGlow);
 }
 
 function animateButtons() {

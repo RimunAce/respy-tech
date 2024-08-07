@@ -1,7 +1,12 @@
+# Global headers
 /*
   X-Robots-Tag: index
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
+# Specific headers for multi-model-tester
 /multi-model-tester/*
   X-Robots-Tag: index, follow
+
+# Prevent duplicate headers
+!X-Robots-Tag

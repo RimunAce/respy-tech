@@ -81,7 +81,8 @@ body, html {
 }
 
 .cta-button,
-.discord-button {
+.discord-button,
+.github-button {
     background-color: rgba(255, 255, 255, 0.1);
     color: var(--text-color);
     border: none;
@@ -102,13 +103,15 @@ body, html {
 }
 
 .cta-button:hover,
-.discord-button:hover {
+.discord-button:hover,
+.github-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
 
 .cta-button::before,
-.discord-button::before {
+.discord-button::before,
+.github-button::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -120,13 +123,15 @@ body, html {
 }
 
 .cta-button:hover::before,
-.discord-button:hover::before {
+.discord-button:hover::before,
+.github-button:hover::before {
     opacity: 0.7;
     animation: moveGradient 2s linear infinite;
 }
 
 .cta-button:hover span,
-.discord-button:hover span {
+.discord-button:hover span,
+.github-button:hover span {
     text-shadow: 0 0 5px var(--text-color), 0 0 10px var(--text-color);
 }
 
@@ -135,7 +140,8 @@ body, html {
     50% { background-position: 100% 50%; }
 }
 
-.discord-button img {
+.discord-button img,
+.github-button img {
     width: 24px;
     height: 24px;
     margin-right: 8px;
@@ -193,4 +199,20 @@ body, html {
     .button-container {
         flex-direction: column;
     }
+}
+
+/* New styles for the top buttons */
+.top-site-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    display: flex;
+    gap: 10px;
+}
+
+.top-site-buttons .discord-button,
+.top-site-buttons .github-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
 }

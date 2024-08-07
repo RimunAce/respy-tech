@@ -10,7 +10,7 @@ exports.handler = async function(event, context) {
 
         const response = await axios({
             method: 'post',
-            url: 'https://faas-sgp1-18bc02ac.doserverless.co/api/v1/web/fn-9d095de4-62e3-4a1b-a290-261e62fc3e98/axios/chat-generateMessage',
+            url: process.env.DO_CHATPROXY_URL,
             data: requestBody,
             headers: {
                 'Content-Type': 'application/json',
