@@ -119,6 +119,34 @@ function updateSelectedModelsCount() {
 }
 
 /**
+ * Sends a single request to the model API.
+ * @param {Object} model - The model object.
+ * @param {string} userInputText - The user's input text.
+ * @returns {Promise<Object>} A promise that resolves to the API response.
+ */
+async function makeApiRequest(model, userInputText) {
+    const response = await fetch('/.netlify/functions/multiLLM', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model: model.id,
+            messages: [{ role: 'user', content: userInputText }]
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!data.choices?.[0]?.message) {
+        throw new Error('Invalid response structure');
+    }
+
+    return data;
+}
+
+/**
  * Sends a request to a specific model with exponential backoff.
  * @param {Object} model - The model object.
  * @param {string} userInputText - The user's input text.
@@ -126,34 +154,12 @@ function updateSelectedModelsCount() {
  */
 async function sendRequest(model, userInputText) {
     const maxRetries = 3;
-    let retryCount = 0;
     const startTime = performance.now();
 
-    while (retryCount < maxRetries) {
+    for (let retryCount = 0; retryCount < maxRetries; retryCount++) {
         try {
-            const response = await fetch('/.netlify/functions/multiLLM', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: model.id,
-                    messages: [{ role: 'user', content: userInputText }]
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Server responded with status ${response.status}`);
-            }
-
-            const data = await response.json();
-            const endTime = performance.now();
-            const timeTaken = (endTime - startTime) / 1000;
-
-            if (!data.choices?.[0]?.message) {
-                throw new Error('Invalid response structure');
-            }
-
+            const data = await makeApiRequest(model, userInputText);
+            const timeTaken = (performance.now() - startTime) / 1000;
             return {
                 name: model.id,
                 content: data.choices[0].message.content,
@@ -161,8 +167,7 @@ async function sendRequest(model, userInputText) {
             };
         } catch (error) {
             console.error(`Error with model ${model.id}:`, error);
-            retryCount++;
-            if (retryCount >= maxRetries) {
+            if (retryCount === maxRetries - 1) {
                 return {
                     name: model.id,
                     content: `ERROR: ${error.message}. Please try again later.`,

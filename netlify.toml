@@ -54,3 +54,8 @@
 [functions."keepWarm"]
   included_files = ["src/netlify/functions/keepWarm.js"]
   schedule = "*/5 * * * *"
+
+[[redirects]]
+  from = "/*"
+  to = "/test"
+  status = 404
