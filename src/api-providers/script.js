@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     let modelData = [];
-    let currentProvider = 'fresedgpt';
+    let currentProvider = 'anyai';
 
     const apiEndpoints = {
+        anyai: 'http://api.llmplayground.net/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
         convoai: 'https://api.convoai.tech/v1/models',
         shardai: 'https://shard-ai.xyz/v1/models',
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const apiDescriptions = {
+        anyai: "Discord: https://discord.com/invite/q55gsH8z5F (This API doesn't require an API key for FREE tier)",
         fresedgpt: "Docs: https://fresed-api.gitbook.io/fresed-api",
         convoai: "Website: https://convoai.tech/",
         shardai: "Website: https://shard-ai.xyz/",
@@ -72,6 +74,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getContentGenerator(apiProvider) {
         const contentGenerators = {
+            anyai: (model) => `
+                <p>Open Source: ${model.created === 0 ? 'Yes' : 'No'}</p>
+                <p>Owner: ${model.owned_by}</p>
+                <p>Object: ${model.object}</p>
+            `,
             fresedgpt: (model) => `
                 <p>Owner: ${model.owned_by}</p>
                 <p>Token Coefficient: ${model.token_coefficient}</p>
@@ -302,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial fetch and display of models
     (async () => {
-        modelData = await fetchModels('fresedgpt');
+        modelData = await fetchModels('anyai');
         document.getElementById('loading').style.display = 'none';
         displayModels();
         animateInitialTitle(); // Start with the initial title animation
