@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
             rimunace: (model) => `
                 <p>Premium: ${model.metadata.premium ? 'Yes' : 'No'}</p>
                 <p>Max Tokens: ${model.metadata.max_tokens}</p>
-                <p>Function Calling: ${model.metadata.function_calling ? 'Yes' : 'No'}</p>
+                <p>Function Calling: ${model.metadata.function_call ? 'Yes' : 'No'}</p>
                 <p>Owner: ${model.owned_by}</p>
                 <p>Object: ${model.object}</p>
             `,
