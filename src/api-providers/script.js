@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     let modelData = [];
-    let currentProvider = 'anyai';
+    let currentProvider = 'rimunace';
 
     const apiEndpoints = {
+        rimunace: 'https://api.rimunace.xyz/v1/models',
         anyai: 'http://api.llmplayground.net/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
         convoai: 'https://api.convoai.tech/v1/models',
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const apiDescriptions = {
+        rimunace: 'Website: https://rimunace.xyz (This API is maintained by Creator of Respy.Tech)',
         anyai: "Discord: https://discord.com/invite/q55gsH8z5F (This API doesn't require an API key for FREE tier)",
         fresedgpt: "Docs: https://fresed-api.gitbook.io/fresed-api",
         convoai: "Website: https://convoai.tech/",
@@ -74,6 +76,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getContentGenerator(apiProvider) {
         const contentGenerators = {
+            rimunace: (model) => `
+                <p>Premium: ${model.metadata.premium ? 'Yes' : 'No'}</p>
+                <p>Max Tokens: ${model.metadata.max_tokens}</p>
+                <p>Function Calling: ${model.metadata.function_calling ? 'Yes' : 'No'}</p>
+                <p>Owner: ${model.owned_by}</p>
+                <p>Object: ${model.object}</p>
+            `,
             anyai: (model) => `
                 <p>Open Source: ${model.created === 0 ? 'Yes' : 'No'}</p>
                 <p>Owner: ${model.owned_by}</p>
@@ -309,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial fetch and display of models
     (async () => {
-        modelData = await fetchModels('anyai');
+        modelData = await fetchModels('rimunace');
         document.getElementById('loading').style.display = 'none';
         displayModels();
         animateInitialTitle(); // Start with the initial title animation
