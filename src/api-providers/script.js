@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         anyai: 'http://api.llmplayground.net/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
         convoai: 'https://api.convoai.tech/v1/models',
-        shardai: 'https://shard-ai.xyz/v1/models',
+        shardai: 'https://api.shard-ai.xyz/v1/models',
         zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
         shadowjourney: 'https://shadowjourney.xyz/v1/models',
         shuttleai: 'https://api.shuttleai.app/v1/models',
@@ -105,7 +105,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Owner: ${model.owned_by}</p>
                 <p>Type: ${model.type}</p>
                 <p>Cost: ${model.cost}/1k tokens</p>
-                <p>Access: ${Object.entries(model.access).filter(([k, v]) => v).map(([k]) => k).join(', ')}</p>
+                <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
+                <p>Access: ${Object.entries(model.access)
+                    .filter(([k, v]) => v)
+                    .map(([k]) => k.charAt(0).toUpperCase() + k.slice(1))
+                    .join(', ')}</p>
+                ${model.note ? `<p>Note: ${model.note}</p>` : ''}
             `,
             zukijourney: (model) => `
                 <p>Owner: ${model.owned_by}</p>
@@ -172,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayModels(filter = '') {
         const modelContainer = document.getElementById('modelContainer');
-        modelContainer.innerHTML = ''; // Clear previous content
+        modelContainer.innerHTML = '';
         
         const normalizedFilter = filter.toLowerCase().trim();
         const filterWords = normalizedFilter.split(/\s+/);
@@ -184,18 +189,36 @@ document.addEventListener('DOMContentLoaded', function() {
         
         filteredModels.forEach((model, index) => {
             const modelBox = createModelBox(model, currentProvider);
-            modelBox.style.animationDelay = `${index * 0.1}s`;
+            modelBox.style.animationDelay = `${index * 0.05}s`; // Reduced delay for smoother appearance
             modelContainer.appendChild(modelBox);
         });
     
-        // Display a message if no models are found
         if (filteredModels.length === 0) {
             const noResultsMessage = document.createElement('div');
             noResultsMessage.textContent = 'No models found matching your search.';
             noResultsMessage.className = 'no-results-message';
             modelContainer.appendChild(noResultsMessage);
         }
+    
+        // Adjust layout based on screen size
+        adjustLayout();
     }
+    
+    // Add this new function to handle layout adjustments
+    function adjustLayout() {
+        const modelContainer = document.getElementById('modelContainer');
+        const containerWidth = modelContainer.offsetWidth;
+        const modelBoxes = document.querySelectorAll('.model-box');
+        
+        if (containerWidth < 480) {
+            modelBoxes.forEach(box => box.style.width = '100%');
+        } else {
+            modelBoxes.forEach(box => box.style.width = '');
+        }
+    }
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', adjustLayout);
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
         displayModels(e.target.value);
