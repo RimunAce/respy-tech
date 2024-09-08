@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const apiEndpoints = {
         rimunace: 'https://api.rimunace.xyz/v1/models',
+        zanity: 'https://api.zanity.net/v1/models',
         anyai: 'http://api.llmplayground.net/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
         convoai: 'https://api.convoai.tech/v1/models',
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const apiDescriptions = {
         rimunace: 'Website: https://rimunace.xyz (This API is maintained by Creator of Respy.Tech)',
+        zanity: 'Website: https://api.zanity.net/',
         anyai: "Discord: https://discord.com/invite/q55gsH8z5F (This API doesn't require an API key for FREE tier)",
         fresedgpt: "Docs: https://fresed-api.gitbook.io/fresed-api",
         convoai: "Website: https://convoai.tech/",
@@ -75,78 +77,129 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getContentGenerator(apiProvider) {
-        const contentGenerators = {
-            rimunace: (model) => `
-                <p>Premium: ${model.metadata.premium ? 'Yes' : 'No'}</p>
-                <p>Max Tokens: ${model.metadata.max_tokens}</p>
-                <p>Function Calling: ${model.metadata.function_call ? 'Yes' : 'No'}</p>
-                <p>Owner: ${model.owned_by}</p>
-                <p>Object: ${model.object}</p>
-            `,
-            anyai: (model) => `
-                <p>Open Source: ${model.created === 0 ? 'Yes' : 'No'}</p>
-                <p>Owner: ${model.owned_by}</p>
-                <p>Object: ${model.object}</p>
-            `,
-            fresedgpt: (model) => `
-                <p>Owner: ${model.owned_by}</p>
-                <p>Token Coefficient: ${model.token_coefficient}</p>
-                <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
-            `,
-            convoai: (model) => `
-                <p>Name: ${model.name}</p>
-                <p>Max Context: ${model.knowledge.max_context}</p>
-                <p>Input Cost: ${model.cost.input_tokens}/1k tokens</p>
-                <p>Output Cost: ${model.cost.output_tokens}/1k tokens</p>
-                <p>Scope: ${model.scope}</p>
-                <p>Membership: ${model.membership.join(', ')}</p>
-            `,
-            shardai: (model) => `
-                <p>Owner: ${model.owned_by}</p>
-                <p>Type: ${model.type}</p>
-                <p>Cost: ${model.cost}/1k tokens</p>
-                <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
-                <p>Access: ${Object.entries(model.access)
-                    .filter(([k, v]) => v)
-                    .map(([k]) => k.charAt(0).toUpperCase() + k.slice(1))
-                    .join(', ')}</p>
-                ${model.note ? `<p>Note: ${model.note}</p>` : ''}
-            `,
-            zukijourney: (model) => `
-                <p>Owner: ${model.owned_by}</p>
-                <p>Type: ${model.type}</p>
-                <p>Supports Vision: ${model.supports_vision ? 'Yes' : 'No'}</p>
-                <p>Is Free: ${model.is_free ? 'Yes' : 'No'}</p>
-            `,
-            shadowjourney: (model) => {
-                const cost = model.cost === "free" ? "False" : model.cost === "premium" ? "True" : "False";
-                return `
-                    <p>Owned By: ${model.owned_by}</p>
-                    <p>Object: ${model.object}</p>
-                    <p>Premium: ${cost}</p>
-                `;
-            },
-            shuttleai: (model) => `
-                <p>Cost: ${model.cost ? model.cost : "N/A"}/req</p>
-                <p>Model: ${model.object}</p>
-                <p>Premium: ${model.premium ? model.premium : "N/A"}</p>
-                <p>Owned: ${model.owned_by ? model.owned_by : "N/A"}</p>
-            `,
-            electronhub: (model) => `
-                <p>Object: ${model.object ? model.object : "N/A"}</p>
-                <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
-                <p>Max Tokens: ${model.tokens ? model.tokens : "N/A"}</p>
-                <p>Cost: ${model.cost ? model.cost : "N/A"}</p>
-            `,
-            oxygen: (model) => `
-                <p>Name: ${model.name ? model.name : "N/A"}</p>
-                <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
-                <p>Type: ${model.type ? model.type : "N/A"}</p>
-                <p>Multi-Gen: ${model.multiple_generations ? model.multiple_generations : "N/A"}</p>
-            `
-        };
-
         return contentGenerators[apiProvider] || (() => '');
+    }
+
+    const contentGenerators = {
+        rimunace: generateRimunaceContent,
+        zanity: generateZanityContent,
+        anyai: generateAnyaiContent,
+        fresedgpt: generateFresedgptContent,
+        convoai: generateConvoaiContent,
+        shardai: generateShardaiContent,
+        zukijourney: generateZukijourneyContent,
+        shadowjourney: generateShadowjourneyContent,
+        shuttleai: generateShuttleaiContent,
+        electronhub: generateElectronhubContent,
+        oxygen: generateOxygenContent
+    };
+
+    function generateRimunaceContent(model) {
+        return `
+            <p>Premium: ${model.metadata.premium ? 'Yes' : 'No'}</p>
+            <p>Max Tokens: ${model.metadata.max_tokens}</p>
+            <p>Function Calling: ${model.metadata.function_call ? 'Yes' : 'No'}</p>
+            <p>Owner: ${model.owned_by}</p>
+            <p>Object: ${model.object}</p>
+        `;
+    }
+
+    function generateZanityContent(model) {
+        return `
+            <p>Type: ${model.type}</p>
+            <p>Owned by: ${model.owned_by}</p>
+            <p>Cost: ${model.cost}</p>
+            <p>Access: ${Object.entries(model.access)
+                .filter(([k, v]) => v)
+                .map(([k]) => k.charAt(0).toUpperCase() + k.slice(1))
+                .join(', ') || 'None'}</p>
+        `;
+    }
+
+    function generateAnyaiContent(model) {
+        return `
+            <p>Open Source: ${model.created === 0 ? 'Yes' : 'No'}</p>
+            <p>Owner: ${model.owned_by}</p>
+            <p>Object: ${model.object}</p>
+        `;
+    }
+
+    function generateFresedgptContent(model) {
+        return `
+            <p>Owner: ${model.owned_by}</p>
+            <p>Token Coefficient: ${model.token_coefficient}</p>
+            <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
+        `;
+    }
+
+    function generateConvoaiContent(model) {
+        return `
+            <p>Name: ${model.name}</p>
+            <p>Max Context: ${model.knowledge.max_context}</p>
+            <p>Input Cost: ${model.cost.input_tokens}/1k tokens</p>
+            <p>Output Cost: ${model.cost.output_tokens}/1k tokens</p>
+            <p>Scope: ${model.scope}</p>
+            <p>Membership: ${model.membership.join(', ')}</p>
+        `;
+    }
+
+    function generateShardaiContent(model) {
+        return `
+            <p>Owner: ${model.owned_by}</p>
+            <p>Type: ${model.type}</p>
+            <p>Cost: ${model.cost}/1k tokens</p>
+            <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
+            <p>Access: ${Object.entries(model.access)
+                .filter(([k, v]) => v)
+                .map(([k]) => k.charAt(0).toUpperCase() + k.slice(1))
+                .join(', ')}</p>
+            ${model.note ? `<p>Note: ${model.note}</p>` : ''}
+        `;
+    }
+
+    function generateZukijourneyContent(model) {
+        return `
+            <p>Owner: ${model.owned_by}</p>
+            <p>Type: ${model.type}</p>
+            <p>Supports Vision: ${model.supports_vision ? 'Yes' : 'No'}</p>
+            <p>Is Free: ${model.is_free ? 'Yes' : 'No'}</p>
+        `;
+    }
+
+    function generateShadowjourneyContent(model) {
+        const cost = model.cost === "free" ? "False" : model.cost === "premium" ? "True" : "False";
+        return `
+            <p>Owned By: ${model.owned_by}</p>
+            <p>Object: ${model.object}</p>
+            <p>Premium: ${cost}</p>
+        `;
+    }
+
+    function generateShuttleaiContent(model) {
+        return `
+            <p>Cost: ${model.cost ? model.cost : "N/A"}/req</p>
+            <p>Model: ${model.object}</p>
+            <p>Premium: ${model.premium ? model.premium : "N/A"}</p>
+            <p>Owned: ${model.owned_by ? model.owned_by : "N/A"}</p>
+        `;
+    }
+
+    function generateElectronhubContent(model) {
+        return `
+            <p>Object: ${model.object ? model.object : "N/A"}</p>
+            <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
+            <p>Max Tokens: ${model.tokens ? model.tokens : "N/A"}</p>
+            <p>Cost: ${model.cost ? model.cost : "N/A"}</p>
+        `;
+    }
+
+    function generateOxygenContent(model) {
+        return `
+            <p>Name: ${model.name ? model.name : "N/A"}</p>
+            <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
+            <p>Type: ${model.type ? model.type : "N/A"}</p>
+            <p>Multi-Gen: ${model.multiple_generations ? model.multiple_generations : "N/A"}</p>
+        `;
     }
 
     function createCopyButton(model) {

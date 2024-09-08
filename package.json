@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@netlify/blobs": "^8.0.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "respy-tech": "file:"
   },
   "devDependencies": {
