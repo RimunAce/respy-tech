@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rimunace: 'https://api.rimunace.xyz/v1/models',
         zanity: 'https://api.zanity.net/v1/models',
         anyai: 'http://api.llmplayground.net/v1/models',
+        cablyai: 'https://cablyai.com/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
         convoai: 'https://api.convoai.tech/v1/models',
         shardai: 'https://api.shard-ai.xyz/v1/models',
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rimunace: 'Website: https://rimunace.xyz (This API is maintained by Creator of Respy.Tech)',
         zanity: 'Website: https://api.zanity.net/',
         anyai: "Discord: https://discord.com/invite/q55gsH8z5F (This API doesn't require an API key for FREE tier)",
+        cablyai: "Website: https://cablyai.com/",
         fresedgpt: "Docs: https://fresed-api.gitbook.io/fresed-api",
         convoai: "Website: https://convoai.tech/",
         shardai: "Website: https://shard-ai.xyz/",
@@ -37,7 +39,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             return data.data;
         } catch (error) {
-            console.error('Error fetching models:', error);
+            console.error(`Error fetching models for ${apiProvider}:`, error);
+            if (apiProvider === 'cablyai') {
+                console.warn('CablyAI API is currently unavailable due to CORS issues. Skipping...');
+                return [];
+            }
             return [];
         }
     }
@@ -84,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rimunace: generateRimunaceContent,
         zanity: generateZanityContent,
         anyai: generateAnyaiContent,
+        cablyai: generateCablyaiContent,
         fresedgpt: generateFresedgptContent,
         convoai: generateConvoaiContent,
         shardai: generateShardaiContent,
@@ -121,6 +128,14 @@ document.addEventListener('DOMContentLoaded', function() {
             <p>Open Source: ${model.created === 0 ? 'Yes' : 'No'}</p>
             <p>Owner: ${model.owned_by}</p>
             <p>Object: ${model.object}</p>
+        `;
+    }
+
+    function generateCablyaiContent(model) {
+        return `
+            <p>Owner: ${model.owned_by}</p>
+            <p>Type: ${model.type}</p>
+            <p>Vision Supported: ${model.support_vision ? 'Yes' : 'No'}</p>
         `;
     }
 
