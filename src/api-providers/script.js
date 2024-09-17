@@ -1,4 +1,19 @@
-document.addEventListener('DOMContentLoaded', function() {
+const cache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+const getCachedData = (key) => {
+    const cachedItem = cache.get(key);
+    if (cachedItem && Date.now() - cachedItem.timestamp < CACHE_DURATION) {
+        return cachedItem.data;
+    }
+    return null;
+};
+
+const setCachedData = (key, data) => {
+    cache.set(key, { data, timestamp: Date.now() });
+};
+
+document.addEventListener('DOMContentLoaded', function () {
     let modelData = [];
     let currentProvider = 'rimunace';
 
@@ -8,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         anyai: 'http://api.llmplayground.net/v1/models',
         cablyai: 'https://cablyai.com/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
+        heckerai: 'https://api.heckerai.uk.to/v2/models',
         convoai: 'https://api.convoai.tech/v1/models',
         shardai: 'https://api.shard-ai.xyz/v1/models',
         zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
@@ -23,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         anyai: "Discord: https://discord.com/invite/q55gsH8z5F (This API doesn't require an API key for FREE tier)",
         cablyai: "Website: https://cablyai.com/",
         fresedgpt: "Docs: https://fresed-api.gitbook.io/fresed-api",
+        heckerai: "Discord: https://discord.gg/rmKrSWwz",
         convoai: "Website: https://convoai.tech/",
         shardai: "Website: https://shard-ai.xyz/",
         zukijourney: "Discord: https://discord.gg/zukijourney",
@@ -32,21 +49,37 @@ document.addEventListener('DOMContentLoaded', function() {
         oxygen: 'Website: https://www.oxyapi.uk/'
     };
 
-    async function fetchModels(apiProvider) {
+    const fetchModels = async (apiProvider) => {
         try {
             const response = await fetch(apiEndpoints[apiProvider]);
-            if (!response.ok) throw new Error('Network response was not ok');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             return data.data;
         } catch (error) {
             console.error(`Error fetching models for ${apiProvider}:`, error);
-            if (apiProvider === 'cablyai') {
-                console.warn('CablyAI API is currently unavailable due to CORS issues. Skipping...');
-                return [];
-            }
             return [];
         }
-    }
+    };
+
+    const fetchAllModels = async () => {
+        const providers = Object.keys(apiEndpoints);
+        const modelPromises = providers.map(provider => fetchModels(provider));
+        const results = await Promise.allSettled(modelPromises);
+        
+        const allModels = {};
+        results.forEach((result, index) => {
+            if (result.status === 'fulfilled') {
+                allModels[providers[index]] = result.value;
+            } else {
+                console.error(`Failed to fetch models for ${providers[index]}:`, result.reason);
+                allModels[providers[index]] = [];
+            }
+        });
+        
+        return allModels;
+    };
 
     function createModelBox(model, apiProvider) {
         const modelBox = document.createElement('div');
@@ -92,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         anyai: generateAnyaiContent,
         cablyai: generateCablyaiContent,
         fresedgpt: generateFresedgptContent,
+        heckerai: generateHeckerContent,
         convoai: generateConvoaiContent,
         shardai: generateShardaiContent,
         zukijourney: generateZukijourneyContent,
@@ -144,6 +178,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <p>Owner: ${model.owned_by}</p>
             <p>Token Coefficient: ${model.token_coefficient}</p>
             <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
+        `;
+    }
+
+    function generateHeckerContent(model) {
+        return `
+            <p>Owner: ${model.owned_by}</p>
+            <p>AI API By: ${model["AI API by"]}
         `;
     }
 
@@ -245,6 +286,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayModels(filter = '') {
         const modelContainer = document.getElementById('modelContainer');
+        const modelCountElement = document.getElementById('modelCount');
+        const loadingElement = document.getElementById('loading');
         modelContainer.innerHTML = '';
         
         const normalizedFilter = filter.toLowerCase().trim();
@@ -255,20 +298,38 @@ document.addEventListener('DOMContentLoaded', function() {
             return filterWords.every(word => modelString.includes(word));
         });
         
-        filteredModels.forEach((model, index) => {
-            const modelBox = createModelBox(model, currentProvider);
-            modelBox.style.animationDelay = `${index * 0.05}s`; // Reduced delay for smoother appearance
-            modelContainer.appendChild(modelBox);
-        });
-    
+        modelCountElement.textContent = filteredModels.length;
+        
         if (filteredModels.length === 0) {
             const noResultsMessage = document.createElement('div');
             noResultsMessage.textContent = 'No models found matching your search.';
             noResultsMessage.className = 'no-results-message';
             modelContainer.appendChild(noResultsMessage);
+        } else {
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const modelBox = entry.target;
+                        const model = JSON.parse(modelBox.dataset.model);
+                        modelBox.appendChild(createModelIdElement(model));
+                        modelBox.appendChild(createModelDetailsElement(model, currentProvider));
+                        modelBox.appendChild(createCopyButton(model));
+                        observer.unobserve(modelBox);
+                    }
+                });
+            }, { rootMargin: "100px" });
+    
+            filteredModels.forEach((model, index) => {
+                const modelBox = document.createElement('div');
+                modelBox.className = 'model-box';
+                modelBox.dataset.model = JSON.stringify(model);
+                modelBox.style.animationDelay = `${index * 0.05}s`;
+                modelContainer.appendChild(modelBox);
+                observer.observe(modelBox);
+            });
         }
     
-        // Adjust layout based on screen size
+        loadingElement.style.display = 'none';
         adjustLayout();
     }
     
@@ -288,8 +349,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listener for window resize
     window.addEventListener('resize', adjustLayout);
 
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func(...args), delay);
+        };
+    };
+    
+    const debouncedDisplayModels = debounce((filter) => {
+        displayModels(filter);
+    }, 300);
+    
     document.getElementById('searchInput').addEventListener('input', (e) => {
-        displayModels(e.target.value);
+        debouncedDisplayModels(e.target.value);
     });
 
     document.querySelectorAll('.api-button').forEach(button => {
@@ -298,10 +371,19 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.classList.add('active');
             currentProvider = e.target.dataset.api;
             document.getElementById('apiDescription').textContent = apiDescriptions[currentProvider];
-            document.getElementById('loading').style.display = 'block';
+            const loadingElement = document.getElementById('loading');
+            loadingElement.style.display = 'block';
             document.getElementById('modelContainer').innerHTML = '';
-            modelData = await fetchModels(currentProvider);
-            document.getElementById('loading').style.display = 'none';
+            document.getElementById('modelCount').textContent = 'Loading...';
+    
+            const cachedAllModels = getCachedData('allModels');
+            if (cachedAllModels) {
+                modelData = cachedAllModels[currentProvider];
+            } else {
+                const allModels = await fetchAllModels();
+                setCachedData('allModels', allModels);
+                modelData = allModels[currentProvider];
+            }
             displayModels();
         });
     });
@@ -409,9 +491,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial fetch and display of models
     (async () => {
-        modelData = await fetchModels('rimunace');
-        document.getElementById('loading').style.display = 'none';
-        displayModels();
-        animateInitialTitle(); // Start with the initial title animation
+        const loadingElement = document.getElementById('loading');
+        loadingElement.style.display = 'block';
+        
+        const providers = Object.keys(apiEndpoints);
+        const loadProviders = async (index) => {
+            if (index < providers.length) {
+                const provider = providers[index];
+                const models = await fetchModels(provider);
+                const allModels = getCachedData('allModels') || {};
+                allModels[provider] = models;
+                setCachedData('allModels', allModels);
+                
+                if (provider === currentProvider) {
+                    modelData = models;
+                    displayModels();
+                }
+                
+                loadProviders(index + 1);
+            } else {
+                loadingElement.style.display = 'none';
+            }
+        };
+        
+        loadProviders(0);
+        animateInitialTitle();
     })();
 });

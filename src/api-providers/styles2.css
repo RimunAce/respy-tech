@@ -420,6 +420,18 @@ footer {
     }
 }
 
+.model-counter {
+    text-align: center;
+    color: #fff;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+#modelCount {
+    font-weight: bold;
+    color: #00ff99;
+}
+
 @media (max-width: 480px) {
     .api-button {
         width: calc(33.33% - 4px);
