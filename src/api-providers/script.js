@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         anyai: 'http://api.llmplayground.net/v1/models',
         cablyai: 'https://cablyai.com/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
-        heckerai: 'https://api.heckerai.uk.to/v2/models',
+        heckerai: 'https://heckerai.com/v1/models',
         convoai: 'https://api.convoai.tech/v1/models',
         shardai: 'https://api.shard-ai.xyz/v1/models',
         zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
