@@ -6,6 +6,7 @@ const getCachedData = (key) => {
     if (cachedItem && Date.now() - cachedItem.timestamp < CACHE_DURATION) {
         return cachedItem.data;
     }
+    cache.delete(key); // Remove expired cache
     return null;
 };
 

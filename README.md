@@ -18,9 +18,6 @@ Respy.Tech is an interactive web platform featuring AI-powered experiences
 
 - 🎨 Sleek and intuitive user interface with animated background
 - 💬 Listings of API Providers for multiple LLM models
-- 📁 Chat Interface for Public Use
-- 🧠 Neural Constellation Zenith - An interactive AI experience
-- 🔄 Multi-Model LLM Tester
 
 
 ## 📄 License

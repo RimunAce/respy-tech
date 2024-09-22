@@ -2,21 +2,36 @@
 const bg = document.querySelector('.animated-bg');
 const objectCounts = {
     star: 200,
-    planet: 3,
+    planet: 8,  // Changed to 8 for the planets in our solar system
     asteroid: 10,
     galaxy: 2,
     shikanoko: 1
 };
 
+const planetNames = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
+
 function createSpaceObject(className, count, speedMultiplier = 1) {
     const fragment = document.createDocumentFragment();
     for (let i = 0; i < count; i++) {
-        const obj = createSpaceObjectElement(className);
+        let obj;
+        if (className === 'planet') {
+            obj = createPlanetElement(planetNames[i]);
+        } else {
+            obj = createSpaceObjectElement(className);
+        }
         setSpaceObjectStyle(obj, className);
         fragment.appendChild(obj);
         animateObject(obj, speedMultiplier, className);
     }
     bg.appendChild(fragment);
+}
+
+function createPlanetElement(planetName) {
+    const obj = document.createElement('div');
+    obj.className = 'planet';
+    obj.style.backgroundImage = `url('images/${planetName}.png')`;
+    obj.style.backgroundSize = 'cover';
+    return obj;
 }
 
 function animateObject(obj, speedMultiplier, className) {
@@ -49,20 +64,33 @@ function setSpaceObjectStyle(obj, className) {
         asteroid: () => ({})
     };
 
+    const style = styleCreators[className](obj);
     Object.assign(obj.style, {
         left: `${Math.random() * 100}%`,
         top: `${Math.random() * 100}%`,
-        ...styleCreators[className]()
+        ...style
     });
 }
 
-function createPlanetStyle() {
-    const size = 20 + Math.random() * 30;
-    const hue = Math.random() * 360;
+function createPlanetStyle(obj) {
+    const planetSizes = {
+        mercury: 10,
+        venus: 15,
+        earth: 16,
+        mars: 14,
+        jupiter: 35,
+        saturn: 30,
+        uranus: 25,
+        neptune: 24
+    };
+
+    const planetName = obj.style.backgroundImage.match(/images\/(\w+)\.png/)[1];
+    const size = planetSizes[planetName];
+
     return {
         width: `${size}px`,
         height: `${size}px`,
-        background: `radial-gradient(circle at 30% 30%, hsl(${hue}, 70%, 50%), #000)`
+        borderRadius: '50%'
     };
 }
 
@@ -139,26 +167,23 @@ function animateSpan(span, index, lastSpanIndex) {
     });
 }
 
-function addGlowEffect(span) {
-    // Reduced number of shadow layers for better performance
+function addEnhancedGlowEffect(span) {
     const glowTimeline = gsap.timeline({ repeat: -1, yoyo: true });
     
     glowTimeline.to(span, {
-        textShadow: "0 0 5px #fff, 0 0 10px #ff00de, 0 0 15px #ff00de",
-        duration: 0.75,
+        textShadow: "0 0 10px #fff, 0 0 20px #ff00de, 0 0 30px #ff00de",
+        duration: 1,
         ease: "sine.inOut"
     }).to(span, {
-        textShadow: "0 0 3px #fff, 0 0 7px #ff00de",
-        duration: 0.75,
+        textShadow: "0 0 5px #fff, 0 0 10px #ff00de",
+        duration: 1,
         ease: "sine.inOut"
     });
+}
 
-    // Use requestAnimationFrame for smoother animation
-    function updateGlow() {
-        glowTimeline.progress(glowTimeline.progress());
-        requestAnimationFrame(updateGlow);
-    }
-    requestAnimationFrame(updateGlow);
+// Modify the existing addGlowEffect function
+function addGlowEffect(span) {
+    addEnhancedGlowEffect(span); // Use the enhanced glow effect
 }
 
 function animateButtons() {
@@ -169,6 +194,30 @@ function animateButtons() {
         delay: 0.5,
         ease: "power2.out",
         stagger: 0.5
+    });
+}
+
+// Animate the title on page load
+function animateTitleEntrance() {
+    const titleElement = document.getElementById('animatedTitle');
+    gsap.from(titleElement, {
+        duration: 1.5,
+        y: -50,
+        opacity: 0,
+        ease: "power3.out"
+    });
+}
+
+// Add scaling animation on hover
+function addTitleHoverEffect() {
+    const titleElement = document.getElementById('animatedTitle');
+    
+    titleElement.addEventListener('mouseover', () => {
+        gsap.to(titleElement, { scale: 1.2, duration: 0.3, ease: "power1.out" });
+    });
+
+    titleElement.addEventListener('mouseout', () => {
+        gsap.to(titleElement, { scale: 1, duration: 0.3, ease: "power1.out" });
     });
 }
 
@@ -184,4 +233,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     setupTextAnimation();
+    animateTitleEntrance(); // Call the entrance animation
+    addTitleHoverEffect();   // Add hover effects to the title
 });

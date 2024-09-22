@@ -31,6 +31,14 @@ body, html {
     z-index: 1;
 }
 
+.content-box {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(245, 71, 71, 0.1);
+}
+
 .header {
     margin-bottom: 20px;
 }
@@ -40,6 +48,8 @@ body, html {
     font-weight: bold;
     user-select: none;
     white-space: nowrap;
+    cursor: pointer; /* Indicate interactivity */
+    transition: transform 0.3s ease;
 }
 
 .logo span {

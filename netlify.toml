@@ -1,15 +1,5 @@
 [build]
-  functions = "src/netlify/functions"
   publish = "src"
-
-[functions]
-  node_bundler = "esbuild"
-
-[build.environment]
-  NODE_VERSION = "18"
-
-[[plugins]]
-  package = "@netlify/plugin-functions-install-core"
 
 [[headers]]
   for = "/*"
@@ -21,6 +11,21 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     x-robots-tag = "index"
 
+[[headers]]
+  for = "/dist/bundle.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/styles.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 [dev]
   framework = "#custom"
   command = "npm run start"
@@ -30,32 +35,6 @@
   autoLaunch = true
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[functions."chat-generateMessage"]
-  included_files = ["src/netlify/functions/chat-generateMessage.js"]
-
-[functions."chat-generateTitle"]
-  included_files = ["src/netlify/functions/chat-generateTitle.js"]
-
-[functions."zenithProxy"]
-  included_files = ["src/netlify/functions/zenithProxy.js"]
-
-[functions."chatProxy"]
-  included_files = ["src/netlify/functions/chatProxy.js"]
-
-[functions."keepWarm"]
-  included_files = ["src/netlify/functions/keepWarm.js"]
-  schedule = "*/5 * * * *"
-
-[[redirects]]
-  from = "/*"
-  to = "/test"
-  status = 404
