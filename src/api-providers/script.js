@@ -25,13 +25,14 @@ document.addEventListener('DOMContentLoaded', function () {
         cablyai: 'https://cablyai.com/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
         heckerai: 'https://heckerai.com/v1/models',
-        convoai: 'https://api.convoai.tech/v1/models',
         shardai: 'https://api.shard-ai.xyz/v1/models',
         zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
         shadowjourney: 'https://shadowjourney.xyz/v1/models',
         shuttleai: 'https://api.shuttleai.app/v1/models',
         electronhub: 'https://api.electronhub.top/v1/models',
-        oxygen: 'https://app.oxyapi.uk/v1/models'
+        oxygen: 'https://app.oxyapi.uk/v1/models',
+        nagaai: 'https://api.naga.ac/v1/models',
+        skailar: 'https://test.skailar.it/v1/models'
     };
 
     const apiDescriptions = {
@@ -41,13 +42,14 @@ document.addEventListener('DOMContentLoaded', function () {
         cablyai: "Website: https://cablyai.com/",
         fresedgpt: "Docs: https://fresed-api.gitbook.io/fresed-api",
         heckerai: "Discord: https://discord.gg/rmKrSWwz",
-        convoai: "Website: https://convoai.tech/",
         shardai: "Website: https://shard-ai.xyz/",
         zukijourney: "Discord: https://discord.gg/zukijourney",
         shadowjourney: "Website: https://shadowjourney.xyz/",
         shuttleai: 'Website: https://shuttleai.app',
         electronhub: 'Discord: https://discord.com/invite/k73Uw36p',
-        oxygen: 'Website: https://www.oxyapi.uk/'
+        oxygen: 'Website: https://www.oxyapi.uk/',
+        nagaai: 'Discord: https://discord.gg/nagaai-1145994888006086696',
+        skailar: 'Discord: https://discord.gg/MN7WpgXUHn'
     };
 
     const fetchModels = async (apiProvider) => {
@@ -71,11 +73,12 @@ document.addEventListener('DOMContentLoaded', function () {
         
         const allModels = {};
         results.forEach((result, index) => {
+            const provider = providers[index];
             if (result.status === 'fulfilled') {
-                allModels[providers[index]] = result.value;
+                allModels[provider] = result.value;
             } else {
-                console.error(`Failed to fetch models for ${providers[index]}:`, result.reason);
-                allModels[providers[index]] = [];
+                console.error(`Failed to fetch models for ${provider}:`, result.reason);
+                allModels[provider] = [];
             }
         });
         
@@ -127,22 +130,29 @@ document.addEventListener('DOMContentLoaded', function () {
         cablyai: generateCablyaiContent,
         fresedgpt: generateFresedgptContent,
         heckerai: generateHeckerContent,
-        convoai: generateConvoaiContent,
         shardai: generateShardaiContent,
         zukijourney: generateZukijourneyContent,
         shadowjourney: generateShadowjourneyContent,
         shuttleai: generateShuttleaiContent,
         electronhub: generateElectronhubContent,
-        oxygen: generateOxygenContent
+        oxygen: generateOxygenContent,
+        nagaai: generateNagaaiContent,
+        skailar: generateSkailarContent
     };
 
     function generateRimunaceContent(model) {
+        const accessTiers = Object.entries(model.access)
+            .filter(([_, v]) => v)
+            .map(([k]) => k.charAt(0).toUpperCase() + k.slice(1))
+            .join(', ');
+
         return `
-            <p>Premium: ${model.metadata.premium ? 'Yes' : 'No'}</p>
-            <p>Max Tokens: ${model.metadata.max_tokens}</p>
-            <p>Function Calling: ${model.metadata.function_call ? 'Yes' : 'No'}</p>
+            <p>Type: ${model.type}</p>
             <p>Owner: ${model.owned_by}</p>
-            <p>Object: ${model.object}</p>
+            <p>Cost: ${model.cost} / request</p>
+            ${accessTiers ? `<p>Access: ${accessTiers}</p>` : ''}
+            <p>Available: ${model.available ? 'Yes' : 'No'}</p>
+            <p>Added: ${model.added}</p>
         `;
     }
 
@@ -185,18 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function generateHeckerContent(model) {
         return `
             <p>Owner: ${model.owned_by}</p>
-            <p>AI API By: ${model["AI API by"]}
-        `;
-    }
-
-    function generateConvoaiContent(model) {
-        return `
-            <p>Name: ${model.name}</p>
-            <p>Max Context: ${model.knowledge.max_context}</p>
-            <p>Input Cost: ${model.cost.input_tokens}/1k tokens</p>
-            <p>Output Cost: ${model.cost.output_tokens}/1k tokens</p>
-            <p>Scope: ${model.scope}</p>
-            <p>Membership: ${model.membership.join(', ')}</p>
+            <p>AI API By: ${model["AI API by"]}</p>
         `;
     }
 
@@ -256,6 +255,28 @@ document.addEventListener('DOMContentLoaded', function () {
             <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
             <p>Type: ${model.type ? model.type : "N/A"}</p>
             <p>Multi-Gen: ${model.multiple_generations ? model.multiple_generations : "N/A"}</p>
+        `;
+    }
+
+    function generateNagaaiContent(model) {
+        return `
+            <p>Object: ${model.object || 'N/A'}</p>
+            <p>Limiter: ${model.limiter || 'N/A'}</p>
+            <p>Points To: ${model.points_to || 'N/A'}</p>
+            <p>Per Input Token: ${model.pricing && model.pricing.per_input_token ? '$' + model.pricing.per_input_token : 'N/A'}</p>
+            <p>Per Output Token: ${model.pricing && model.pricing.per_output_token ? '$' + model.pricing.per_output_token : 'N/A'}</p>
+        `;
+    }
+
+    function generateSkailarContent(model) {
+        return `
+            <p>Object: ${model.object || 'N/A'}</p>
+            <p>Created: ${model.created || 'N/A'}</p>
+            <p>Type: ${model.type || 'N/A'}</p>
+            <p>Premium: ${model.premium !== undefined ? (model.premium ? 'Yes' : 'No') : 'N/A'}</p>
+            <p>Enabled: ${model.enabled !== undefined ? (model.enabled ? 'Yes' : 'No') : 'N/A'}</p>
+            <p>Endpoint: ${model.endpoint || 'N/A'}</p>
+            <p>Max Tokens: ${model.max_tokens !== undefined ? model.max_tokens : 'N/A'}</p>
         `;
     }
 
@@ -319,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             }, { rootMargin: "100px" });
-    
+
             filteredModels.forEach((model, index) => {
                 const modelBox = document.createElement('div');
                 modelBox.className = 'model-box';
@@ -334,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
         adjustLayout();
     }
     
-    // Add this new function to handle layout adjustments
+    // Handle layout adjustments for responsiveness
     function adjustLayout() {
         const modelContainer = document.getElementById('modelContainer');
         const containerWidth = modelContainer.offsetWidth;
@@ -347,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
-    // Add event listener for window resize
+    // Add event listener for window resize with debounce
     window.addEventListener('resize', adjustLayout);
 
     const debounce = (func, delay) => {
@@ -376,20 +397,22 @@ document.addEventListener('DOMContentLoaded', function () {
             loadingElement.style.display = 'block';
             document.getElementById('modelContainer').innerHTML = '';
             document.getElementById('modelCount').textContent = 'Loading...';
-    
+
             const cachedAllModels = getCachedData('allModels');
-            if (cachedAllModels) {
+            if (cachedAllModels && cachedAllModels[currentProvider]) {
                 modelData = cachedAllModels[currentProvider];
+                displayModels();
             } else {
+                // Fetch all models in parallel
                 const allModels = await fetchAllModels();
                 setCachedData('allModels', allModels);
-                modelData = allModels[currentProvider];
+                modelData = allModels[currentProvider] || [];
+                displayModels();
             }
-            displayModels();
         });
     });
 
-    // Dynamic title animation
+    // Dynamic title animation functions (unchanged)
     const titles = ["AI Generative Text Models", "AI Generative Image Models", "AI Generative Audio Models"];
     const colors = ["linear-gradient(45deg, #ff00cc, #3333ff)", "linear-gradient(45deg, #00ff99, #00ccff)", "linear-gradient(45deg, #ff9900, #ff3300)"];
     let currentTitleIndex = 0;
@@ -462,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 50);
     }
 
-    // Scroll to top functionality
+    // Scroll to top functionality (unchanged)
     const scrollToTopButton = document.getElementById("scrollToTop");
 
     window.onscroll = function() {
@@ -495,27 +518,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const loadingElement = document.getElementById('loading');
         loadingElement.style.display = 'block';
         
-        const providers = Object.keys(apiEndpoints);
-        const loadProviders = async (index) => {
-            if (index < providers.length) {
-                const provider = providers[index];
-                const models = await fetchModels(provider);
-                const allModels = getCachedData('allModels') || {};
-                allModels[provider] = models;
-                setCachedData('allModels', allModels);
-                
-                if (provider === currentProvider) {
-                    modelData = models;
-                    displayModels();
-                }
-                
-                loadProviders(index + 1);
-            } else {
-                loadingElement.style.display = 'none';
-            }
-        };
-        
-        loadProviders(0);
+        const cachedAllModels = getCachedData('allModels');
+        if (cachedAllModels) {
+            modelData = cachedAllModels[currentProvider] || [];
+            displayModels();
+        } else {
+            const allModels = await fetchAllModels();
+            setCachedData('allModels', allModels);
+            modelData = allModels[currentProvider] || [];
+            displayModels();
+        }
+        loadingElement.style.display = 'none';
         animateInitialTitle();
     })();
 });
