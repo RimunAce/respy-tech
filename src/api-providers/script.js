@@ -14,6 +14,17 @@ const setCachedData = (key, data) => {
     cache.set(key, { data, timestamp: Date.now() });
 };
 
+const cleanupCache = () => {
+    const now = Date.now();
+    for (const [key, value] of cache.entries()) {
+        if (now - value.timestamp >= CACHE_DURATION) {
+            cache.delete(key);
+        }
+    }
+};
+
+setInterval(cleanupCache, CACHE_DURATION);
+
 document.addEventListener('DOMContentLoaded', function () {
     let modelData = [];
     let currentProvider = 'rimunace';
@@ -32,7 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
         electronhub: 'https://api.electronhub.top/v1/models',
         oxygen: 'https://app.oxyapi.uk/v1/models',
         nagaai: 'https://api.naga.ac/v1/models',
-        skailar: 'https://test.skailar.it/v1/models'
+        skailar: 'https://test.skailar.it/v1/models',
+        helixmind: 'https://helixmind.online/v1/models'
     };
 
     const apiDescriptions = {
@@ -49,7 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
         electronhub: 'Discord: https://discord.com/invite/k73Uw36p',
         oxygen: 'Website: https://www.oxyapi.uk/',
         nagaai: 'Discord: https://discord.gg/nagaai-1145994888006086696',
-        skailar: 'Discord: https://discord.gg/MN7WpgXUHn'
+        skailar: 'Discord: https://discord.gg/MN7WpgXUHn',
+        helixmind: 'Discord: https://discord.gg/fnh52mrE'
     };
 
     const fetchModels = async (apiProvider) => {
@@ -62,6 +75,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return data.data;
         } catch (error) {
             console.error(`Error fetching models for ${apiProvider}:`, error);
+            if (error instanceof TypeError) {
+                console.error('Network error or CORS issue');
+            }
             return [];
         }
     };
@@ -137,7 +153,8 @@ document.addEventListener('DOMContentLoaded', function () {
         electronhub: generateElectronhubContent,
         oxygen: generateOxygenContent,
         nagaai: generateNagaaiContent,
-        skailar: generateSkailarContent
+        skailar: generateSkailarContent,
+        helixmind: generateHelixmindContent
     };
 
     function generateRimunaceContent(model) {
@@ -277,6 +294,14 @@ document.addEventListener('DOMContentLoaded', function () {
             <p>Enabled: ${model.enabled !== undefined ? (model.enabled ? 'Yes' : 'No') : 'N/A'}</p>
             <p>Endpoint: ${model.endpoint || 'N/A'}</p>
             <p>Max Tokens: ${model.max_tokens !== undefined ? model.max_tokens : 'N/A'}</p>
+        `;
+    }
+
+    function generateHelixmindContent(model) {
+        return `
+            <p>Object: ${model.object || 'N/A'}</p>
+            <p>Owned By: ${model.owned_by || 'N/A'}</p>
+            <p>Endpoint: ${model.endpoint || 'N/A'}</p>
         `;
     }
 
