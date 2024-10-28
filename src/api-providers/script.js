@@ -262,7 +262,13 @@ document.addEventListener('DOMContentLoaded', function () {
             <p>Object: ${model.object ? model.object : "N/A"}</p>
             <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
             <p>Max Tokens: ${model.tokens ? model.tokens : "N/A"}</p>
-            <p>Cost: ${model.cost ? model.cost : "N/A"}</p>
+            <p>Created: ${model.created ? model.created : "N/A"}</p>
+            <p>Premium Model: ${model.premium_model !== undefined ? (model.premium_model ? "Yes" : "No") : "N/A"}</p>
+            <p>Vision: ${model.metadata?.vision !== undefined ? (model.metadata.vision ? "Yes" : "No") : "N/A"}</p>
+            <p>Function Call: ${model.metadata?.function_call !== undefined ? (model.metadata.function_call ? "Yes" : "No") : "N/A"}</p>
+            <p>Web Search: ${model.metadata?.web_search !== undefined ? (model.metadata.web_search ? "Yes" : "No") : "N/A"}</p>
+            <p>Pricing Type: ${model.pricing?.type ? model.pricing.type : "N/A"}</p>
+            <p>Pricing Coefficient: ${model.pricing?.coefficient ? model.pricing.coefficient : "N/A"}</p>
         `;
     }
 
