@@ -52,10 +52,9 @@ body, html {
 }
 
 .container {
-    max-width: 1200px;
+    padding: 15px;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 20px;
-    flex-grow: 1;
 }
 
 /* Typography */
@@ -74,13 +73,14 @@ h1 {
     -webkit-background-clip: text;
     color: transparent;
     animation: glowingEffect 5s infinite;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
 }
 
 .subtitle {
     text-align: center;
     color: #ddd;
-    font-size: 1.2em;
-    margin-bottom: 30px;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    margin: 10px 0;
     position: relative;
     padding-bottom: 15px;
 }
@@ -102,16 +102,15 @@ h1 {
     justify-content: center;
     margin-bottom: 20px;
     position: relative;
-    width: 500px;
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
+    width: 90%;
+    max-width: 600px;
+    margin: 15px auto;
 }
 
 #searchInput {
     width: 100%;
-    padding: 10px 40px 10px 15px;
-    font-size: 1em;
+    padding: 10px;
+    font-size: 16px;
     border: none;
     border-radius: 25px;
     background-color: rgba(255,255,255,0.1);
@@ -142,9 +141,9 @@ h1 {
 .api-buttons {
     display: flex;
     flex-wrap: wrap;
+    gap: 8px;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    margin: 15px 0;
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
@@ -154,7 +153,7 @@ h1 {
     width: 180px;
     height: 40px;
     padding: 8px 12px;
-    font-size: 0.9em;
+    font-size: clamp(0.8rem, 2vw, 1rem);
     border: none;
     border-radius: 20px;
     background-color: rgba(255,255,255,0.1);
@@ -167,7 +166,10 @@ h1 {
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 24px;
-    flex: 0 0 auto;
+    flex: 0 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .api-button:hover {
@@ -185,6 +187,8 @@ h1 {
     margin-top: 10px;
     margin-bottom: 20px;
     font-style: italic;
+    font-size: 0.9rem;
+    padding: 10px;
 }
 
 /* Model Container */
@@ -440,4 +444,18 @@ footer {
         height: 32px;
         line-height: 20px;
     }
+}
+
+.provider-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    border-radius: 50%;
+}
+
+.api-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

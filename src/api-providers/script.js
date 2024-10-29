@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const apiEndpoints = {
         rimunace: 'https://api.rimunace.xyz/v1/models',
         zanity: 'https://api.zanity.net/v1/models',
-        anyai: 'http://api.llmplayground.net/v1/models',
+        anyai: 'https://api.llmplayground.net/v1/models',
         cablyai: 'https://cablyai.com/v1/models',
         fresedgpt: 'https://fresedgpt.space/v1/models',
         heckerai: 'https://heckerai.com/v1/models',
