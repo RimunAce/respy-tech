@@ -1,5 +1,5 @@
-const cache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const cache = new Map();
 
 const getCachedData = (key) => {
     const cachedItem = cache.get(key);
@@ -23,6 +23,7 @@ const cleanupCache = () => {
     }
 };
 
+// Run cleanup periodically
 setInterval(cleanupCache, CACHE_DURATION);
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -48,26 +49,34 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     const apiDescriptions = {
-        rimunace: 'Website: https://rimunace.xyz (This API is maintained by Creator of Respy.Tech)',
-        zanity: 'Website: https://api.zanity.net/',
-        anyai: "Discord: https://discord.com/invite/q55gsH8z5F (This API doesn't require an API key for FREE tier)",
-        cablyai: "Website: https://cablyai.com/",
-        fresedgpt: "Docs: https://fresed-api.gitbook.io/fresed-api",
-        heckerai: "Discord: https://discord.gg/rmKrSWwz",
-        shardai: "Website: https://shard-ai.xyz/",
-        zukijourney: "Discord: https://discord.gg/zukijourney",
-        shadowjourney: "Website: https://shadowjourney.xyz/",
-        shuttleai: 'Website: https://shuttleai.app',
-        electronhub: 'Discord: https://discord.com/invite/k73Uw36p',
-        oxygen: 'Website: https://www.oxyapi.uk/',
-        nagaai: 'Discord: https://discord.gg/nagaai-1145994888006086696',
-        skailar: 'Discord: https://discord.gg/MN7WpgXUHn',
-        helixmind: 'Discord: https://discord.gg/fnh52mrE'
+        rimunace: 'This API is maintained by the owner of Respy.Tech and his friend James without dot',
+        zanity: 'This API is made by Voidi, zukijourney\'s dev and has a good API support & stability',
+        anyai: "This API doesn't require an API key for free tier user, a plug and play API",
+        cablyai: "This API requires 10 valid invites to be used or behind a 20$ paywall (negotiable)",
+        fresedgpt: "This API is very recommended for everyone but Claude access locked only for donator",
+        heckerai: "This API is made by a great mastermind, hecker. No further comment needed",
+        shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. No further comment needed",
+        zukijourney: "This API is the starting point of Respy.Tech and Rimunace API. Largest API provider with 5,700 members",
+        shadowjourney: "This API is made by \"The Honoured One\" and for real, he might be Gojo Satoru himself",
+        shuttleai: 'This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model',
+        electronhub: 'This API is the starting point of Rimunace API and the quality of the API itself is outstanding. Recently changed to token based pricing',
+        oxygen: 'This API is practically another starting point of Respy.Tech and offers good pricing for more daily usage. Current status is unknown.',
+        nagaai: 'Based on https://cas.zukijourney.com, this API is a successor of ChimeraGPT, the largest API in history with 15k users',
+        skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
+        helixmind: 'This API is very "professional"-like thanks to the charming owner and support from Hecker (and others too). Owner\s goal is to provide Stable and Reliable service'
     };
 
     const fetchModels = async (apiProvider) => {
         try {
-            const response = await fetch(apiEndpoints[apiProvider]);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+    
+            const response = await fetch(apiEndpoints[apiProvider], {
+                signal: controller.signal
+            });
+    
+            clearTimeout(timeoutId);
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -75,10 +84,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return data.data;
         } catch (error) {
             console.error(`Error fetching models for ${apiProvider}:`, error);
-            if (error instanceof TypeError) {
-                console.error('Network error or CORS issue');
+            if (error instanceof TypeError || error.name === 'AbortError') {
+                console.error('Network error, CORS issue, or timeout');
             }
-            return [];
+            return 'error';
         }
     };
 
@@ -90,17 +99,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const allModels = {};
         results.forEach((result, index) => {
             const provider = providers[index];
-            if (result.status === 'fulfilled') {
+            if (result.status === 'fulfilled' && result.value !== 'error') {
                 allModels[provider] = result.value;
             } else {
                 console.error(`Failed to fetch models for ${provider}:`, result.reason);
-                allModels[provider] = [];
+                allModels[provider] = 'error';
             }
         });
         
         return allModels;
     };
-
+    
     function createModelBox(model, apiProvider) {
         const modelBox = document.createElement('div');
         modelBox.className = 'model-box';
@@ -428,15 +437,39 @@ document.addEventListener('DOMContentLoaded', function () {
             loadingElement.style.display = 'block';
             document.getElementById('modelContainer').innerHTML = '';
             document.getElementById('modelCount').textContent = 'Loading...';
-
+    
+            // Update provider info box content immediately after provider selection
+            const providerInfoBox = document.getElementById('providerInfoBox');
+            const owner = ownerInfo[currentProvider];
+            providerInfoBox.innerHTML = `
+                <h2 style="text-align: center; text-decoration: underline; font-weight: bold;">${owner.description}</h2>
+                <div class="provider-avatars">
+                    ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar">`).join('')}
+                </div>
+                <div class="provider-details">
+                    <div class="provider-buttons">
+                        ${owner.links.map(link => `
+                            <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
+                                <img src="${link.icon}" alt="${link.text} Icon"> ${link.text}
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+    
             const cachedAllModels = getCachedData('allModels');
-            if (cachedAllModels && cachedAllModels[currentProvider]) {
+            if (cachedAllModels && cachedAllModels[currentProvider] && cachedAllModels[currentProvider] !== 'error') {
                 modelData = cachedAllModels[currentProvider];
                 displayModels();
             } else {
-                // Fetch all models in parallel
                 const allModels = await fetchAllModels();
                 setCachedData('allModels', allModels);
+                if (allModels[currentProvider] === 'error') {
+                    document.getElementById('modelContainer').innerHTML = '<div class="no-results-message">Error Fetching Models. Try Refreshing</div>';
+                    document.getElementById('modelCount').textContent = '0';
+                    loadingElement.style.display = 'none';
+                    return;
+                }
                 modelData = allModels[currentProvider] || [];
                 displayModels();
             }
@@ -563,3 +596,138 @@ document.addEventListener('DOMContentLoaded', function () {
         animateInitialTitle();
     })();
 });
+
+const ownerInfo = {
+    rimunace: {
+        description: "Respire",
+        avatars: ["../assets/avatar/respire.webp"],
+        links: [
+            { url: "https://api.rimunace.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/respy-tech", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/rimunace", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    zanity: {
+        description: "Voidi & Cookie",
+        avatars: ["../assets/avatar/voidi.webp", "../assets/avatar/cookie.webp"],
+        links: [
+            { url: "https://zanity.xyz/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/4DRjqaFkhd", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
+        ]
+    },
+    anyai: {
+        description: "meow_18838",
+        avatars: ["../assets/avatar/meow.webp"],
+        links: [
+            { url: "https://api.airforce/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/q55gsH8z5F ", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/meow-18838", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    cablyai: {
+        description: "meow_18838",
+        avatars: ["../assets/avatar/meow.webp"],
+        links: [
+            { url: "https://cablyai.com/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/2k4j4PxE", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/meow-18838", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    fresedgpt: {
+        description: "fresed",
+        avatars: ["../assets/avatar/fresed.webp"],
+        links: [
+            { url: "https://fresed-api.gitbook.io/fresed-api", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/QX86yU4G", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/qazplmqaz", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    heckerai: {
+        description: "heckerai.com",
+        avatars: ["../assets/avatar/hecker.webp"],
+        links: [
+            { url: "https://heckerai.com", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/Hg7jw8K8", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/LiveGamer101", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    shardai: {
+        description: ".puzzy. & quartzwarrior",
+        avatars: ["../assets/avatar/puzzy.webp", "../assets/avatar/quartz.webp"],
+        links: [
+            { url: "https://shard-ai.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.shard-ai.xyz/", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/Puzzy124", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    zukijourney: {
+        description: "ZukiJourney Team",
+        avatars: ["../assets/avatar/ZukiJourney.png"],
+        links: [
+            { url: "https://zukijourney.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/zukijourney", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/zukijourney", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    shadowjourney: {
+        description: "ichatei",
+        avatars: ["../assets/avatar/ichate.gif"],
+        links: [
+            { url: "https://shadowjourney.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/yB2YZJUA3F", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+        ]
+    },
+    shuttleai: {
+        description: "xtristan",
+        avatars: ["../assets/avatar/tristan.gif"],
+        links: [
+            { url: "https://shuttleai.app", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/shuttleai", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/tristandevs", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    electronhub: {
+        description: "Soukyo & Kasu",
+        avatars: ["../assets/avatar/soukyo.webp", "../assets/avatar/kasu.webp"],
+        links: [
+            { url: "https://api.electronhub.top", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/apUUqbxCBQ", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/snowby666", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    oxygen: {
+        description: "Tornadosoftware & Thesketchubuser",
+        avatars: ["../assets/avatar/tornado.webp", "../assets/avatar/sketchy.webp"],
+        links: [
+            { url: "https://oxyapi.uk", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/kM6MaCqGKA", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/tornado-softwares", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    nagaai: {
+        description: "Zentixua",
+        avatars: ["../assets/avatar/zentix.webp"],
+        links: [
+            { url: "https://naga.ac", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/JxRBXBhabu", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/ZentixUA", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    skailar: {
+        description: "Aquadraws",
+        avatars: ["../assets/avatar/aqua.webp"],
+        links: [
+            { url: "https://test.skailar.it/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/ka9tkU9UNz", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
+        ]
+    },
+    helixmind: {
+        description: "Faer1x",
+        avatars: ["../assets/avatar/phantasifae.webp"],
+        links: [
+            { url: "https://helixmind.online", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/ZCSXBGHY", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
+        ]
+    }
+};
+

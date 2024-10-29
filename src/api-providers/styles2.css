@@ -459,3 +459,111 @@ footer {
     align-items: center;
     justify-content: center;
 }
+
+.provider-info-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px auto;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.provider-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.provider-details {
+    text-align: center;
+    color: #fff;
+}
+
+.provider-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.provider-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.provider-button.website {
+    background-color: #ff7f00; /* Orange */
+}
+
+.provider-button.discord {
+    background-color: #7289da; /* Discord color */
+}
+
+.provider-button.github {
+    background-color: #333; /* GitHub color */
+}
+
+.provider-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.provider-button img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animation for OWNER text */
+@keyframes ownerTextAnimation {
+    0%, 100% { color: #ff00cc; }
+    50% { color: #3333ff; }
+}
+
+.provider-info-box h2 {
+    animation: ownerTextAnimation 3s infinite;
+    margin-bottom: 5px; /* Reduce space between text and image */
+}
+
+.provider-details {
+    margin-top: 5px; /* Reduce space between image and details */
+}
+
+.provider-avatars {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.provider-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+}
+
+.provider-details {
+    text-align: center;
+    color: #fff;
+}
