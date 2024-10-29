@@ -435,7 +435,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    window.addEventListener('resize', adjustLayout);
+    function preloadAvatars() {
+        const avatarUrls = new Set();
+        Object.values(ownerInfo).forEach(owner => {
+            owner.avatars.forEach(avatar => avatarUrls.add(avatar));
+        });
+    
+        avatarUrls.forEach(url => {
+            const img = new Image();
+            img.src = url;
+        });
+    }
+
+    window.addEventListener('load', function () {
+        preloadAvatars();
+    });
 
     const debounce = (func, delay) => {
         let timeoutId;
