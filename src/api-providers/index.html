@@ -11,7 +11,16 @@
     <meta property="og:image" content="https://respy.tech/images/shikanoko.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://respy.tech/api-providers">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://scripts.simpleanalyticscdn.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://queue.simpleanalyticscdn.com; connect-src 'self' https://heckerai.com https://fresedgpt.space https://api.shard-ai.xyz https://zukijourney.xyzbot.net https://shadowjourney.xyz/ https://api.shuttleai.app https://api.electronhub.top https://app.oxyapi.uk http://api.llmplayground.net https://api.rimunace.xyz https://api.zanity.net https://cablyai.com https://api.naga.ac https://test.skailar.it https://helixmind.online; form-action 'self'; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' https://scripts.simpleanalyticscdn.com; 
+        style-src 'self' 'unsafe-inline'; 
+        font-src 'self'; 
+        img-src 'self' https://queue.simpleanalyticscdn.com https://downloadr2.apkmirror.com https://seeklogo.com; 
+        connect-src 'self' https://heckerai.com https://fresedgpt.space https://api.shard-ai.xyz https://zukijourney.xyzbot.net https://shadowjourney.xyz/ https://api.shuttleai.app https://api.electronhub.top https://app.oxyapi.uk http://api.llmplayground.net https://api.rimunace.xyz https://api.zanity.net https://cablyai.com https://api.naga.ac https://test.skailar.it https://helixmind.online; 
+        form-action 'self'; 
+        upgrade-insecure-requests;
+    ">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <link rel="stylesheet" href="../api-providers/styles2.css">
@@ -19,12 +28,14 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="Respire">
     <link rel="canonical" href="https://respy.tech/api-providers">
+    <link rel="preload" href="../assets/background/bg.png" as="image">
 </head>
 <body>
+    <div class="bg-image"></div>
     <div class="container">
         <h1><span class="title-text" id="dynamicTitle">AI Generative Text Models</span></h1>
         <div class="subtitle">Explore AI models from multiple providers</div>
-        <div class="disclaimer">Disclaimer: The listed API providers (except rimunace) are not affiliated with me. This is for informational purposes only.</div>
+        <div class="disclaimer">Disclaimer: The listed API providers (except rimunace) are not affiliated with me. This is for informational purposes only. Use at your own risk.</div>
         <div class="api-buttons">
             <button class="api-button active" data-api="rimunace">
                 <img src="../assets/icons/rimunace.gif" alt="Rimunace" class="provider-icon">
@@ -87,15 +98,15 @@
                 HelixMind
             </button>
         </div>
-        <div class="api-description" id="apiDescription">This API is maintained by the owner of Respy.Tech and his friend James without dot</div>
-        <div id="modelCounter" class="model-counter">Total Models: <span id="modelCount">Loading...</span></div>
         <div id="providerInfoBox" class="provider-info-box">
             Loading...
         </div>
+        <div class="api-description loading" id="apiDescription">Loading...</div>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search models...">
             <span class="search-icon">🔍</span>
         </div>
+        <div id="modelCounter" class="model-counter">Total Models: <span id="modelCount">Loading...</span></div>
         <div id="loading">Loading models...</div>
         <div id="modelContainer"></div>
     </div>
@@ -104,7 +115,8 @@
         <div class="contact-info">Discord: respire (188610034849021952)</div>
     </footer>
     <button id="scrollToTop" title="Scroll to Top">↑</button>
-    <script src="../api-providers/script.js"></script>
+    <script type="module" src="../api-providers/script.js"></script>
+    <script src="../api-providers/bgImageLoader.js" defer></script>
     <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
     <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
 </body>

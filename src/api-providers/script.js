@@ -1,12 +1,31 @@
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 5 * 60 * 1000;
 const cache = new Map();
+
+
+const apiDescriptions = {
+    rimunace: 'This API is maintained by the owner of Respy.Tech and his friend James without dot',
+    zanity: 'This API is made by Voidi, zukijourney\'s dev and has a good API support & stability',
+    anyai: "This API doesn't require an API key for free tier user, a plug and play API",
+    cablyai: "This API requires 10 valid invites to be used or behind a 20$ paywall (negotiable)",
+    fresedgpt: "This API is very recommended for everyone but Claude access locked only for donator",
+    heckerai: "This API is made by a great mastermind, hecker. No further comment needed",
+    shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. No further comment needed",
+    zukijourney: "This API is the starting point of Respy.Tech and Rimunace API. Largest API provider with 5,700 members",
+    shadowjourney: "This API is made by \"The Honoured One\" and for real, he might be Gojo Satoru himself",
+    shuttleai: 'This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model',
+    electronhub: 'This API is the starting point of Rimunace API and the quality of the API itself is outstanding. Recently changed to token based pricing',
+    oxygen: 'This API is practically another starting point of Respy.Tech and offers good pricing for more daily usage. Current status is unknown.',
+    nagaai: 'Based on https://cas.zukijourney.com, this API is a successor of ChimeraGPT, the largest API in history with 15k users',
+    skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
+    helixmind: 'This API is very "professional"-like thanks to the charming owner and support from Hecker (and others too). Owner\'s goal is to provide Stable and Reliable service'
+};
 
 const getCachedData = (key) => {
     const cachedItem = cache.get(key);
     if (cachedItem && Date.now() - cachedItem.timestamp < CACHE_DURATION) {
         return cachedItem.data;
     }
-    cache.delete(key); // Remove expired cache
+    cache.delete(key);
     return null;
 };
 
@@ -23,93 +42,75 @@ const cleanupCache = () => {
     }
 };
 
-// Run cleanup periodically
 setInterval(cleanupCache, CACHE_DURATION);
 
 document.addEventListener('DOMContentLoaded', function () {
     let modelData = [];
     let currentProvider = 'rimunace';
 
-    const apiEndpoints = {
-        rimunace: 'https://api.rimunace.xyz/v1/models',
-        zanity: 'https://api.zanity.net/v1/models',
-        anyai: 'https://api.llmplayground.net/v1/models',
-        cablyai: 'https://cablyai.com/v1/models',
-        fresedgpt: 'https://fresedgpt.space/v1/models',
-        heckerai: 'https://heckerai.com/v1/models',
-        shardai: 'https://api.shard-ai.xyz/v1/models',
-        zukijourney: 'https://zukijourney.xyzbot.net/v1/models',
-        shadowjourney: 'https://shadowjourney.xyz/v1/models',
-        shuttleai: 'https://api.shuttleai.app/v1/models',
-        electronhub: 'https://api.electronhub.top/v1/models',
-        oxygen: 'https://app.oxyapi.uk/v1/models',
-        nagaai: 'https://api.naga.ac/v1/models',
-        skailar: 'https://test.skailar.it/v1/models',
-        helixmind: 'https://helixmind.online/v1/models'
-    };
-
-    const apiDescriptions = {
-        rimunace: 'This API is maintained by the owner of Respy.Tech and his friend James without dot',
-        zanity: 'This API is made by Voidi, zukijourney\'s dev and has a good API support & stability',
-        anyai: "This API doesn't require an API key for free tier user, a plug and play API",
-        cablyai: "This API requires 10 valid invites to be used or behind a 20$ paywall (negotiable)",
-        fresedgpt: "This API is very recommended for everyone but Claude access locked only for donator",
-        heckerai: "This API is made by a great mastermind, hecker. No further comment needed",
-        shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. No further comment needed",
-        zukijourney: "This API is the starting point of Respy.Tech and Rimunace API. Largest API provider with 5,700 members",
-        shadowjourney: "This API is made by \"The Honoured One\" and for real, he might be Gojo Satoru himself",
-        shuttleai: 'This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model',
-        electronhub: 'This API is the starting point of Rimunace API and the quality of the API itself is outstanding. Recently changed to token based pricing',
-        oxygen: 'This API is practically another starting point of Respy.Tech and offers good pricing for more daily usage. Current status is unknown.',
-        nagaai: 'Based on https://cas.zukijourney.com, this API is a successor of ChimeraGPT, the largest API in history with 15k users',
-        skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
-        helixmind: 'This API is very "professional"-like thanks to the charming owner and support from Hecker (and others too). Owner\s goal is to provide Stable and Reliable service'
-    };
-
-    const fetchModels = async (apiProvider) => {
+    async function fetchAllModels() {
+        const providers = [
+            'rimunace', 'zanity', 'anyai', 'cablyai', 'fresedgpt', 
+            'heckerai', 'shardai', 'zukijourney', 'shadowjourney', 
+            'shuttleai', 'electronhub', 'oxygen', 'nagaai', 'skailar', 
+            'helixmind'
+        ];
+        
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-    
-            const response = await fetch(apiEndpoints[apiProvider], {
-                signal: controller.signal
+            const results = {};
+            let hasErrors = false;
+            const fetchPromises = providers.map(async provider => {
+                try {
+                    const response = await fetch(`/.netlify/functions/api-handler/${provider}`);
+                    if (!response.ok) {
+                        console.warn(`${provider} API returned status: ${response.status}`);
+                        results[provider] = [];
+                        return;
+                    }
+                    const data = await response.json();
+                    results[provider] = data.data || [];
+                } catch (error) {
+                    console.warn(`${provider} API failed:`, error.message);
+                    results[provider] = [];
+                    hasErrors = true;
+                }
             });
     
-            clearTimeout(timeoutId);
-    
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            await Promise.all(fetchPromises);
+            
+            const totalProviders = providers.length;
+            const failedProviders = Object.values(results).filter(arr => arr.length === 0).length;
+            
+            if (failedProviders === totalProviders) {
+                displayError('Unable to load any models. Please try again later.');
+            } else if (hasErrors) {
+                const warningDiv = document.createElement('div');
+                warningDiv.className = 'warning-message';
+                warningDiv.textContent = 'Some providers are currently unavailable';
+                warningDiv.style.cssText = `
+                    background-color: rgba(255, 165, 0, 0.2);
+                    color: #fff;
+                    padding: 8px;
+                    border-radius: 5px;
+                    text-align: center;
+                    margin: 10px auto;
+                    max-width: 600px;
+                `;
+                document.getElementById('modelContainer').insertAdjacentElement('beforebegin', warningDiv);
+                
+                setTimeout(() => {
+                    warningDiv.style.opacity = '0';
+                    setTimeout(() => warningDiv.remove(), 500);
+                }, 5000);
             }
-            const data = await response.json();
-            return data.data;
+    
+            return results;
         } catch (error) {
-            console.error(`Error fetching models for ${apiProvider}:`, error);
-            if (error instanceof TypeError || error.name === 'AbortError') {
-                console.error('Network error, CORS issue, or timeout');
-            }
-            return 'error';
+            console.error('Fatal error in fetchAllModels:', error);
+            return providers.reduce((acc, provider) => ({ ...acc, [provider]: [] }), {});
         }
-    };
+    }
 
-    const fetchAllModels = async () => {
-        const providers = Object.keys(apiEndpoints);
-        const modelPromises = providers.map(provider => fetchModels(provider));
-        const results = await Promise.allSettled(modelPromises);
-        
-        const allModels = {};
-        results.forEach((result, index) => {
-            const provider = providers[index];
-            if (result.status === 'fulfilled' && result.value !== 'error') {
-                allModels[provider] = result.value;
-            } else {
-                console.error(`Failed to fetch models for ${provider}:`, result.reason);
-                allModels[provider] = 'error';
-            }
-        });
-        
-        return allModels;
-    };
-    
     function createModelBox(model, apiProvider) {
         const modelBox = document.createElement('div');
         modelBox.className = 'model-box';
@@ -351,64 +352,48 @@ document.addEventListener('DOMContentLoaded', function () {
         const modelCountElement = document.getElementById('modelCount');
         const loadingElement = document.getElementById('loading');
         modelContainer.innerHTML = '';
-        
+    
         const normalizedFilter = filter.toLowerCase().trim();
         const filterWords = normalizedFilter.split(/\s+/);
-        
+    
         const filteredModels = modelData.filter(model => {
             const modelString = JSON.stringify(model).toLowerCase();
             return filterWords.every(word => modelString.includes(word));
         });
-        
+    
         modelCountElement.textContent = filteredModels.length;
-        
+    
         if (filteredModels.length === 0) {
             const noResultsMessage = document.createElement('div');
             noResultsMessage.textContent = 'No models found matching your search.';
             noResultsMessage.className = 'no-results-message';
             modelContainer.appendChild(noResultsMessage);
         } else {
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const modelBox = entry.target;
-                        const model = JSON.parse(modelBox.dataset.model);
-                        modelBox.appendChild(createModelIdElement(model));
-                        modelBox.appendChild(createModelDetailsElement(model, currentProvider));
-                        modelBox.appendChild(createCopyButton(model));
-                        observer.unobserve(modelBox);
-                    }
-                });
-            }, { rootMargin: "100px" });
-
+            const fragment = document.createDocumentFragment();
             filteredModels.forEach((model, index) => {
-                const modelBox = document.createElement('div');
-                modelBox.className = 'model-box';
-                modelBox.dataset.model = JSON.stringify(model);
+                const modelBox = createModelBox(model, currentProvider);
                 modelBox.style.animationDelay = `${index * 0.05}s`;
-                modelContainer.appendChild(modelBox);
-                observer.observe(modelBox);
+                fragment.appendChild(modelBox);
             });
+            modelContainer.appendChild(fragment);
         }
     
         loadingElement.style.display = 'none';
         adjustLayout();
     }
-    
-    // Handle layout adjustments for responsiveness
+
     function adjustLayout() {
         const modelContainer = document.getElementById('modelContainer');
         const containerWidth = modelContainer.offsetWidth;
         const modelBoxes = document.querySelectorAll('.model-box');
-        
+
         if (containerWidth < 480) {
             modelBoxes.forEach(box => box.style.width = '100%');
         } else {
             modelBoxes.forEach(box => box.style.width = '');
         }
     }
-    
-    // Add event listener for window resize with debounce
+
     window.addEventListener('resize', adjustLayout);
 
     const debounce = (func, delay) => {
@@ -427,56 +412,76 @@ document.addEventListener('DOMContentLoaded', function () {
         debouncedDisplayModels(e.target.value);
     });
 
+    let isLoading = false;
+
     document.querySelectorAll('.api-button').forEach(button => {
         button.addEventListener('click', async (e) => {
-            document.querySelectorAll('.api-button').forEach(btn => btn.classList.remove('active'));
+            if (isLoading || e.target.classList.contains('active')) {
+                return;
+            }
+
+            isLoading = true;
+            const previousActive = document.querySelector('.api-button.active');
+            previousActive?.classList.remove('active');
             e.target.classList.add('active');
+            
             currentProvider = e.target.dataset.api;
-            document.getElementById('apiDescription').textContent = apiDescriptions[currentProvider];
+            const apiDescription = document.getElementById('apiDescription');
+            apiDescription.classList.add('loading');
+            apiDescription.textContent = 'Loading...';
+
             const loadingElement = document.getElementById('loading');
             loadingElement.style.display = 'block';
             document.getElementById('modelContainer').innerHTML = '';
             document.getElementById('modelCount').textContent = 'Loading...';
-    
-            // Update provider info box content immediately after provider selection
-            const providerInfoBox = document.getElementById('providerInfoBox');
-            const owner = ownerInfo[currentProvider];
-            providerInfoBox.innerHTML = `
-                <h2 style="text-align: center; text-decoration: underline; font-weight: bold;">${owner.description}</h2>
-                <div class="provider-avatars">
-                    ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar">`).join('')}
-                </div>
-                <div class="provider-details">
-                    <div class="provider-buttons">
-                        ${owner.links.map(link => `
-                            <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
-                                <img src="${link.icon}" alt="${link.text} Icon"> ${link.text}
-                            </a>
-                        `).join('')}
+
+            try {
+                const providerInfoBox = document.getElementById('providerInfoBox');
+                const owner = ownerInfo[currentProvider];
+                providerInfoBox.innerHTML = `
+                    <h2 style="text-align: center; text-decoration: font-weight: bold;">${owner.description}</h2>
+                    <div class="provider-avatars">
+                        ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar">`).join('')}
                     </div>
-                </div>
-            `;
-    
-            const cachedAllModels = getCachedData('allModels');
-            if (cachedAllModels && cachedAllModels[currentProvider] && cachedAllModels[currentProvider] !== 'error') {
-                modelData = cachedAllModels[currentProvider];
-                displayModels();
-            } else {
-                const allModels = await fetchAllModels();
-                setCachedData('allModels', allModels);
-                if (allModels[currentProvider] === 'error') {
-                    document.getElementById('modelContainer').innerHTML = '<div class="no-results-message">Error Fetching Models. Try Refreshing</div>';
-                    document.getElementById('modelCount').textContent = '0';
-                    loadingElement.style.display = 'none';
-                    return;
+                    <div class="provider-details">
+                        <div class="provider-buttons">
+                            ${owner.links.map(link => `
+                                <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
+                                    <img src="${link.icon}" alt="${link.text} Icon"> ${link.text}
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                const cachedAllModels = getCachedData('allModels');
+                if (cachedAllModels && cachedAllModels[currentProvider] && cachedAllModels[currentProvider] !== 'error') {
+                    modelData = cachedAllModels[currentProvider];
+                    displayModels();
+                } else {
+                    const allModels = await fetchAllModels();
+                    setCachedData('allModels', allModels);
+                    if (allModels[currentProvider] === 'error') {
+                        document.getElementById('modelContainer').innerHTML = '<div class="no-results-message">Error Fetching Models. Try Refreshing</div>';
+                        document.getElementById('modelCount').textContent = '0';
+                    } else {
+                        modelData = allModels[currentProvider] || [];
+                        displayModels();
+                    }
                 }
-                modelData = allModels[currentProvider] || [];
-                displayModels();
+
+                apiDescription.classList.remove('loading');
+                apiDescription.textContent = apiDescriptions[currentProvider];
+            } catch (error) {
+                console.error('Error loading provider:', error);
+                apiDescription.textContent = 'Error loading provider information';
+            } finally {
+                loadingElement.style.display = 'none';
+                isLoading = false;
             }
         });
     });
 
-    // Dynamic title animation functions (unchanged)
     const titles = ["AI Generative Text Models", "AI Generative Image Models", "AI Generative Audio Models"];
     const colors = ["linear-gradient(45deg, #ff00cc, #3333ff)", "linear-gradient(45deg, #00ff99, #00ccff)", "linear-gradient(45deg, #ff9900, #ff3300)"];
     let currentTitleIndex = 0;
@@ -520,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 clearInterval(typeInterval);
                 currentTitleIndex = (currentTitleIndex + 1) % titles.length;
-                setTimeout(animateTitle, 1500); // Wait for 1.5 seconds before changing again
+                setTimeout(animateTitle, 1500);
             }
         }, 50);
     }
@@ -529,10 +534,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const titleElement = document.getElementById('dynamicTitle');
         const initialTitle = titles[0];
         const initialColor = colors[0];
-        
+
         titleElement.style.backgroundImage = initialColor;
         titleElement.textContent = '';
-        
+
         typeInitialTitle(titleElement, initialTitle);
     }
 
@@ -544,57 +549,132 @@ document.addEventListener('DOMContentLoaded', function () {
                 i++;
             } else {
                 clearInterval(typeInterval);
-                setTimeout(animateTitle, 1500); // Start the regular animation after 1.5 seconds
+                setTimeout(animateTitle, 1500);
             }
         }, 50);
     }
 
-    // Scroll to top functionality (unchanged)
     const scrollToTopButton = document.getElementById("scrollToTop");
 
     window.onscroll = function() {
-        const shouldShowButton = document.body.scrollTop > 20 || document.documentElement.scrollTop > 20;
+        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+        const shouldShowButton = scrollPosition > 100;
         
-        if (shouldShowButton && scrollToTopButton.style.display !== "block") {
-            scrollToTopButton.style.display = "block";
-            scrollToTopButton.style.animation = 'fadeIn 0.3s ease';
-        } else if (!shouldShowButton && scrollToTopButton.style.display === "block") {
-            scrollToTopButton.style.animation = 'fadeOut 0.3s ease';
-            setTimeout(() => {
-                scrollToTopButton.style.display = 'none';
-            }, 300);
+        if (shouldShowButton) {
+            if (scrollToTopButton.style.display !== "block") {
+                scrollToTopButton.style.display = "block";
+                scrollToTopButton.style.opacity = "0";
+                setTimeout(() => {
+                    scrollToTopButton.style.opacity = "1";
+                }, 10);
+            }
+        } else {
+            if (scrollToTopButton.style.display === "block") {
+                scrollToTopButton.style.opacity = "0";
+                setTimeout(() => {
+                    scrollToTopButton.style.display = "none";
+                }, 300);
+            }
         }
     };
 
     scrollToTopButton.addEventListener("click", function() {
         window.scrollTo({
             top: 0,
-            behavior: 'instant' // This makes the scroll instant
+            behavior: 'smooth'
         });
-        scrollToTopButton.style.animation = 'fadeOut 0.3s ease';
-        setTimeout(() => {
-            scrollToTopButton.style.display = 'none';
-        }, 300);
     });
 
-    // Initial fetch and display of models
     (async () => {
         const loadingElement = document.getElementById('loading');
-        loadingElement.style.display = 'block';
+        const providerInfoBox = document.getElementById('providerInfoBox');
+        const apiDescription = document.getElementById('apiDescription');
         
-        const cachedAllModels = getCachedData('allModels');
-        if (cachedAllModels) {
-            modelData = cachedAllModels[currentProvider] || [];
-            displayModels();
-        } else {
-            const allModels = await fetchAllModels();
-            setCachedData('allModels', allModels);
-            modelData = allModels[currentProvider] || [];
-            displayModels();
+        try {
+            loadingElement.style.display = 'block';
+            setButtonsState(true);
+            providerInfoBox.innerHTML = 'Loading...';
+            apiDescription.classList.add('loading');
+            apiDescription.textContent = 'Loading...';
+
+            const cachedAllModels = getCachedData('allModels');
+            if (cachedAllModels) {
+                modelData = cachedAllModels[currentProvider] || [];
+                displayModels();
+            } else {
+                const allModels = await fetchAllModels();
+                setCachedData('allModels', allModels);
+                modelData = allModels[currentProvider] || [];
+                displayModels();
+            }
+
+            const owner = ownerInfo[currentProvider];
+            updateProviderInfo(owner);
+            
+            apiDescription.classList.remove('loading');
+            apiDescription.textContent = apiDescriptions[currentProvider];
+        } catch (error) {
+            console.error('Error loading models:', error);
+            providerInfoBox.innerHTML = 'Error loading provider information';
+            apiDescription.textContent = 'Error loading provider information';
+        } finally {
+            loadingElement.style.display = 'none';
+            setButtonsState(false);
+            animateInitialTitle();
         }
-        loadingElement.style.display = 'none';
-        animateInitialTitle();
     })();
+
+    function updateProviderInfo(owner) {
+        const providerInfoBox = document.getElementById('providerInfoBox');
+        providerInfoBox.innerHTML = `
+            <h2 style="text-align: center; text-decoration: font-weight: bold;">${owner.description}</h2>
+            <div class="provider-avatars">
+                ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar">`).join('')}
+            </div>
+            <div class="provider-details">
+                <div class="provider-buttons">
+                    ${owner.links.map(link => `
+                        <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
+                            <img src="${link.icon}" alt="${link.text} Icon"> ${link.text}
+                        </a>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function setButtonsState(disabled) {
+        document.querySelectorAll('.api-button').forEach(button => {
+            button.disabled = disabled;
+            if (disabled) {
+                button.style.opacity = '0.5';
+                button.style.cursor = 'not-allowed';
+            } else {
+                button.style.opacity = '1';
+                button.style.cursor = 'pointer';
+            }
+        });
+    }
+
+    function displayError(message) {
+        const modelContainer = document.getElementById('modelContainer');
+        modelContainer.innerHTML = '';
+        const errorMessage = document.createElement('div');
+        errorMessage.textContent = message;
+        errorMessage.className = 'error-message';
+        modelContainer.appendChild(errorMessage);
+    }
+
+    const apiDescription = document.getElementById('apiDescription');
+
+    document.querySelectorAll('.api-button').forEach(button => {
+        button.addEventListener('click', async function() {
+            const provider = this.dataset.api;
+            updateApiDescription(provider);
+        });
+    });
+
+    updateApiDescription('rimunace');
 });
 
 const ownerInfo = {
@@ -731,3 +811,9 @@ const ownerInfo = {
     }
 };
 
+function updateApiDescription(provider) {
+    const apiDescription = document.getElementById('apiDescription');
+    if (apiDescription) {
+        apiDescription.textContent = apiDescriptions[provider] || 'No description available';
+    }
+}
