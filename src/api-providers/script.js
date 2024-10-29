@@ -56,23 +56,23 @@ document.addEventListener('DOMContentLoaded', function () {
             'helixmind'
         ];
         
+        const results = {};
+        let hasErrors = false;
+        let errorMessages = new Map();
+    
         try {
-            const results = {};
-            let hasErrors = false;
             const fetchPromises = providers.map(async provider => {
                 try {
-                    const response = await fetch(`/.netlify/functions/api-handler/${provider}`);
-                    if (!response.ok) {
-                        console.warn(`${provider} API returned status: ${response.status}`);
-                        results[provider] = [];
-                        return;
+                    const data = await fetchWithRetry(`/.netlify/functions/api-handler/${provider}`);
+                    if (!Array.isArray(data?.data)) {
+                        throw new Error('Invalid data format received');
                     }
-                    const data = await response.json();
-                    results[provider] = data.data || [];
+                    results[provider] = data.data;
                 } catch (error) {
-                    console.warn(`${provider} API failed:`, error.message);
-                    results[provider] = [];
                     hasErrors = true;
+                    errorMessages.set(provider, error.message);
+                    results[provider] = [];
+                    console.error(`Error fetching ${provider}:`, error);
                 }
             });
     
@@ -82,31 +82,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const failedProviders = Object.values(results).filter(arr => arr.length === 0).length;
             
             if (failedProviders === totalProviders) {
-                displayError('Unable to load any models. Please try again later.');
-            } else if (hasErrors) {
-                const warningDiv = document.createElement('div');
-                warningDiv.className = 'warning-message';
-                warningDiv.textContent = 'Some providers are currently unavailable';
-                warningDiv.style.cssText = `
-                    background-color: rgba(255, 165, 0, 0.2);
-                    color: #fff;
-                    padding: 8px;
-                    border-radius: 5px;
-                    text-align: center;
-                    margin: 10px auto;
-                    max-width: 600px;
-                `;
-                document.getElementById('modelContainer').insertAdjacentElement('beforebegin', warningDiv);
-                
-                setTimeout(() => {
-                    warningDiv.style.opacity = '0';
-                    setTimeout(() => warningDiv.remove(), 500);
-                }, 5000);
+                throw new Error('All providers failed to respond');
+            }
+    
+            if (hasErrors) {
+                displayWarning(errorMessages);
             }
     
             return results;
         } catch (error) {
             console.error('Fatal error in fetchAllModels:', error);
+            displayError('Unable to load models. Please try again later.');
             return providers.reduce((acc, provider) => ({ ...acc, [provider]: [] }), {});
         }
     }
@@ -134,14 +120,69 @@ document.addEventListener('DOMContentLoaded', function () {
         return modelIdElement;
     }
 
+    function displayWarning(errorMessages) {
+        const warningDiv = document.createElement('div');
+        warningDiv.className = 'warning-message';
+        
+        const summary = document.createElement('div');
+        summary.textContent = `${errorMessages.size} providers are currently unavailable`;
+        warningDiv.appendChild(summary);
+    
+        if (errorMessages.size > 0) {
+            const details = document.createElement('div');
+            details.className = 'warning-details';
+            details.style.display = 'none';
+            
+            errorMessages.forEach((message, provider) => {
+                const providerError = document.createElement('div');
+                providerError.textContent = `${provider}: ${message}`;
+                details.appendChild(providerError);
+            });
+            
+            const toggleButton = document.createElement('button');
+            toggleButton.textContent = 'Show Details';
+            toggleButton.onclick = () => {
+                details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                toggleButton.textContent = details.style.display === 'none' ? 'Show Details' : 'Hide Details';
+            };
+            
+            warningDiv.appendChild(toggleButton);
+            warningDiv.appendChild(details);
+        }
+    
+        document.getElementById('modelContainer').insertAdjacentElement('beforebegin', warningDiv);
+        
+        setTimeout(() => {
+            warningDiv.style.opacity = '0';
+            setTimeout(() => warningDiv.remove(), 500);
+        }, 10000);
+    }
+
+    function safeContentGenerator(generator, model) {
+        try {
+            return generator(model);
+        } catch (error) {
+            console.error(`Error generating content:`, error);
+            return `
+                <p>Error: Unable to display model details</p>
+                <p>ID: ${model.id || 'Unknown'}</p>
+            `;
+        }
+    }
+
     function createModelDetailsElement(model, apiProvider) {
         const modelDetailsElement = document.createElement('div');
         modelDetailsElement.className = 'model-details';
-
-        const contentGenerator = getContentGenerator(apiProvider);
-        const content = contentGenerator(model);
-
-        modelDetailsElement.innerHTML = content;
+    
+        try {
+            const contentGenerator = contentGenerators[apiProvider] || (() => '');
+            const content = safeContentGenerator(contentGenerator, model);
+            modelDetailsElement.innerHTML = content;
+        } catch (error) {
+            console.error('Error creating model details:', error);
+            modelDetailsElement.innerHTML = '<p>Error loading model details</p>';
+        }
+    
         return modelDetailsElement;
     }
 
@@ -817,3 +858,18 @@ function updateApiDescription(provider) {
         apiDescription.textContent = apiDescriptions[provider] || 'No description available';
     }
 }
+
+const fetchWithRetry = async (url, maxRetries = 3, delay = 1000) => {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            if (i === maxRetries - 1) throw error;
+            await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+        }
+    }
+};

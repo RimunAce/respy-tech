@@ -194,7 +194,38 @@ box-shadow: 0 0 15px rgba(255,255,255,0.3);
 }
 
 .warning-message {
+    background-color: rgba(255, 165, 0, 0.2);
+    color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    margin: 10px auto;
+    max-width: 600px;
     transition: opacity 0.5s ease;
+}
+
+.warning-details {
+    margin-top: 10px;
+    font-size: 0.9em;
+    text-align: left;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.warning-message button {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.warning-message button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 .api-description::before {
