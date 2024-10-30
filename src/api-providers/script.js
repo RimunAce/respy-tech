@@ -3,21 +3,21 @@ const cache = new Map();
 
 
 const apiDescriptions = {
-    rimunace: 'This API is maintained by the owner of Respy.Tech and his friend James without dot',
+    rimunace: 'This API is maintained by me (Respire) and with the help of James"without dot"',
     zanity: 'This API is made by Voidi, zukijourney\'s dev and has a good API support & stability',
     anyai: "This API doesn't require an API key for free tier user, a plug and play API",
     cablyai: "This API requires 10 valid invites to be used or behind a 20$ paywall (negotiable)",
-    fresedgpt: "This API is very recommended for everyone but Claude access locked only for donator",
-    heckerai: "This API is made by a great mastermind, hecker. No further comment needed",
+    fresedgpt: "This API is very recommended for everyone but (some) Claude model requires payment",
+    heckerai: "This API is made by a great mastermind, hecker. Dropped an announcement of winding down server and making it private starting 15th November 2024",
     shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. No further comment needed",
-    zukijourney: "This API is the starting point of Respy.Tech and Rimunace API. Largest API provider with 5,700 members",
+    zukijourney: "This API is practically leading the API provider scene. Largest API provider with 5,700 members",
     shadowjourney: "This API is made by \"The Honoured One\" and for real, he might be Gojo Satoru himself",
     shuttleai: 'This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model',
-    electronhub: 'This API is the starting point of Rimunace API and the quality of the API itself is outstanding. Recently changed to token based pricing',
-    oxygen: 'This API is practically another starting point of Respy.Tech and offers good pricing for more daily usage. Current status is unknown.',
+    electronhub: 'This API recently changed to token based pricing and still provides a good stability and support',
+    oxygen: 'This API\'s key can be managed through a dashboard. They offer some add-ons too for enhancing user experience. Current status is unknown.',
     nagaai: 'Based on https://cas.zukijourney.com, this API is a successor of ChimeraGPT, the largest API in history with 15k users',
     skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
-    helixmind: 'This API is very "professional"-like thanks to the charming owner and support from Hecker (and others too). Owner\'s goal is to provide Stable and Reliable service'
+    helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service'
 };
 
 const getCachedData = (key) => {
