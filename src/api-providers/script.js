@@ -14,10 +14,11 @@ const apiDescriptions = {
     shadowjourney: "This API is made by \"The Honoured One\" and for real, he might be Gojo Satoru himself",
     shuttleai: 'This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model',
     electronhub: 'This API recently changed to token based pricing and still provides a good stability and support',
-    oxygen: 'This API\'s key can be managed through a dashboard. They offer some add-ons too for enhancing user experience. Current status is unknown.',
+    oxygen: 'This API has changed to pay-as-you-go and updated their dashboard layout. Still a good service nonetheless',
     nagaai: 'Based on https://cas.zukijourney.com, this API is a successor of ChimeraGPT, the largest API in history with 15k users',
     skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
-    helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service'
+    helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service',
+    hareproxy: 'This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint'
 };
 
 const getCachedData = (key) => {
@@ -53,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'rimunace', 'zanity', 'anyai', 'cablyai', 'fresedgpt', 
             'heckerai', 'shardai', 'zukijourney', 'shadowjourney', 
             'shuttleai', 'electronhub', 'oxygen', 'nagaai', 'skailar', 
-            'helixmind'
+            'helixmind', 'hareproxy'
         ];
         
         const results = {};
@@ -205,7 +206,8 @@ document.addEventListener('DOMContentLoaded', function () {
         oxygen: generateOxygenContent,
         nagaai: generateNagaaiContent,
         skailar: generateSkailarContent,
-        helixmind: generateHelixmindContent
+        helixmind: generateHelixmindContent,
+        hareproxy: generateHareproxyContent
     };
 
     function generateRimunaceContent(model) {
@@ -328,7 +330,6 @@ document.addEventListener('DOMContentLoaded', function () {
             <p>Name: ${model.name ? model.name : "N/A"}</p>
             <p>Owned By: ${model.owned_by ? model.owned_by : "N/A"}</p>
             <p>Type: ${model.type ? model.type : "N/A"}</p>
-            <p>Multi-Gen: ${model.multiple_generations ? model.multiple_generations : "N/A"}</p>
         `;
     }
 
@@ -359,6 +360,13 @@ document.addEventListener('DOMContentLoaded', function () {
             <p>Object: ${model.object || 'N/A'}</p>
             <p>Owned By: ${model.owned_by || 'N/A'}</p>
             <p>Endpoint: ${model.endpoint || 'N/A'}</p>
+        `;
+    }
+
+    function generateHareproxyContent(model) {
+        return `
+            <p>Object: ${model.object || 'N/A'}</p>
+            <p>Owned By: ${model.owned_by || 'N/A'}</p>
         `;
     }
 
@@ -862,6 +870,15 @@ const ownerInfo = {
         links: [
             { url: "https://helixmind.online", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.com/invite/ZCSXBGHY", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
+        ]
+    },
+    hareproxy: {
+        description: "yongdong",
+        avatars: ["../assets/avatar/yongdung.webp"],
+        links: [
+            { url: "https://api.hareproxy.io.vn/", text: "Website", icon: "../assets/icons/web.png", color: "website"},
+            { url: "https://discord.com/invite/7TAXPFvUzf", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/sm1945", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     }
 };

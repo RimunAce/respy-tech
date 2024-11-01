@@ -48,7 +48,8 @@ exports.handler = async (event, context) => {
       oxygen: 'https://app.oxyapi.uk/v1/models',
       nagaai: 'https://api.naga.ac/v1/models',
       skailar: 'https://test.skailar.it/v1/models',
-      helixmind: 'https://helixmind.online/v1/models'
+      helixmind: 'https://helixmind.online/v1/models',
+      hareproxy: 'https://unified.hareproxy.io.vn/v1/models'
     };
 
     if (!apiEndpoints[provider]) {
