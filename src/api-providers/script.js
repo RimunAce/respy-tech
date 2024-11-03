@@ -749,8 +749,28 @@ const providerRatings = {
     hareproxy: 'S+'
 };
 
+const providerRatingsComment = {
+    rimunace: 'Hes a Weeb',
+    zanity: 'Goated Developer',
+    anyai: 'Goated Developer',
+    cablyai: 'Goated Developer',
+    fresedgpt: 'Goated Developer',
+    heckerai: 'Goated Developer',
+    shardai: 'Goated Developer',
+    zukijourney: 'Goated Developer',
+    shadowjourney: 'Goated Developer',
+    shuttleai: 'Goated Developer',
+    electronhub: 'Goated Developer',
+    oxygen: 'Goated Developer',
+    nagaai: 'Goated Developer',
+    skailar: 'Goated Developer',
+    helixmind: 'Goated Developer',
+    hareproxy: 'Goated Developer'
+}
+
 function updateRating(provider) {
     const ratingElement = document.getElementById('ratingValue');
+    const tooltipElement = document.getElementById('ratingTooltip');
     const rating = providerRatings[provider] || 'N/A';
     ratingElement.textContent = rating;
     
@@ -758,6 +778,10 @@ function updateRating(provider) {
     
     const ratingClass = rating.toLowerCase().replace('+', 'p');
     ratingElement.classList.add(`rating-${ratingClass}`);
+
+    // Set tooltip content
+    const comment = providerRatingsComment[provider] || 'No comment available';
+    tooltipElement.textContent = comment;
 }
 
 const ownerInfo = {

@@ -672,3 +672,42 @@ transform: translateY(-50%);
     0%, 100% { opacity: 0.6; }
     50% { opacity: 0.3; }
 }
+
+.rating-tooltip {
+    position: absolute;
+    bottom: 100%; /* Position above the rating box */
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background-color: rgba(138, 43, 226, 0.95); /* Adjust to match site theme */
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.provider-rating {
+    position: relative; /* To position the tooltip correctly */
+}
+
+.provider-rating:hover .rating-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-15px);
+}
+
+/* Tooltip arrow */
+.rating-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(138, 43, 226, 0.95) transparent transparent transparent;
+}
