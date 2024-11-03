@@ -49,6 +49,15 @@ document.addEventListener('DOMContentLoaded', function () {
     let modelData = [];
     let currentProvider = 'rimunace';
 
+    // Cache DOM elements
+    const modelContainer = document.getElementById('modelContainer');
+    const modelCountElement = document.getElementById('modelCount');
+    const loadingElement = document.getElementById('loading');
+    const searchInput = document.getElementById('searchInput');
+    const scrollToTopButton = document.getElementById('scrollToTop');
+    const apiDescription = document.getElementById('apiDescription');
+    const providerInfoBox = document.getElementById('providerInfoBox');
+
     async function fetchAllModels() {
         const providers = [
             'rimunace', 'zanity', 'anyai', 'cablyai', 'fresedgpt', 
@@ -151,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
             warningDiv.appendChild(details);
         }
     
-        document.getElementById('modelContainer').insertAdjacentElement('beforebegin', warningDiv);
+        modelContainer.insertAdjacentElement('beforebegin', warningDiv);
         
         setTimeout(() => {
             warningDiv.style.opacity = '0';
@@ -397,9 +406,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function displayModels(filter = '') {
-        const modelContainer = document.getElementById('modelContainer');
-        const modelCountElement = document.getElementById('modelCount');
-        const loadingElement = document.getElementById('loading');
         modelContainer.innerHTML = '';
     
         const normalizedFilter = filter.toLowerCase().trim();
@@ -421,7 +427,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const fragment = document.createDocumentFragment();
             filteredModels.forEach((model, index) => {
                 const modelBox = createModelBox(model, currentProvider);
-                modelBox.style.animationDelay = `${index * 0.05}s`;
                 fragment.appendChild(modelBox);
             });
             modelContainer.appendChild(fragment);
@@ -432,7 +437,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function adjustLayout() {
-        const modelContainer = document.getElementById('modelContainer');
         const containerWidth = modelContainer.offsetWidth;
         const modelBoxes = document.querySelectorAll('.model-box');
 
@@ -471,78 +475,73 @@ document.addEventListener('DOMContentLoaded', function () {
         displayModels(filter);
     }, 300);
     
-    document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchInput.addEventListener('input', (e) => {
         debouncedDisplayModels(e.target.value);
     });
 
     let isLoading = false;
 
-    document.querySelectorAll('.api-button').forEach(button => {
-        button.addEventListener('click', async (e) => {
-            if (isLoading || e.target.classList.contains('active')) {
-                return;
-            }
-
-            isLoading = true;
-            const previousActive = document.querySelector('.api-button.active');
-            previousActive?.classList.remove('active');
-            e.target.classList.add('active');
-            
-            currentProvider = e.target.dataset.api;
-            const apiDescription = document.getElementById('apiDescription');
-            apiDescription.classList.add('loading');
-            apiDescription.textContent = 'Loading...';
-
-            const loadingElement = document.getElementById('loading');
-            loadingElement.style.display = 'block';
-            document.getElementById('modelContainer').innerHTML = '';
-            document.getElementById('modelCount').textContent = 'Loading...';
-
-            try {
-                const providerInfoBox = document.getElementById('providerInfoBox');
-                const owner = ownerInfo[currentProvider];
-                providerInfoBox.innerHTML = `
-                    <h2 style="text-align: center; text-decoration: font-weight: bold;">${owner.description}</h2>
-                    <div class="provider-avatars">
-                        ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar">`).join('')}
+    document.querySelector('.api-buttons').addEventListener('click', async (e) => {
+        const button = e.target.closest('.api-button');
+        if (!button || button.classList.contains('active') || isLoading) return;
+    
+        isLoading = true;
+        const previousActive = document.querySelector('.api-button.active');
+        previousActive?.classList.remove('active');
+        button.classList.add('active');
+    
+        currentProvider = button.dataset.api;
+        updateRating(currentProvider);
+        apiDescription.classList.add('loading');
+        apiDescription.textContent = 'Loading...';
+    
+        loadingElement.style.display = 'block';
+        modelContainer.innerHTML = '';
+        modelCountElement.textContent = 'Loading...';
+    
+        try {
+            const owner = ownerInfo[currentProvider];
+            providerInfoBox.innerHTML = `
+                <h2>${owner.description}</h2>
+                <div class="provider-avatars">
+                    ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar" loading="lazy">`).join('')}
+                </div>
+                <div class="provider-details">
+                    <div class="provider-buttons">
+                        ${owner.links.map(link => `
+                            <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
+                                <img src="${link.icon}" alt="${link.text} Icon" loading="lazy"> ${link.text}
+                            </a>
+                        `).join('')}
                     </div>
-                    <div class="provider-details">
-                        <div class="provider-buttons">
-                            ${owner.links.map(link => `
-                                <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
-                                    <img src="${link.icon}" alt="${link.text} Icon"> ${link.text}
-                                </a>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-
-                const cachedAllModels = getCachedData('allModels');
-                if (cachedAllModels && cachedAllModels[currentProvider] && cachedAllModels[currentProvider] !== 'error') {
-                    modelData = cachedAllModels[currentProvider];
-                    displayModels();
+                </div>
+            `;
+    
+            const cachedAllModels = getCachedData('allModels');
+            if (cachedAllModels && cachedAllModels[currentProvider] && cachedAllModels[currentProvider] !== 'error') {
+                modelData = cachedAllModels[currentProvider];
+                displayModels();
+            } else {
+                const allModels = await fetchAllModels();
+                setCachedData('allModels', allModels);
+                if (allModels[currentProvider] === 'error') {
+                    displayError('Error Fetching Models. Try Refreshing');
+                    modelCountElement.textContent = '0';
                 } else {
-                    const allModels = await fetchAllModels();
-                    setCachedData('allModels', allModels);
-                    if (allModels[currentProvider] === 'error') {
-                        document.getElementById('modelContainer').innerHTML = '<div class="no-results-message">Error Fetching Models. Try Refreshing</div>';
-                        document.getElementById('modelCount').textContent = '0';
-                    } else {
-                        modelData = allModels[currentProvider] || [];
-                        displayModels();
-                    }
+                    modelData = allModels[currentProvider] || [];
+                    displayModels();
                 }
-
-                apiDescription.classList.remove('loading');
-                apiDescription.textContent = apiDescriptions[currentProvider];
-            } catch (error) {
-                console.error('Error loading provider:', error);
-                apiDescription.textContent = 'Error loading provider information';
-            } finally {
-                loadingElement.style.display = 'none';
-                isLoading = false;
             }
-        });
+    
+            apiDescription.classList.remove('loading');
+            apiDescription.textContent = apiDescriptions[currentProvider];
+        } catch (error) {
+            console.error('Error loading provider:', error);
+            apiDescription.textContent = 'Error loading provider information';
+        } finally {
+            loadingElement.style.display = 'none';
+            isLoading = false;
+        }
     });
 
     const titles = ["AI Generative Text Models", "AI Generative Image Models", "AI Generative Audio Models"];
@@ -617,8 +616,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 50);
     }
 
-    const scrollToTopButton = document.getElementById("scrollToTop");
-
     window.onscroll = function() {
         const scrollPosition = window.scrollY || document.documentElement.scrollTop;
         const shouldShowButton = scrollPosition > 100;
@@ -649,10 +646,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     (async () => {
-        const loadingElement = document.getElementById('loading');
-        const providerInfoBox = document.getElementById('providerInfoBox');
-        const apiDescription = document.getElementById('apiDescription');
-        
         try {
             loadingElement.style.display = 'block';
             setButtonsState(true);
@@ -676,6 +669,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             apiDescription.classList.remove('loading');
             apiDescription.textContent = apiDescriptions[currentProvider];
+            updateRating('rimunace'); // Add this line to set initial rating
         } catch (error) {
             console.error('Error loading models:', error);
             providerInfoBox.innerHTML = 'Error loading provider information';
@@ -688,17 +682,16 @@ document.addEventListener('DOMContentLoaded', function () {
     })();
 
     function updateProviderInfo(owner) {
-        const providerInfoBox = document.getElementById('providerInfoBox');
         providerInfoBox.innerHTML = `
-            <h2 style="text-align: center; text-decoration: font-weight: bold;">${owner.description}</h2>
+            <h2>${owner.description}</h2>
             <div class="provider-avatars">
-                ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar">`).join('')}
+                ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar" loading="lazy">`).join('')}
             </div>
             <div class="provider-details">
                 <div class="provider-buttons">
                     ${owner.links.map(link => `
                         <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
-                            <img src="${link.icon}" alt="${link.text} Icon"> ${link.text}
+                            <img src="${link.icon}" alt="${link.text} Icon" loading="lazy"> ${link.text}
                         </a>
                     `).join('')}
                 </div>
@@ -720,15 +713,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function displayError(message) {
-        const modelContainer = document.getElementById('modelContainer');
         modelContainer.innerHTML = '';
         const errorMessage = document.createElement('div');
         errorMessage.textContent = message;
         errorMessage.className = 'error-message';
         modelContainer.appendChild(errorMessage);
     }
-
-    const apiDescription = document.getElementById('apiDescription');
 
     document.querySelectorAll('.api-button').forEach(button => {
         button.addEventListener('click', async function() {
@@ -739,6 +729,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
     updateApiDescription('rimunace');
 });
+
+const providerRatings = {
+    rimunace: 'F',
+    zanity: 'S+',
+    anyai: 'S+',
+    cablyai: 'S+',
+    fresedgpt: 'S+',
+    heckerai: 'S+',
+    shardai: 'S+',
+    zukijourney: 'S+',
+    shadowjourney: 'S+',
+    shuttleai: 'S+',
+    electronhub: 'S+',
+    oxygen: 'S+',
+    nagaai: 'S+',
+    skailar: 'S+',
+    helixmind: 'S+',
+    hareproxy: 'S+'
+};
+
+function updateRating(provider) {
+    const ratingElement = document.getElementById('ratingValue');
+    const rating = providerRatings[provider] || 'N/A';
+    ratingElement.textContent = rating;
+    
+    ratingElement.classList.remove('rating-sp', 'rating-s', 'rating-a', 'rating-b', 'rating-c', 'rating-d', 'rating-e', 'rating-f');
+    
+    const ratingClass = rating.toLowerCase().replace('+', 'p');
+    ratingElement.classList.add(`rating-${ratingClass}`);
+}
 
 const ownerInfo = {
     rimunace: {
