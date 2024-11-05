@@ -853,24 +853,25 @@ document.addEventListener('DOMContentLoaded', function () {
             
             try {
                 const formData = new FormData(e.target);
-                const data = {};
-                formData.forEach((value, key) => {
-                    data[key] = value;
-                });
+                const searchParams = new URLSearchParams();
+                
+                for (const [key, value] of formData.entries()) {
+                    searchParams.append(key, value);
+                }
                 
                 const response = await fetch('/.netlify/functions/submission-created', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify(data)
+                    body: searchParams.toString()
                 });
     
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Form submission failed');
                 }
     
-                const result = await response.json();
                 alert('Form submitted successfully!');
                 formModal.style.display = 'none';
                 e.target.reset();
@@ -880,7 +881,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-    
+
     // Show/hide modal
     showFormButton.onclick = () => {
         formModal.style.display = 'block';

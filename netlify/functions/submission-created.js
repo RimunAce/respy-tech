@@ -20,7 +20,13 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const data = JSON.parse(event.body);
+    const formData = new URLSearchParams(event.body);
+    const data = {};
+    
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+    
     const formName = data['form-name'];
     
     if (!formName) {
