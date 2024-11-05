@@ -20,17 +20,17 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const formData = new URLSearchParams(event.body);
-    const formName = formData.get('form-name');
+    const data = JSON.parse(event.body);
+    const formName = data['form-name'];
     
     if (!formName) {
       throw new Error('Form name is required');
     }
 
-    // Log the submission (you can add database storage here later)
+    // Log the submission
     console.log('Form submission received:', {
       formName,
-      data: Object.fromEntries(formData)
+      data
     });
 
     return {
