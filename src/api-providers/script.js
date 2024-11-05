@@ -18,7 +18,9 @@ const apiDescriptions = {
     nagaai: 'Based on https://cas.zukijourney.com, this API is a successor of ChimeraGPT, the largest API in history with 15k users',
     skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
     helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service',
-    hareproxy: 'This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint'
+    hareproxy: 'This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint',
+    astraai: 'This API is seems to be made with several great minds in the LLM API field like Soukyo, GG, Sian, and I might have missed others. Nonetheless, finally earned itself a spot in the list',
+    webraftai: 'This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list'
 };
 
 const getCachedData = (key) => {
@@ -63,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'rimunace', 'zanity', 'anyai', 'cablyai', 'fresedgpt', 
             'heckerai', 'shardai', 'zukijourney', 'shadowjourney', 
             'shuttleai', 'electronhub', 'oxygen', 'nagaai', 'skailar', 
-            'helixmind', 'hareproxy'
+            'helixmind', 'hareproxy', 'astraai', 'webraftai'
         ];
         
         const results = {};
@@ -216,7 +218,9 @@ document.addEventListener('DOMContentLoaded', function () {
         nagaai: generateNagaaiContent,
         skailar: generateSkailarContent,
         helixmind: generateHelixmindContent,
-        hareproxy: generateHareproxyContent
+        hareproxy: generateHareproxyContent,
+        astraai: generateAstraaiContent,
+        webraftai: generateWebraftaiContent
     };
 
     function generateRimunaceContent(model) {
@@ -376,6 +380,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return `
             <p>Object: ${model.object || 'N/A'}</p>
             <p>Owned By: ${model.owned_by || 'N/A'}</p>
+        `;
+    }
+
+    function generateAstraaiContent(model) {
+        return `
+            <p>Object: ${model.object || 'N/A'}</p>
+            <p>Type: ${model.type || 'N/A'}</p>
+            <p>Multiplier: ${model.multiplier || 'N/A'}</p>
+            <p>Owned By: ${model.owned_by || 'N/A'}</p>
+        `;
+    }
+
+    function generateWebraftaiContent(model) {
+        return `
+            <p>Object: ${model.object || 'N/A'}</p>
+            <p>Endpoint: ${model.endpoint || 'N/A'}</p>
+            <p>Premium: ${model.premium !== undefined ? (model.premium ? 'Yes' : 'No') : 'N/A'}</p>
+            <p>Free Credits: ${model.free_credits !== undefined ? model.free_credits : 'N/A'}</p>
         `;
     }
 
@@ -746,7 +768,9 @@ const providerRatings = {
     nagaai: 'S+',
     skailar: 'S+',
     helixmind: 'S+',
-    hareproxy: 'S+'
+    hareproxy: 'S+',
+    astraai: 'S+',
+    webraftai: 'S+'
 };
 
 const providerRatingsComment = {
@@ -765,7 +789,9 @@ const providerRatingsComment = {
     nagaai: 'Goated Developer',
     skailar: 'Goated Developer',
     helixmind: 'Goated Developer',
-    hareproxy: 'Goated Developer'
+    hareproxy: 'Goated Developer',
+    astraai: 'Goated Developer',
+    webraftai: 'Goated Developer'
 }
 
 function updateRating(provider) {
@@ -910,7 +936,7 @@ const ownerInfo = {
     },
     helixmind: {
         description: "Faer1x",
-        avatars: ["../assets/avatar/phantasifae.webp"],
+        avatars: ["../assets/avatar/phantasifae.gif"],
         links: [
             { url: "https://helixmind.online", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.com/invite/ZCSXBGHY", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
@@ -923,6 +949,24 @@ const ownerInfo = {
             { url: "https://api.hareproxy.io.vn/", text: "Website", icon: "../assets/icons/web.png", color: "website"},
             { url: "https://discord.com/invite/7TAXPFvUzf", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
             { url: "https://github.com/sm1945", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    astraai: {
+        description: "Vneq, GG, invalidsian, & Soukyo",
+        avatars: ["../assets/avatar/vneq.webp", "../assets/avatar/gg.webp", "../assets/avatar/sian.webp", "../assets/avatar/soukyo.webp"],
+        links: [
+            { url: "https://tryastra.pro/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/astra-ai", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/vneqisntreal", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    webraftai: {
+        description: "DS_GAMER",
+        avatars: ["../assets/avatar/dsgamer.webp"],
+        links: [
+            { url: "https://api3.webraft.in/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.com/invite/ncaagQjhQ8", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/ds-gamer", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     }
 };
