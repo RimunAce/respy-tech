@@ -866,12 +866,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     body: searchParams.toString()
                 });
-    
+
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Form submission failed');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-    
+
+                const text = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (e) {
+                    console.error('Failed to parse response:', text);
+                    throw new Error('Invalid response format');
+                }
+
                 alert('Form submitted successfully!');
                 formModal.style.display = 'none';
                 e.target.reset();

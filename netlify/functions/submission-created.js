@@ -4,7 +4,8 @@ exports.handler = async (event, context) => {
       ? 'http://localhost:8888' 
       : 'https://respy.tech',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Content-Type': 'application/json'
   };
 
   if (event.httpMethod === 'OPTIONS') {
@@ -30,7 +31,11 @@ exports.handler = async (event, context) => {
     const formName = data['form-name'];
     
     if (!formName) {
-      throw new Error('Form name is required');
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Form name is required' })
+      };
     }
 
     // Log the submission
@@ -47,9 +52,9 @@ exports.handler = async (event, context) => {
   } catch (error) {
     console.error('Form submission error:', error);
     return {
-      statusCode: 400,
+      statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: error.message || 'Internal server error' })
     };
   }
 };
