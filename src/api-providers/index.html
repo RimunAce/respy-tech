@@ -36,6 +36,109 @@
         <h1><span class="title-text" id="dynamicTitle">AI Generative Text Models</span></h1>
         <div class="subtitle">Explore AI models from multiple providers</div>
         <div class="disclaimer">Disclaimer: The listed API providers (except rimunace) are not affiliated with me. This is for informational purposes only. Use at your own risk.</div>
+        <div class="form-container">
+            <button id="showFormButton" class="form-toggle-button">Submit Provider Request</button>
+            
+            <div id="formModal" class="form-modal">
+                <div class="form-modal-content">
+                    <span class="close-button">&times;</span>
+                    
+                    <div class="form-tabs">
+                        <button class="tab-button active" data-tab="add">Add Provider</button>
+                        <button class="tab-button" data-tab="update">Update Provider</button>
+                    </div>
+    
+                    <!-- Add this hidden form for Netlify form detection -->
+                    <form name="add-provider" netlify netlify-honeypot="bot-field" hidden>
+                        <input type="text" name="providerName" />
+                        <input type="url" name="apiEndpoint" />
+                        <input type="text" name="ownerDiscord" />
+                        <input type="url" name="websiteUrl" />
+                        <input type="url" name="discordServer" />
+                        <input type="url" name="githubUrl" />
+                        <input type="url" name="providerIcon" />
+                        <textarea name="addReason"></textarea>
+                    </form>
+    
+                    <!-- Add Provider Form -->
+                    <form name="add-provider" class="provider-form active" id="addProviderForm">
+                        <input type="hidden" name="form-name" value="add-provider" />
+                        <input type="hidden" name="bot-field" />
+                        <h3>Add New Provider</h3>
+                        
+                        <div class="form-group">
+                            <label>Provider Name <input type="text" name="providerName" required /></label>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>API Endpoint <input type="url" name="apiEndpoint" required /></label>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>Owner's Discord <input type="text" name="ownerDiscord" /></label>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>Website URL <input type="url" name="websiteUrl" /></label>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>Discord Server URL <input type="url" name="discordServer" /></label>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>GitHub URL <input type="url" name="githubUrl" /></label>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>Provider Icon URL <input type="url" name="providerIcon" required /></label>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>Reason for Addition <textarea name="addReason" required></textarea></label>
+                        </div>
+    
+                        <button type="submit" class="submit-button">Submit Request</button>
+                    </form>
+    
+                    <!-- Hidden form for update provider -->
+                    <form name="update-provider" netlify netlify-honeypot="bot-field" hidden>
+                        <select name="existingProvider"></select>
+                        <select name="updateType"></select>
+                        <input type="text" name="currentValue" />
+                        <input type="text" name="newValue" />
+                        <textarea name="updateReason"></textarea>
+                    </form>
+    
+                    <!-- Update Provider Form -->
+                    <form name="update-provider" class="provider-form" id="updateProviderForm">
+                        <input type="hidden" name="form-name" value="update-provider" />
+                        <input type="hidden" name="bot-field" />
+                        <h3>Update Existing Provider</h3>
+    
+                        <div class="form-group">
+                            <label>Select Provider</label>
+                            <div class="custom-select-container"></div>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>Update Type</label>
+                            <div class="custom-select-container update-type-container"></div>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>New Value <input type="text" name="newValue" required /></label>
+                        </div>
+    
+                        <div class="form-group">
+                            <label>Reason for Update <textarea name="updateReason" required></textarea></label>
+                        </div>
+    
+                        <button type="submit" class="submit-button">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="api-buttons">
             <button class="api-button active" data-api="rimunace">
                 <img src="../assets/icons/rimunace.gif" alt="Rimunace" class="provider-icon">

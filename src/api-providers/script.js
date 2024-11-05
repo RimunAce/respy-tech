@@ -750,6 +750,264 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     updateApiDescription('rimunace');
+
+    // Form handling
+    const showFormButton = document.getElementById('showFormButton');
+    const formModal = document.getElementById('formModal');
+    const closeButton = document.querySelector('.close-button');
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const forms = document.querySelectorAll('.provider-form');
+
+    // Populate existing providers dropdown
+    function populateProvidersDropdown() {
+        const updateForm = document.getElementById('updateProviderForm');
+        if (!updateForm) return;
+
+        const selectContainer = updateForm.querySelector('.custom-select-container');
+        if (!selectContainer) return;
+
+        // Clear any existing content
+        selectContainer.innerHTML = '';
+
+        // Create custom select
+        const customSelect = document.createElement('div');
+        customSelect.className = 'custom-select';
+
+        const selectHeader = document.createElement('div');
+        selectHeader.className = 'select-header';
+        selectHeader.textContent = 'Select a provider...';
+
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'select-options';
+
+        // Create hidden select element for form submission
+        const hiddenSelect = document.createElement('select');
+        hiddenSelect.name = 'existingProvider';
+        hiddenSelect.required = true;
+        hiddenSelect.style.display = 'none';
+        hiddenSelect.innerHTML = '<option value="">Select a provider...</option>';
+
+        // Get providers from ownerInfo
+        const providers = Object.keys(ownerInfo);
+        
+        providers.forEach(provider => {
+            // Add option to hidden select
+            const hiddenOption = document.createElement('option');
+            hiddenOption.value = provider;
+            hiddenOption.textContent = provider;
+            hiddenSelect.appendChild(hiddenOption);
+
+            // Create visible option
+            const option = document.createElement('div');
+            option.className = 'select-option';
+            option.textContent = provider.charAt(0).toUpperCase() + provider.slice(1);
+            option.dataset.value = provider;
+            
+            option.addEventListener('click', () => {
+                hiddenSelect.value = provider;
+                selectHeader.textContent = option.textContent;
+                optionsContainer.classList.remove('open');
+                selectHeader.classList.remove('open');
+                
+                optionsContainer.querySelectorAll('.select-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+            });
+            
+            optionsContainer.appendChild(option);
+        });
+
+        // Add click handler for the header
+        selectHeader.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = optionsContainer.classList.contains('open');
+            
+            // Close any other open dropdowns first
+            document.querySelectorAll('.select-options.open').forEach(dropdown => {
+                dropdown.classList.remove('open');
+                dropdown.previousElementSibling?.classList.remove('open');
+            });
+
+            // Toggle current dropdown
+            optionsContainer.classList.toggle('open');
+            selectHeader.classList.toggle('open');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            optionsContainer.classList.remove('open');
+            selectHeader.classList.remove('open');
+        });
+
+        customSelect.appendChild(selectHeader);
+        customSelect.appendChild(optionsContainer);
+        selectContainer.appendChild(hiddenSelect);
+        selectContainer.appendChild(customSelect);
+    }
+
+    // Handle form submissions
+    document.querySelectorAll('form:not([hidden])').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const formData = new FormData(e.target);
+                
+                const response = await fetch('/.netlify/functions/submission-created', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(formData).toString()
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Form submission failed');
+                }
+
+                alert('Form submitted successfully!');
+                formModal.style.display = 'none';
+                e.target.reset();
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message || 'Error submitting form. Please try again.');
+            }
+        });
+    });
+
+    // Show/hide modal
+    showFormButton.onclick = () => {
+        formModal.style.display = 'block';
+        // Initialize both dropdowns for the update form if it's active
+        if (document.getElementById('updateProviderForm').classList.contains('active')) {
+            populateProvidersDropdown();
+            populateUpdateTypeDropdown();
+        }
+    };
+
+    closeButton.onclick = () => {
+        formModal.style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+        if (event.target === formModal) {
+            formModal.style.display = 'none';
+        }
+    };
+
+    // Tab switching
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            forms.forEach(form => form.classList.remove('active'));
+            
+            button.classList.add('active');
+            const formId = button.dataset.tab === 'add' ? 'addProviderForm' : 'updateProviderForm';
+            document.getElementById(formId).classList.add('active');
+    
+            // Call both dropdown initializations when Update Provider form is activated
+            if (formId === 'updateProviderForm') {
+                populateProvidersDropdown();
+                populateUpdateTypeDropdown();
+            }
+        });
+    });
+
+    function populateUpdateTypeDropdown() {
+        const updateForm = document.getElementById('updateProviderForm');
+        if (!updateForm) return;
+    
+        const selectContainer = updateForm.querySelector('.update-type-container');
+        if (!selectContainer) return;
+    
+        // Clear any existing content
+        selectContainer.innerHTML = '';
+    
+        // Create custom select
+        const customSelect = document.createElement('div');
+        customSelect.className = 'custom-select';
+    
+        const selectHeader = document.createElement('div');
+        selectHeader.className = 'select-header';
+        selectHeader.textContent = 'Select update type...';
+    
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'select-options';
+    
+        // Create hidden select element for form submission
+        const hiddenSelect = document.createElement('select');
+        hiddenSelect.name = 'updateType';
+        hiddenSelect.required = true;
+        hiddenSelect.style.display = 'none';
+        hiddenSelect.innerHTML = '<option value="">Select update type...</option>';
+    
+        // Define update types
+        const updateTypes = [
+            { value: 'endpoint', label: 'API Endpoint' },
+            { value: 'discord', label: 'Discord Server' },
+            { value: 'website', label: 'Website' },
+            { value: 'github', label: 'GitHub' },
+            { value: 'icon', label: 'Provider Icon' },
+            { value: 'other', label: 'Other' }
+        ];
+        
+        updateTypes.forEach(type => {
+            // Add option to hidden select
+            const hiddenOption = document.createElement('option');
+            hiddenOption.value = type.value;
+            hiddenOption.textContent = type.label;
+            hiddenSelect.appendChild(hiddenOption);
+    
+            // Create visible option
+            const option = document.createElement('div');
+            option.className = 'select-option';
+            option.textContent = type.label;
+            option.dataset.value = type.value;
+            
+            option.addEventListener('click', () => {
+                hiddenSelect.value = type.value;
+                selectHeader.textContent = type.label;
+                optionsContainer.classList.remove('open');
+                selectHeader.classList.remove('open');
+                
+                optionsContainer.querySelectorAll('.select-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+            });
+            
+            optionsContainer.appendChild(option);
+        });
+    
+        // Add click handler for the header
+        selectHeader.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = optionsContainer.classList.contains('open');
+            
+            // Close any other open dropdowns first
+            document.querySelectorAll('.select-options.open').forEach(dropdown => {
+                dropdown.classList.remove('open');
+                dropdown.previousElementSibling?.classList.remove('open');
+            });
+    
+            // Toggle current dropdown
+            if (!isOpen) {
+                optionsContainer.classList.add('open');
+                selectHeader.classList.add('open');
+            } else {
+                optionsContainer.classList.remove('open');
+                selectHeader.classList.remove('open');
+            }
+        });
+    
+        customSelect.appendChild(selectHeader);
+        customSelect.appendChild(optionsContainer);
+        selectContainer.appendChild(hiddenSelect);
+        selectContainer.appendChild(customSelect);
+    }
 });
 
 const providerRatings = {

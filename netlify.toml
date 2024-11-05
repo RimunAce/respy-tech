@@ -36,6 +36,13 @@
   autoLaunch = true
 
 [[redirects]]
+  from = "/"
+  to = "/.netlify/functions/submission-created"
+  status = 200
+  force = true
+  conditions = {Method = ["POST"]}
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
@@ -44,3 +51,6 @@
   from = "/api/*"
   to = "/.netlify/functions/api-handler/:splat"
   status = 200
+
+[functions]
+  directory = "netlify/functions"
