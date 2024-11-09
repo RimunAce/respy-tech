@@ -1209,7 +1209,7 @@ const ownerInfo = {
         avatars: ["../assets/avatar/phantasifae.gif"],
         links: [
             { url: "https://helixmind.online", text: "Website", icon: "../assets/icons/web.png", color: "website" },
-            { url: "https://discord.com/invite/ZCSXBGHY", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
+            { url: "https://discord.gg/n7RpEtH8J8", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
         ]
     },
     hareproxy: {
