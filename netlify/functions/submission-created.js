@@ -21,40 +21,82 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const formData = new URLSearchParams(event.body);
-    const data = {};
-    
-    for (const [key, value] of formData.entries()) {
-      data[key] = value;
+    // Parse the incoming request body
+    let data;
+    if (event.isBase64Encoded) {
+      const buffer = Buffer.from(event.body, 'base64');
+      data = JSON.parse(buffer.toString());
+    } else {
+      // Handle URL-encoded form data
+      const formData = new URLSearchParams(event.body);
+      data = Object.fromEntries(formData);
     }
+
+    // Validate required fields
+    const requiredFields = ['form-name', 'providerName', 'apiEndpoint', 'providerIcon'];
+    const missingFields = requiredFields.filter(field => !data[field]);
     
-    const formName = data['form-name'];
-    
-    if (!formName) {
+    if (missingFields.length > 0) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Form name is required' })
+        body: JSON.stringify({ 
+          error: 'Missing required fields', 
+          fields: missingFields 
+        })
+      };
+    }
+
+    // Validate URLs
+    const urlFields = ['apiEndpoint', 'websiteUrl', 'discordServer', 'githubUrl', 'providerIcon'];
+    const invalidUrls = urlFields
+      .filter(field => data[field])
+      .filter(field => {
+        try {
+          new URL(data[field]);
+          return false;
+        } catch {
+          return true;
+        }
+      });
+
+    if (invalidUrls.length > 0) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Invalid URLs provided', 
+          fields: invalidUrls 
+        })
       };
     }
 
     // Log the submission
     console.log('Form submission received:', {
-      formName,
+      formName: data['form-name'],
       data
     });
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ message: 'Form submitted successfully' })
+      body: JSON.stringify({ 
+        message: 'Form submitted successfully',
+        data: {
+          formName: data['form-name'],
+          providerName: data.providerName
+        }
+      })
     };
   } catch (error) {
     console.error('Form submission error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message || 'Internal server error' })
+      body: JSON.stringify({ 
+        error: 'Internal server error',
+        message: error.message
+      })
     };
   }
 };

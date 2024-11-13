@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load image with lower quality for mobile
     if (window.innerWidth <= 768) {
-        img.src = '../assets/background/bg2.png';
+        img.src = '../assets/background/bgavif.avif';
     } else {
-        img.src = '../assets/background/bg2.png';
+        img.src = '../assets/background/bgavif.avif';
     }
 });

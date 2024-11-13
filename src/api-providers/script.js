@@ -19,7 +19,7 @@ const apiDescriptions = {
     skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
     helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service',
     hareproxy: 'This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint',
-    astraai: 'This API is seems to be made with several great minds in the LLM API field like Soukyo, GG, Sian, and I might have missed others. Nonetheless, finally earned itself a spot in the list',
+    astraai: 'This API is seems to be made with several great minds in the LLM API field like Soukyo, GG, Sian, and I might have missed others. Semi private API now with 95% Acceptance Rate since 7th November 2024',
     webraftai: 'This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list'
 };
 
@@ -69,43 +69,36 @@ document.addEventListener('DOMContentLoaded', function () {
         ];
         
         const results = {};
-        let hasErrors = false;
-        let errorMessages = new Map();
+        const errorMessages = new Map();
     
+        const fetchResults = await Promise.all(
+            providers.map(provider => fetchProviderData(provider, results, errorMessages))
+        );
+    
+        const failedProviders = Object.values(results).filter(arr => arr.length === 0).length;
+        
+        if (failedProviders === providers.length) {
+            throw new Error('All providers failed to respond');
+        }
+    
+        if (errorMessages.size > 0) {
+            displayWarning(errorMessages);
+        }
+    
+        return results;
+    }
+    
+    async function fetchProviderData(provider, results, errorMessages) {
         try {
-            const fetchPromises = providers.map(async provider => {
-                try {
-                    const data = await fetchWithRetry(`/.netlify/functions/api-handler/${provider}`);
-                    if (!Array.isArray(data?.data)) {
-                        throw new Error('Invalid data format received');
-                    }
-                    results[provider] = data.data;
-                } catch (error) {
-                    hasErrors = true;
-                    errorMessages.set(provider, error.message);
-                    results[provider] = [];
-                    console.error(`Error fetching ${provider}:`, error);
-                }
-            });
-    
-            await Promise.all(fetchPromises);
-            
-            const totalProviders = providers.length;
-            const failedProviders = Object.values(results).filter(arr => arr.length === 0).length;
-            
-            if (failedProviders === totalProviders) {
-                throw new Error('All providers failed to respond');
+            const data = await fetchWithRetry(`/.netlify/functions/api-handler/${provider}`);
+            if (!Array.isArray(data?.data)) {
+                throw new Error('Invalid data format received');
             }
-    
-            if (hasErrors) {
-                displayWarning(errorMessages);
-            }
-    
-            return results;
+            results[provider] = data.data;
         } catch (error) {
-            console.error('Fatal error in fetchAllModels:', error);
-            displayError('Unable to load models. Please try again later.');
-            return providers.reduce((acc, provider) => ({ ...acc, [provider]: [] }), {});
+            errorMessages.set(provider, error.message);
+            results[provider] = [];
+            console.error(`Error fetching ${provider}:`, error);
         }
     }
 
@@ -503,68 +496,111 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let isLoading = false;
 
-    document.querySelector('.api-buttons').addEventListener('click', async (e) => {
-        const button = e.target.closest('.api-button');
-        if (!button || button.classList.contains('active') || isLoading) return;
-    
-        isLoading = true;
+    document.querySelector('.api-buttons').addEventListener('click', handleApiButtonClick);
+
+    async function handleApiButtonClick(event) {
+        const button = event.target.closest('.api-button');
+        if (shouldIgnoreClick(button)) return;
+
+        setLoadingState(true);
+        try {
+            const provider = getProviderFromButton(button);
+            await updateProviderUI(provider);
+        } catch (error) {
+            handleError(error);
+        } finally {
+            setLoadingState(false);
+        }
+    }
+
+    function shouldIgnoreClick(button) {
+        return (
+            !button ||
+            button.classList.contains('active') ||
+            isLoading
+        );
+    }
+
+    function setLoadingState(isLoadingState) {
+        isLoading = isLoadingState;
+        loadingElement.style.display = isLoadingState ? 'block' : 'none';
+        if (isLoadingState) {
+            modelContainer.innerHTML = '';
+            modelCountElement.textContent = 'Loading...';
+            apiDescription.classList.add('loading');
+            apiDescription.textContent = 'Loading...';
+        }
+    }
+
+    function getProviderFromButton(button) {
         const previousActive = document.querySelector('.api-button.active');
         previousActive?.classList.remove('active');
         button.classList.add('active');
-    
-        currentProvider = button.dataset.api;
-        updateRating(currentProvider);
-        apiDescription.classList.add('loading');
-        apiDescription.textContent = 'Loading...';
-    
-        loadingElement.style.display = 'block';
-        modelContainer.innerHTML = '';
-        modelCountElement.textContent = 'Loading...';
-    
-        try {
-            const owner = ownerInfo[currentProvider];
-            providerInfoBox.innerHTML = `
-                <h2>${owner.description}</h2>
-                <div class="provider-avatars">
-                    ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar" loading="lazy">`).join('')}
-                </div>
-                <div class="provider-details">
-                    <div class="provider-buttons">
-                        ${owner.links.map(link => `
-                            <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
-                                <img src="${link.icon}" alt="${link.text} Icon" loading="lazy"> ${link.text}
-                            </a>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-    
-            const cachedAllModels = getCachedData('allModels');
-            if (cachedAllModels && cachedAllModels[currentProvider] && cachedAllModels[currentProvider] !== 'error') {
-                modelData = cachedAllModels[currentProvider];
-                displayModels();
-            } else {
-                const allModels = await fetchAllModels();
-                setCachedData('allModels', allModels);
-                if (allModels[currentProvider] === 'error') {
-                    displayError('Error Fetching Models. Try Refreshing');
-                    modelCountElement.textContent = '0';
-                } else {
-                    modelData = allModels[currentProvider] || [];
-                    displayModels();
-                }
-            }
-    
-            apiDescription.classList.remove('loading');
-            apiDescription.textContent = apiDescriptions[currentProvider];
-        } catch (error) {
-            console.error('Error loading provider:', error);
-            apiDescription.textContent = 'Error loading provider information';
-        } finally {
-            loadingElement.style.display = 'none';
-            isLoading = false;
+
+        const provider = button.dataset.api;
+        currentProvider = provider;
+        updateRating(provider);
+        return provider;
+    }
+
+    async function updateProviderUI(provider) {
+        const owner = ownerInfo[provider];
+        renderProviderInfo(owner);
+
+        const cachedModels = getCachedData('allModels');
+        if (isCacheValid(cachedModels, provider)) {
+            modelData = cachedModels[provider];
+            displayModels();
+        } else {
+            const allModels = await fetchAllModels();
+            setCachedData('allModels', allModels);
+            handleModelFetchResult(allModels, provider);
         }
-    });
+
+        apiDescription.classList.remove('loading');
+        apiDescription.textContent = apiDescriptions[provider];
+    }
+
+    function renderProviderInfo(owner) {
+        providerInfoBox.innerHTML = `
+            <h2>${owner.description}</h2>
+            <div class="provider-avatars">
+                ${owner.avatars.map(avatar => `<img src="${avatar}" alt="Owner Avatar" class="provider-avatar" loading="lazy">`).join('')}
+            </div>
+            <div class="provider-details">
+                <div class="provider-buttons">
+                    ${owner.links.map(link => `
+                        <a href="${link.url}" class="provider-button ${link.color}" target="_blank" rel="noopener noreferrer">
+                            <img src="${link.icon}" alt="${link.text} Icon" loading="lazy"> ${link.text}
+                        </a>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function isCacheValid(cachedData, provider) {
+        return (
+            cachedData &&
+            cachedData[provider] &&
+            cachedData[provider] !== 'error'
+        );
+    }
+
+    function handleModelFetchResult(allModels, provider) {
+        if (allModels[provider] === 'error') {
+            displayError('Error Fetching Models. Try Refreshing');
+            modelCountElement.textContent = '0';
+        } else {
+            modelData = allModels[provider] || [];
+            displayModels();
+        }
+    }
+
+    function handleError(error) {
+        console.error('Error loading provider:', error);
+        apiDescription.textContent = 'Error loading provider information';
+    }
 
     const titles = ["AI Generative Text Models", "AI Generative Image Models", "AI Generative Audio Models"];
     const colors = ["linear-gradient(45deg, #ff00cc, #3333ff)", "linear-gradient(45deg, #00ff99, #00ccff)", "linear-gradient(45deg, #ff9900, #ff3300)"];
@@ -638,27 +674,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 50);
     }
 
-    window.onscroll = function() {
+    window.addEventListener('scroll', () => {
         const scrollPosition = window.scrollY || document.documentElement.scrollTop;
         const shouldShowButton = scrollPosition > 100;
         
         if (shouldShowButton) {
-            if (scrollToTopButton.style.display !== "block") {
-                scrollToTopButton.style.display = "block";
-                scrollToTopButton.style.opacity = "0";
-                setTimeout(() => {
-                    scrollToTopButton.style.opacity = "1";
-                }, 10);
-            }
+            scrollToTopButton.style.display = "block";
+            scrollToTopButton.style.opacity = "1";
         } else {
-            if (scrollToTopButton.style.display === "block") {
-                scrollToTopButton.style.opacity = "0";
-                setTimeout(() => {
+            scrollToTopButton.style.opacity = "0";
+            setTimeout(() => {
+                if (!shouldShowButton) {
                     scrollToTopButton.style.display = "none";
-                }, 300);
-            }
+                }
+            }, 300);
         }
-    };
+    });
 
     scrollToTopButton.addEventListener("click", function() {
         window.scrollTo({
@@ -847,48 +878,58 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Handle form submissions
-    document.querySelectorAll('form:not([hidden])').forEach(form => {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+    async function handleFormSubmission(event) {
+        event.preventDefault();
+        const form = event.target;
+        const submitButton = form.querySelector('.submit-button');
+        
+        try {
+            // Disable submit button
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            const formData = new FormData(form);
+            const searchParams = new URLSearchParams();
             
-            try {
-                const formData = new FormData(e.target);
-                const searchParams = new URLSearchParams();
-                
-                for (const [key, value] of formData.entries()) {
-                    searchParams.append(key, value);
-                }
-                
-                const response = await fetch('/.netlify/functions/submission-created', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: searchParams.toString()
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const text = await response.text();
-                let result;
-                try {
-                    result = JSON.parse(text);
-                } catch (e) {
-                    console.error('Failed to parse response:', text);
-                    throw new Error('Invalid response format');
-                }
-
-                alert('Form submitted successfully!');
-                formModal.style.display = 'none';
-                e.target.reset();
-            } catch (error) {
-                console.error('Error:', error);
-                alert(error.message || 'Error submitting form. Please try again.');
+            // Add form fields to searchParams
+            for (const [key, value] of formData.entries()) {
+                searchParams.append(key, value.trim());
             }
+
+            const response = await fetch('/api/submit-form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: searchParams.toString()
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Form submission failed');
+            }
+
+            // Show success message
+            alert('Form submitted successfully!');
+            form.reset();
+            document.getElementById('formModal').style.display = 'none';
+
+        } catch (error) {
+            console.error('Form submission error:', error);
+            alert(`Error submitting form: ${error.message}`);
+        } finally {
+            // Re-enable submit button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Request';
+        }
+    }
+
+    // Add event listeners to forms
+    document.querySelectorAll('form[name="add-provider"], form[name="update-provider"]')
+        .forEach(form => {
+            form.addEventListener('submit', handleFormSubmission);
         });
-    });
 
     // Show/hide modal
     showFormButton.onclick = () => {
@@ -1082,8 +1123,8 @@ function updateRating(provider) {
 
 const ownerInfo = {
     rimunace: {
-        description: "Respire",
-        avatars: ["../assets/avatar/respire.webp"],
+        description: "Respire & James",
+        avatars: ["../assets/avatar/respire.webp", "../assets/avatar/james.webp"],
         links: [
             { url: "https://api.rimunace.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/respy-tech", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
@@ -1100,7 +1141,7 @@ const ownerInfo = {
     },
     anyai: {
         description: "meow_18838",
-        avatars: ["../assets/avatar/meow.webp"],
+        avatars: ["../assets/avatar/meow.gif"],
         links: [
             { url: "https://api.airforce/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.com/invite/q55gsH8z5F ", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
@@ -1109,7 +1150,7 @@ const ownerInfo = {
     },
     cablyai: {
         description: "meow_18838",
-        avatars: ["../assets/avatar/meow.webp"],
+        avatars: ["../assets/avatar/meow.gif"],
         links: [
             { url: "https://cablyai.com/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/2k4j4PxE", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
@@ -1154,7 +1195,7 @@ const ownerInfo = {
     },
     shadowjourney: {
         description: "ichatei",
-        avatars: ["../assets/avatar/ichate.gif"],
+        avatars: ["../assets/avatar/ichate.webp"],
         links: [
             { url: "https://shadowjourney.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.com/invite/yB2YZJUA3F", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
@@ -1226,7 +1267,7 @@ const ownerInfo = {
         avatars: ["../assets/avatar/vneq.webp", "../assets/avatar/gg.webp", "../assets/avatar/sian.webp", "../assets/avatar/soukyo.webp"],
         links: [
             { url: "https://tryastra.pro/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
-            { url: "https://discord.com/invite/astra-ai", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://discord.gg/YmVuVXas", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
             { url: "https://github.com/vneqisntreal", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     },
