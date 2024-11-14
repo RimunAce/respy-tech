@@ -19,7 +19,7 @@ const apiDescriptions = {
     skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
     helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service',
     hareproxy: 'This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint',
-    astraai: 'This API is seems to be made with several great minds in the LLM API field like Soukyo, GG, Sian, and I might have missed others. Semi private API now with 95% Acceptance Rate since 7th November 2024',
+    miraai: 'This API is made by several developers and has gone for pay-as-you-go concept. Starting from 0.25$ credit',
     webraftai: 'This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list'
 };
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'rimunace', 'zanity', 'anyai', 'cablyai', 'fresedgpt', 
             'heckerai', 'shardai', 'zukijourney', 'shadowjourney', 
             'shuttleai', 'electronhub', 'oxygen', 'nagaai', 'skailar', 
-            'helixmind', 'hareproxy', 'astraai', 'webraftai'
+            'helixmind', 'hareproxy', 'miraai', 'webraftai'
         ];
         
         const results = {};
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
         skailar: generateSkailarContent,
         helixmind: generateHelixmindContent,
         hareproxy: generateHareproxyContent,
-        astraai: generateAstraaiContent,
+        miraai: generateMiraaiContent,
         webraftai: generateWebraftaiContent
     };
 
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
     }
 
-    function generateAstraaiContent(model) {
+    function generateMiraaiContent(model) {
         return `
             <p>Object: ${model.object || 'N/A'}</p>
             <p>Type: ${model.type || 'N/A'}</p>
@@ -1080,7 +1080,7 @@ const providerRatings = {
     skailar: 'S+',
     helixmind: 'S+',
     hareproxy: 'S+',
-    astraai: 'S+',
+    miraai: 'S+',
     webraftai: 'S+'
 };
 
@@ -1101,7 +1101,7 @@ const providerRatingsComment = {
     skailar: 'Goated Developer',
     helixmind: 'Goated Developer',
     hareproxy: 'Goated Developer',
-    astraai: 'Goated Developer',
+    miraai: 'Goated Developer',
     webraftai: 'Goated Developer'
 }
 
@@ -1262,7 +1262,7 @@ const ownerInfo = {
             { url: "https://github.com/sm1945", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     },
-    astraai: {
+    miraai: {
         description: "Vneq, GG, invalidsian, & Soukyo",
         avatars: ["../assets/avatar/vneq.webp", "../assets/avatar/gg.webp", "../assets/avatar/sian.webp", "../assets/avatar/soukyo.webp"],
         links: [

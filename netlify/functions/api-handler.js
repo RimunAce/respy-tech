@@ -50,7 +50,7 @@ exports.handler = async (event, context) => {
       skailar: 'https://test.skailar.it/v1/models',
       helixmind: 'https://helixmind.online/v1/models',
       hareproxy: 'https://unified.hareproxy.io.vn/v1/models',
-      astraai: 'http://api.tryastra.pro/v1/models',
+      miraai: 'http://api.tryastra.pro/v1/models',
       webraftai: 'https://api.webraft.in/v2/models'
     };
 
