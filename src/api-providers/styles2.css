@@ -1008,3 +1008,28 @@ transform: translateY(-50%);
 .select-option.selected {
     background: rgba(128, 90, 213, 0.2);
 }
+
+.last-updated-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px auto;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 8px;
+    max-width: fit-content;
+}
+
+.update-icon {
+    font-size: 1.2em;
+}
+
+.update-text {
+    color: #fff;
+    font-size: 0.9em;
+}
+
+#lastUpdateTime {
+    font-weight: 500;
+}

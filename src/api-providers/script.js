@@ -9,7 +9,7 @@ const apiDescriptions = {
     cablyai: "This API requires 10 valid invites to be used or behind a 20$ paywall (negotiable)",
     fresedgpt: "This API is very recommended for everyone but (some) Claude model requires payment",
     heckerai: "This API is made by a great mastermind, hecker. Dropped an announcement of winding down server and making it private starting 15th November 2024",
-    shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. No further comment needed",
+    shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. Pretty cool new logo imo, now a valuable hard diamond! (I guess?)",
     zukijourney: "This API is practically leading the API provider scene. Largest API provider with 5,700 members",
     shadowjourney: "This API is made by \"The Honoured One\" and for real, he might be Gojo Satoru himself",
     shuttleai: 'This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model',
@@ -19,7 +19,7 @@ const apiDescriptions = {
     skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
     helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service',
     hareproxy: 'This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint',
-    miraai: 'This API is made by several developers and has gone for pay-as-you-go concept. Starting from 0.25$ credit',
+    astraai: 'This API was updated the most in this list. Most contributed by GG. No longer pay-as-you-go. Tbh, I have quite mixed feelings lol',
     webraftai: 'This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list'
 };
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'rimunace', 'zanity', 'anyai', 'cablyai', 'fresedgpt', 
             'heckerai', 'shardai', 'zukijourney', 'shadowjourney', 
             'shuttleai', 'electronhub', 'oxygen', 'nagaai', 'skailar', 
-            'helixmind', 'hareproxy', 'miraai', 'webraftai'
+            'helixmind', 'hareproxy', 'astraai', 'webraftai'
         ];
         
         const results = {};
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
         skailar: generateSkailarContent,
         helixmind: generateHelixmindContent,
         hareproxy: generateHareproxyContent,
-        miraai: generateMiraaiContent,
+        astraai: generateAstraaiContent,
         webraftai: generateWebraftaiContent
     };
 
@@ -376,10 +376,9 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
     }
 
-    function generateMiraaiContent(model) {
+    function generateAstraaiContent(model) {
         return `
-            <p>Object: ${model.object || 'N/A'}</p>
-            <p>Type: ${model.type || 'N/A'}</p>
+            <p>Object: ${model.object || 'N/A'}</p> 
             <p>Multiplier: ${model.multiplier || 'N/A'}</p>
             <p>Owned By: ${model.owned_by || 'N/A'}</p>
         `;
@@ -1080,7 +1079,7 @@ const providerRatings = {
     skailar: 'S+',
     helixmind: 'S+',
     hareproxy: 'S+',
-    miraai: 'S+',
+    astraai: 'S+',
     webraftai: 'S+'
 };
 
@@ -1101,7 +1100,7 @@ const providerRatingsComment = {
     skailar: 'Goated Developer',
     helixmind: 'Goated Developer',
     hareproxy: 'Goated Developer',
-    miraai: 'Goated Developer',
+    astraai: 'Goated Developer',
     webraftai: 'Goated Developer'
 }
 
@@ -1262,12 +1261,12 @@ const ownerInfo = {
             { url: "https://github.com/sm1945", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     },
-    miraai: {
-        description: "Vneq, GG, invalidsian, & Soukyo",
-        avatars: ["../assets/avatar/vneq.webp", "../assets/avatar/gg.webp", "../assets/avatar/sian.webp", "../assets/avatar/soukyo.webp"],
+    astraai: {
+        description: "Vneq",
+        avatars: ["../assets/avatar/vneq.webp"],
         links: [
-            { url: "https://tryastra.pro/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
-            { url: "https://discord.gg/YmVuVXas", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://g4f.pro/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/rQJMcHmS", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
             { url: "https://github.com/vneqisntreal", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     },
