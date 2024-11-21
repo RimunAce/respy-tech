@@ -19,7 +19,7 @@ const apiDescriptions = {
     skailar: 'This API was never used by me but regardless, this api itself is in a good shape',
     helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service',
     hareproxy: 'This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint',
-    astraai: 'This API was updated the most in this list. Most contributed by GG. No longer pay-as-you-go. Tbh, I have quite mixed feelings lol',
+    astraai: 'This API was updated the most in this list. No longer pay-as-you-go.',
     webraftai: 'This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list'
 };
 
@@ -1263,7 +1263,7 @@ const ownerInfo = {
     },
     astraai: {
         description: "Vneq",
-        avatars: ["../assets/avatar/vneq.webp"],
+        avatars: ["../assets/avatar/vneq.gif"],
         links: [
             { url: "https://g4f.pro/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/rQJMcHmS", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
