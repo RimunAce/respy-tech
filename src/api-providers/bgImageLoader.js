@@ -3,15 +3,14 @@ document.addEventListener('DOMContentLoaded', function() {
     bgContainer.className = 'background-container';
     document.body.appendChild(bgContainer);
 
-    // Load background image
     const img = new Image();
     img.onload = function() {
         bgContainer.classList.add('loaded');
     };
     
-    // Load image with lower quality for mobile
+    // Use smaller image for mobile
     if (window.innerWidth <= 768) {
-        img.src = '../assets/background/bgavif.avif';
+        img.src = '../assets/background/bgavif-mobile.avif';
     } else {
         img.src = '../assets/background/bgavif.avif';
     }

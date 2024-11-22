@@ -11,6 +11,7 @@
     "dotenv": "^16.4.5",
     "https-proxy-agent": "^7.0.5",
     "idb": "^8.0.0",
+    "ioredis": "^5.4.1",
     "lambda-rate-limiter": "^4.0.0",
     "respy-tech": "file:"
   },

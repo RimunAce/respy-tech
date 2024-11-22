@@ -1,17 +1,35 @@
-let rateLimiter;
+const { getFromCache, setToCache } = require('./utils/redis-client');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-exports.handler = async (event, context) => {
-  if (!rateLimiter) {
-    const rateLimit = await import('lambda-rate-limiter');
-    rateLimiter = rateLimit.default({
-      interval: 60000,
-      uniqueTokenPerInterval: 500
-    });
-  }
+const fetchWithTimeout = async (url, fetchOptions, timeout = 5000) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
 
+  try {
+    const response = await fetch(url, {
+      ...fetchOptions,
+      signal: controller.signal
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    clearTimeout(timeoutId);
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error('Request timed out after 5 seconds');
+    }
+    throw error;
+  }
+};
+
+exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': process.env.NODE_ENV === 'development' 
       ? 'http://localhost:8888' 
@@ -24,15 +42,21 @@ exports.handler = async (event, context) => {
     return { statusCode: 204, headers };
   }
 
-  const ip = event.headers['client-ip'] || 
-             event.headers['x-forwarded-for'] || 
-             event.ip;
+  const provider = event.path.split('/').pop();
+  const cacheKey = `provider:${provider}:models`;
 
   try {
-    await rateLimiter.check(30, ip);
+    // Check Redis cache first
+    const cachedData = await getFromCache(cacheKey);
+    if (cachedData) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ data: cachedData, source: 'cache' })
+      };
+    }
 
-    const provider = event.path.split('/').pop();
-    
+    // If not in cache, fetch from API
     const apiEndpoints = {
       rimunace: 'https://api.rimunace.xyz/v1/models',
       zanity: 'https://api.zanity.net/v1/models',
@@ -50,7 +74,7 @@ exports.handler = async (event, context) => {
       skailar: 'https://test.skailar.it/v1/models',
       helixmind: 'https://helixmind.online/v1/models',
       hareproxy: 'https://unified.hareproxy.io.vn/v1/models',
-      astraai: 'https://g4f.pro/v1/models',
+      'g4f.pro': 'https://g4f.pro/v1/models',
       webraftai: 'https://api.webraft.in/v2/models'
     };
 
@@ -66,65 +90,57 @@ exports.handler = async (event, context) => {
     const proxyPort = process.env.proxy_port;
     const proxyAuth = process.env.proxy_auth;
 
-    try {
-      const fetchOptions = {};
-      if (proxyHost && proxyPort) {
-        fetchOptions.agent = new (await import('https-proxy-agent')).HttpsProxyAgent({
-          host: proxyHost,
-          port: proxyPort,
-          auth: proxyAuth,
-          protocol: 'http:'
-        });
-      }
+    const fetchOptions = {};
+    if (proxyHost && proxyPort) {
+      fetchOptions.agent = new (await import('https-proxy-agent')).HttpsProxyAgent({
+        host: proxyHost,
+        port: proxyPort,
+        auth: proxyAuth,
+        protocol: 'http:'
+      });
+    }
 
-      const response = await fetch(apiEndpoints[provider], fetchOptions);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-
+    const data = await fetchWithTimeout(apiEndpoints[provider], fetchOptions);
+    
+    // Validate data structure before caching
+    if (Array.isArray(data?.data)) {
+      // Cache valid data with provider-specific TTL
+      const ttl = provider === 'rimunace' ? 600 : 300; // 10 mins for rimunace, 5 mins for others
+      await setToCache(cacheKey, data.data, ttl);
+      
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify(data)
+        body: JSON.stringify({ data: data.data, source: 'api' })
       };
-
-    } catch (error) {
-      if (error.message && error.message.includes('Rate limit exceeded')) {
-        return {
-          statusCode: 429,
-          headers,
-          body: JSON.stringify({ 
-            error: 'Too many requests. Please try again later.',
-            retryAfter: 60 
-          })
-        };
-      }
-
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: error.message })
-      };
+    } else {
+      throw new Error('Invalid data structure received from provider');
     }
 
   } catch (error) {
-    if (error.message && error.message.includes('Rate limit exceeded')) {
+    console.error(`Error fetching ${provider}:`, error);
+
+    // Check if we have stale cache data we can use
+    const staleData = await getFromCache(`stale:${cacheKey}`);
+    if (staleData) {
       return {
-        statusCode: 429,
+        statusCode: 200,
         headers,
         body: JSON.stringify({ 
-          error: 'Too many requests. Please try again later.',
-          retryAfter: 60
+          data: staleData, 
+          source: 'stale_cache',
+          warning: 'Using stale data due to provider error'
         })
       };
     }
 
     return {
-      statusCode: 500,
+      statusCode: error.message.includes('timed out') ? 504 : 500,
       headers,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ 
+        error: error.message,
+        provider 
+      })
     };
   }
 };

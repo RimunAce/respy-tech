@@ -27,6 +27,17 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
 [dev]
   framework = "#custom"
   command = "npm run start"
@@ -34,14 +45,6 @@
   port = 8888
   publish = "src"
   autoLaunch = true
-
-[[redirects]]
-  from = "/api/submit-form"
-  to = "/.netlify/functions/submission-created"
-  status = 200
-  force = true
-  methods = ["POST", "OPTIONS"]
-  headers = {Access-Control-Allow-Origin = "*"}
 
 [[redirects]]
   from = "/*"

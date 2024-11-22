@@ -29,119 +29,58 @@
     <meta name="author" content="Respire">
     <link rel="canonical" href="https://respy.tech/api-providers">
     <link rel="preload" href="../assets/background/bgavif.avif" as="image">
+    <link rel="preconnect" href="https://api.rimunace.xyz">
+    <link rel="preconnect" href="https://scripts.simpleanalyticscdn.com">
+    <link rel="dns-prefetch" href="https://api.rimunace.xyz">
+    <link rel="dns-prefetch" href="https://scripts.simpleanalyticscdn.com">
+    <link rel="preload" href="../assets/background/bgavif-mobile.avif" as="image" media="(max-width: 768px)">
+    <link rel="preload" href="../assets/background/bgavif.avif" as="image" media="(min-width: 769px)">
+    <link rel="preload" href="../fonts/Roboto-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="../fonts/Roboto-Medium.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preconnect" href="https://api.rimunace.xyz" crossorigin>
+    <link rel="preconnect" href="https://scripts.simpleanalyticscdn.com" crossorigin>
+    <link rel="preconnect" href="https://queue.simpleanalyticscdn.com" crossorigin>
+    <link rel="dns-prefetch" href="https://downloadr2.apkmirror.com">
+    <link rel="dns-prefetch" href="https://seeklogo.com">
+    <link rel="preload" href="../assets/background/bgavif.avif" as="image" type="image/avif">
+    <link rel="preload" href="../assets/icons/cache.png" as="image" type="image/png">
+    <link rel="preload" href="../api-providers/styles2.css" as="style">
 </head>
 <body>
     <div class="bg-image"></div>
     <div class="container">
-        <h1><span class="title-text" id="dynamicTitle">AI Generative Text Models</span></h1>
+        <h1><span class="title-text">AI MODEL DIRECTORY</span></h1>
         <div class="subtitle">Explore AI models from multiple providers</div>
         <div class="disclaimer">Disclaimer: The listed API providers (except rimunace) are not affiliated with me. This is for informational purposes only. Use at your own risk.</div>
-        <div class="last-updated-box">
-            <div class="update-icon">🕒</div>
-            <div class="update-text">
-                Last Updated: <span id="lastUpdateTime">November 20, 2024 | 12:25 AM GMT+8</span>
+        <div class="status-boxes">
+            <div class="status-box">
+                <div class="status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="status-text">
+                    Last Updated: <span id="lastUpdateTime">November 22, 2024</span>
+                </div>
             </div>
-        </div>
-        <div class="form-container">
-            <button id="showFormButton" class="form-toggle-button">Submit Provider Request</button>
             
-            <div id="formModal" class="form-modal">
-                <div class="form-modal-content">
-                    <span class="close-button">&times;</span>
-                    
-                    <div class="form-tabs">
-                        <button class="tab-button active" data-tab="add">Add Provider</button>
-                        <button class="tab-button" data-tab="update">Update Provider</button>
-                    </div>
-    
-                    <!-- Add this hidden form for Netlify form detection -->
-                    <form name="add-provider" netlify netlify-honeypot="bot-field" hidden>
-                        <input type="text" name="providerName" />
-                        <input type="url" name="apiEndpoint" />
-                        <input type="text" name="ownerDiscord" />
-                        <input type="url" name="websiteUrl" />
-                        <input type="url" name="discordServer" />
-                        <input type="url" name="githubUrl" />
-                        <input type="url" name="providerIcon" />
-                        <textarea name="addReason"></textarea>
-                    </form>
-    
-                    <!-- Add Provider Form -->
-                    <form name="add-provider" class="provider-form active" id="addProviderForm">
-                        <input type="hidden" name="form-name" value="add-provider" />
-                        <input type="hidden" name="bot-field" />
-                        <h3>Add New Provider</h3>
-                        
-                        <div class="form-group">
-                            <label>Provider Name <input type="text" name="providerName" required /></label>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>API Endpoint <input type="url" name="apiEndpoint" required /></label>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>Owner's Discord <input type="text" name="ownerDiscord" /></label>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>Website URL <input type="url" name="websiteUrl" /></label>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>Discord Server URL <input type="url" name="discordServer" /></label>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>GitHub URL <input type="url" name="githubUrl" /></label>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>Provider Icon URL <input type="url" name="providerIcon" required /></label>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>Reason for Addition <textarea name="addReason" required></textarea></label>
-                        </div>
-    
-                        <button type="submit" class="submit-button">Submit Request</button>
-                    </form>
-    
-                    <!-- Hidden form for update provider -->
-                    <form name="update-provider" netlify netlify-honeypot="bot-field" hidden>
-                        <select name="existingProvider"></select>
-                        <select name="updateType"></select>
-                        <input type="text" name="currentValue" />
-                        <input type="text" name="newValue" />
-                        <textarea name="updateReason"></textarea>
-                    </form>
-    
-                    <!-- Update Provider Form -->
-                    <form name="update-provider" class="provider-form" id="updateProviderForm">
-                        <input type="hidden" name="form-name" value="update-provider" />
-                        <input type="hidden" name="bot-field" />
-                        <h3>Update Existing Provider</h3>
-    
-                        <div class="form-group">
-                            <label>Select Provider</label>
-                            <div class="custom-select-container"></div>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>Update Type</label>
-                            <div class="custom-select-container update-type-container"></div>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>New Value <input type="text" name="newValue" required /></label>
-                        </div>
-    
-                        <div class="form-group">
-                            <label>Reason for Update <textarea name="updateReason" required></textarea></label>
-                        </div>
-    
-                        <button type="submit" class="submit-button">Submit Request</button>
-                    </form>
+            <div class="status-box">
+                <div class="status-icon">
+                    <img src="../assets/icons/cache.png" alt="Cache Status Icon">
+                </div>
+                <div class="status-text">
+                    Cache: <span id="redisStatus">Checking...</span>
+                </div>
+            </div>
+            
+            <div class="status-box">
+                <div class="status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div class="status-text">
+                    Providers: <span id="providersTotal">0</span>
                 </div>
             </div>
         </div>
@@ -171,7 +110,7 @@
                 HeckerAI
             </button>
             <button class="api-button" data-api="shardai">
-                <img src="../assets/icons/shard-ai.webp" alt="Shard-AI" class="provider-icon">
+                <img src="../assets/icons/shardai.webp" alt="Shard-AI" class="provider-icon">
                 Shard-AI
             </button>
             <button class="api-button" data-api="zukijourney">
@@ -195,7 +134,7 @@
                 Oxygen
             </button>
             <button class="api-button" data-api="nagaai">
-                <img src="../assets/icons/naga-ai.webp" alt="Naga AI" class="provider-icon">
+                <img src="../assets/icons/nagaai.webp" alt="Naga AI" class="provider-icon">
                 Naga AI
             </button>
             <button class="api-button" data-api="skailar">
@@ -210,15 +149,16 @@
                 <img src="../assets/icons/hareproxy.webp" alt="HareProxy" class="provider-icon">
                 HareProxy
             </button>
-            <button class="api-button" data-api="astraai">
-                <img src="../assets/icons/astraai.webp" alt="AstraAI" class="provider-icon">
-                AstraAI
+            <button class="api-button" data-api="g4f.pro">
+                <img src="../assets/icons/g4f.pro.webp" alt="g4f.pro" class="provider-icon">
+                g4f.pro
             </button>
             <button class="api-button" data-api="webraftai">
-                <img src="../assets/icons/webraft.webp" alt="WebraftAI" class="provider-icon">
+                <img src="../assets/icons/webraftai.webp" alt="WebraftAI" class="provider-icon">
                 WebraftAI
             </button>
         </div>
+        <div class="subtitle"></div>
         <div id="providerInfoBox" class="provider-info-box">
             Loading...
         </div>
@@ -246,5 +186,12 @@
     <script src="../api-providers/bgImageLoader.js" defer></script>
     <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
     <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+          .then(registration => console.log('ServiceWorker registered'))
+          .catch(err => console.error('ServiceWorker registration failed:', err));
+      }
+    </script>
 </body>
 </html>
