@@ -43,7 +43,7 @@ const providerRatingsComment = {
 const ownerInfo = {
     rimunace: {
         description: "Respire & James",
-        avatars: ["../assets/avatar/respire.webp", "../assets/avatar/james.webp"],
+        avatars: ["../assets/avatar/respire.gif", "../assets/avatar/james.webp"],
         links: [
             { url: "https://api.rimunace.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/respy-tech", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
