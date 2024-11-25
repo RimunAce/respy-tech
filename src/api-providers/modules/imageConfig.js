@@ -16,7 +16,8 @@ const providerImageExtensions = {
     helixmind: 'gif',
     hareproxy: 'webp',
     'g4f.pro': 'webp',
-    webraftai: 'webp'
+    webraftai: 'webp',
+    nobrandai: 'webp'
   };
   
   export { providerImageExtensions };

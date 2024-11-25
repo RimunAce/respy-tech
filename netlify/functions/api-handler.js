@@ -75,7 +75,8 @@ exports.handler = async (event, context) => {
       helixmind: 'https://helixmind.online/v1/models',
       hareproxy: 'https://unified.hareproxy.io.vn/v1/models',
       'g4f.pro': 'https://g4f.pro/v1/models',
-      webraftai: 'https://api.webraft.in/v2/models'
+      webraftai: 'https://api.webraft.in/v2/models',
+      nobrandai: 'https://nobrandai.com/v1/models'
     };
 
     if (!apiEndpoints[provider]) {

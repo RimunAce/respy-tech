@@ -16,7 +16,8 @@ const providerRatings = {
     helixmind: 'S+',
     hareproxy: 'S+',
     'g4f.pro': 'S+',
-    webraftai: 'S+'
+    webraftai: 'S+',
+    nobrandai: 'S+'
 };
 
 const providerRatingsComment = {
@@ -37,7 +38,8 @@ const providerRatingsComment = {
     helixmind: 'Goated Developer',
     hareproxy: 'Goated Developer',
     'g4f.pro': 'Goated Developer',
-    webraftai: 'Goated Developer'
+    webraftai: 'Goated Developer',
+    nobrandai: 'Goated Developer'
 };
 
 const ownerInfo = {
@@ -197,6 +199,15 @@ const ownerInfo = {
             { url: "https://api3.webraft.in/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.com/invite/ncaagQjhQ8", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
             { url: "https://github.com/ds-gamer", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    nobrandai: {
+        description: "harmon.tr",
+        avatars: ["../assets/avatar/harmon.webp"],
+        links: [
+            { url: "https://nobrandai.com/v1/models", text: "v1/Models", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/x2CttCSa", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
+            { url: "https://github.com/harmoncomtr", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     }
 };

@@ -175,6 +175,15 @@ export function generateWebraftaiContent(model) {
     `;
 }
 
+export function generateNobrandaiContent(model) {
+    return `
+        <p>Object: ${model.object || 'N/A'}</p>
+        <p>Cost: ${model.cost || 'N/A'}</p>
+        <p>Provider: ${model.provider || 'N/A'}</p>
+        <p>Created: ${model.created || 'N/A'}</p>
+    `;
+}
+
 export const contentGenerators = {
     rimunace: generateRimunaceContent,
     zanity: generateZanityContent,
@@ -193,5 +202,6 @@ export const contentGenerators = {
     helixmind: generateHelixmindContent,
     hareproxy: generateHareproxyContent,
     'g4f.pro': generateg4fproContent,
-    webraftai: generateWebraftaiContent
+    webraftai: generateWebraftaiContent,
+    nobrandai: generateNobrandaiContent
 };

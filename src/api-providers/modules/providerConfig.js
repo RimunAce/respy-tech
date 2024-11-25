@@ -16,14 +16,15 @@ const apiDescriptions = {
     helixmind: 'This API is very "professional"-like thanks to the charming owner. Owner\'s goal is to provide Stable and Reliable service',
     hareproxy: 'This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint',
     'g4f.pro': 'This API was updated the most in this list. No longer pay-as-you-go. Name changed from AstraAI to avoid legal trouble, good move!',
-    webraftai: 'This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list'
+    webraftai: 'This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list',
+    nobrandai: 'This API is originally owned by GG, and has transfered ownership to harmon.tr. Owner is a domain reseller. Nice'
 };
 
 const providers = [
     'rimunace', 'zanity', 'anyai', 'cablyai', 'fresedgpt', 
     'heckerai', 'shardai', 'zukijourney', 'shadowjourney', 
     'shuttleai', 'electronhub', 'oxygen', 'nagaai', 'skailar', 
-    'helixmind', 'hareproxy', 'g4f.pro', 'webraftai'
+    'helixmind', 'hareproxy', 'g4f.pro', 'webraftai', 'nobrandai'
 ];
 
 export { apiDescriptions, providers };
