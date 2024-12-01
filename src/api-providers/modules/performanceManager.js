@@ -182,8 +182,8 @@ export class PerformanceManager {
         }
     
         const ctx = document.getElementById('performanceChart').getContext('2d');
-        const timestamps = results.map(r => new Date(r.timestamp).toLocaleTimeString());
-        const responseTimes = results.map(r => r.timeTaken);
+        const timestamps = results.map(r => new Date(r.timestamp).toLocaleTimeString()).reverse();
+        const responseTimes = results.map(r => r.timeTaken).reverse();
 
         this.chart = new Chart(ctx, {
             type: 'line',
