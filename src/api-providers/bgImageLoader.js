@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const img = new Image();
     img.onload = function() {
         bgContainer.classList.add('loaded');
+        document.body.style.backgroundImage = `url(${img.src})`;
     };
     
     // Use smaller image for mobile
@@ -14,4 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         img.src = '../assets/background/bgavif.avif';
     }
+
+    // Handle resize events
+    window.addEventListener('resize', function() {
+        const newSrc = window.innerWidth <= 768 
+            ? '../assets/background/bgavif-mobile.avif'
+            : '../assets/background/bgavif.avif';
+        if (img.src !== newSrc) {
+            img.src = newSrc;
+        }
+    });
 });

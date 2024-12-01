@@ -114,12 +114,23 @@ export function renderProviderInfo(owner, providerInfoBox) {
 }
 
 export function adjustLayout(modelContainer) {
-    const containerWidth = modelContainer.offsetWidth;
-    const modelBoxes = document.querySelectorAll('.model-box');
-
-    if (containerWidth < 480) {
-        modelBoxes.forEach(box => box.style.width = '100%');
-    } else {
-        modelBoxes.forEach(box => box.style.width = '');
-    }
+    if (!modelContainer) return;
+    
+    const isMobile = window.innerWidth <= 768;
+    const modelBoxes = modelContainer.querySelectorAll('.model-box');
+    
+    modelBoxes.forEach(box => {
+        // Ensure proper sizing on mobile
+        if (isMobile) {
+            box.style.width = '100%';
+            box.style.maxWidth = 'none';
+        } else {
+            box.style.width = '';
+            box.style.maxWidth = '';
+        }
+        
+        // Ensure visibility
+        box.style.display = 'flex';
+        box.style.opacity = '1';
+    });
 }

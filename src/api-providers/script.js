@@ -14,6 +14,15 @@ import {
 } from './modules/uiManager.js';
 import { ResourceLoader, lazyLoadImage } from './modules/resourceLoader.js';
 import { providerImageExtensions } from './modules/imageConfig.js';
+import { PerformanceManager } from './modules/performanceManager.js';
+
+const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+    };
+};
 
 document.addEventListener('DOMContentLoaded', async function () {
     let modelData = [];
@@ -144,9 +153,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         const filterWords = filter.toLowerCase().trim().split(/\s+/);
         modelContainer.innerHTML = '';
         
+        function shouldDisplayModel(model, filterWords) {
+            return !filterWords.length || filterWords.every(word => 
+                model.id?.toLowerCase().includes(word) || 
+                model.owned_by?.toLowerCase().includes(word)
+            );
+        }
+
         const observer = createIntersectionObserver();
         let visibleCount = 0;
-        const batchSize = 20;
+        const batchSize = window.innerWidth <= 768 ? 10 : 20;
         let currentIndex = 0;
     
         function renderModelBox(model) {
@@ -155,13 +171,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             modelBox.style.opacity = '0';
             observer.observe(modelBox);
             return modelBox;
-        }
-    
-        function shouldDisplayModel(model, filterWords) {
-            return !filterWords.length || filterWords.every(word => 
-                model.id?.toLowerCase().includes(word) || 
-                model.owned_by?.toLowerCase().includes(word)
-            );
         }
     
         function renderBatch() {
@@ -184,6 +193,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
             
             modelCountElement.textContent = visibleCount;
+            adjustLayout(modelContainer);
         }
     
         requestAnimationFrame(renderBatch);
@@ -212,14 +222,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         preloadAvatars();
     });
 
-    const debounce = (func, delay) => {
-        let timeoutId;
-        return (...args) => {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => func(...args), delay);
-        };
-    };
-    
     const debouncedDisplayModels = debounce((filter) => {
         displayModels(filter);
     }, 300);
@@ -244,11 +246,34 @@ document.addEventListener('DOMContentLoaded', async function () {
         };
 
         setLoadingState(true, elements);
+        setButtonsState(true);
+        
+        // Also disable view buttons during loading
+        document.querySelectorAll('.view-button').forEach(button => {
+            button.disabled = true;
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+        });
+
         try {
             const provider = getProviderFromButton(button);
             await updateProviderUI(provider);
+            
+            // If we're in performance view, update the performance data
+            const performanceView = document.getElementById('performanceView');
+            if (performanceView.style.display === 'block') {
+                await window.performanceManager.loadPerformanceData();
+            }
         } finally {
             setLoadingState(false, elements);
+            setButtonsState(false);
+            
+            // Re-enable view buttons
+            document.querySelectorAll('.view-button').forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+                button.style.cursor = 'pointer';
+            });
         }
     }
 
@@ -406,6 +431,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     
     // Initialize lazy loading for provider avatars
     document.querySelectorAll('.provider-avatar[data-src]').forEach(lazyLoadImage);
+
+    const performanceManager = new PerformanceManager();
 });
 
 const fetchWithRetry = async (url, maxRetries = 3, delay = 1000) => {
@@ -445,3 +472,7 @@ function createProviderButton(provider) {
         </button>
     `;
 }
+
+window.addEventListener('resize', debounce(() => {
+    adjustLayout(modelContainer);
+}, 250));

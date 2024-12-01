@@ -8,11 +8,14 @@
     "start": "esbuild src/main.js --bundle --minify --outfile=src/dist/bundle.js --servedir=src"
   },
   "dependencies": {
+    "chart.js": "^4.4.6",
     "dotenv": "^16.4.5",
     "https-proxy-agent": "^7.0.5",
     "idb": "^8.0.0",
     "ioredis": "^5.4.1",
     "lambda-rate-limiter": "^4.0.0",
+    "mongodb": "^6.11.0",
+    "node-fetch": "^3.3.2",
     "respy-tech": "file:"
   },
   "devDependencies": {

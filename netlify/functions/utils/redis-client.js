@@ -67,7 +67,6 @@ async function createRedisClient() {
       }
     });
 
-    // Test connection with PING
     await Promise.race([
       client.ping(),
       new Promise((_, reject) => 
@@ -124,13 +123,10 @@ async function setToCache(key, data, expirySeconds = 300) {
     const client = await createRedisClient();
     if (!client) return;
 
-    // Store current data in both main and stale cache
     const pipeline = client.pipeline();
     
-    // Main cache with normal expiry
     pipeline.setex(key, expirySeconds, JSON.stringify(data));
     
-    // Stale cache with longer expiry (24 hours)
     pipeline.setex(`stale:${key}`, 86400, JSON.stringify(data));
 
     await Promise.race([
@@ -156,7 +152,6 @@ async function checkRedisConnection() {
   }
 }
 
-// Cleanup on process exit
 process.on('SIGTERM', async () => {
   if (redisClient) {
     try {
