@@ -3,10 +3,10 @@ const { MongoClient } = require('mongodb');
 exports.handler = async function(event, context) {
     const { provider, model } = event.queryStringParameters;
     
-    if (!['rimunace', 'helixmind', 'electronhub'].includes(provider)) {
+    if (!['rimunace', 'helixmind', 'electronhub', 'nobrandai'].includes(provider)) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ error: 'Only rimunace, helixmind, and electronhub providers are supported currently' })
+            body: JSON.stringify({ error: 'Only rimunace, helixmind, electronhub, and nobrandai providers are supported currently' })
         };
     }
 
