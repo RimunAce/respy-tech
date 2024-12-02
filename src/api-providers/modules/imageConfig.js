@@ -17,7 +17,8 @@ const providerImageExtensions = {
     hareproxy: 'webp',
     'g4f.pro': 'webp',
     webraftai: 'webp',
-    nobrandai: 'webp'
-  };
-  
+    nobrandai: 'webp',
+    voidai: 'gif'
+};
+
   export { providerImageExtensions };

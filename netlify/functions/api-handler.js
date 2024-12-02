@@ -10,6 +10,12 @@ const fetchWithTimeout = async (url, fetchOptions, timeout = 5000) => {
   try {
     const response = await fetch(url, {
       ...fetchOptions,
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'Respy.Tech/1.0',
+        'Origin': 'https://respy.tech',
+        ...fetchOptions?.headers
+      },
       signal: controller.signal
     });
 
@@ -76,7 +82,8 @@ exports.handler = async (event, context) => {
       hareproxy: 'https://unified.hareproxy.io.vn/v1/models',
       'g4f.pro': 'https://g4f.pro/v1/models',
       webraftai: 'https://api.webraft.in/v2/models',
-      nobrandai: 'https://nobrandai.com/v1/models'
+      nobrandai: 'https://nobrandai.com/v1/models',
+      voidai: 'https://voidai.xyz/v1/models'
     };
 
     if (!apiEndpoints[provider]) {
@@ -121,7 +128,6 @@ exports.handler = async (event, context) => {
   } catch (error) {
     console.error(`Error fetching ${provider}:`, error);
 
-    // Check if we have stale cache data we can use
     const staleData = await getFromCache(`stale:${cacheKey}`);
     if (staleData) {
       return {

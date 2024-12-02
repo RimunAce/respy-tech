@@ -184,6 +184,14 @@ export function generateNobrandaiContent(model) {
     `;
 }
 
+export function generateVoidAiContent(model) {
+    return `
+        <p>Object: ${model.object || 'N/A'}</p>
+        <p>Owned By: ${model.owned_by || 'N/A'}</p>
+        <p>Type: ${model.type || 'N/A'}</p>
+    `;
+}
+
 export const contentGenerators = {
     rimunace: generateRimunaceContent,
     zanity: generateZanityContent,
@@ -203,5 +211,6 @@ export const contentGenerators = {
     hareproxy: generateHareproxyContent,
     'g4f.pro': generateg4fproContent,
     webraftai: generateWebraftaiContent,
-    nobrandai: generateNobrandaiContent
+    nobrandai: generateNobrandaiContent,
+    voidai: generateVoidAiContent
 };

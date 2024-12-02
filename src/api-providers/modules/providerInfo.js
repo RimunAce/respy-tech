@@ -17,7 +17,8 @@ const providerRatings = {
     hareproxy: 'S+',
     'g4f.pro': 'S+',
     webraftai: 'S+',
-    nobrandai: 'S+'
+    nobrandai: 'S+',
+    voidai: 'S+'
 };
 
 const providerRatingsComment = {
@@ -39,7 +40,8 @@ const providerRatingsComment = {
     hareproxy: 'Goated Developer',
     'g4f.pro': 'Goated Developer',
     webraftai: 'Goated Developer',
-    nobrandai: 'Goated Developer'
+    nobrandai: 'Goated Developer',
+    voidai: 'Goated Developer'
 };
 
 const ownerInfo = {
@@ -208,6 +210,14 @@ const ownerInfo = {
             { url: "https://nobrandai.com/v1/models", text: "v1/Models", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/x2CttCSa", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
             { url: "https://github.com/harmoncomtr", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
+        ]
+    },
+    voidai: {
+        description: "acattoxddd",
+        avatars: ["../assets/avatar/acatto.webp"],
+        links: [
+            { url: "https://voidai.xyz/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
+            { url: "https://discord.gg/BFaM7GbS", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
         ]
     }
 };

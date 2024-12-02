@@ -16,15 +16,15 @@ export class PerformanceManager {
                 }
             });
         });
-
-        document.querySelectorAll('.api-button').forEach(button => {
-            button.addEventListener('click', () => {
-                if (this.currentView === 'performance') {
-                    this.loadPerformanceData();
-                }
-            });
+    
+        document.querySelector('.api-buttons').addEventListener('click', (event) => {
+            const button = event.target.closest('.api-button');
+            if (button && this.currentView === 'performance') {
+                // Wait for the active class to be updated
+                setTimeout(() => this.loadPerformanceData(), 100);
+            }
         });
-
+    
         const modelSelector = document.getElementById('modelSelector');
         if (modelSelector) {
             modelSelector.addEventListener('change', () => this.loadPerformanceData());
@@ -46,48 +46,68 @@ export class PerformanceManager {
         document.querySelectorAll('.view-button').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.view === view);
         });
-
+    
+        this.currentView = view;
+    
         if (view === 'performance') {
             modelView.style.display = 'none';
             performanceView.style.display = 'block';
+            performanceView.classList.add('visible');
             this.loadPerformanceData();
         } else {
             modelView.style.display = 'block';
             performanceView.style.display = 'none';
+            performanceView.classList.remove('visible');
         }
     }
 
     async loadPerformanceData() {
         const performanceData = document.getElementById('performanceData');
         const selectedModel = document.getElementById('modelSelector').value;
-        const currentProvider = document.querySelector('.api-button.active').dataset.api;
-
-        if (!['rimunace', 'helixmind', 'electronhub'].includes(currentProvider)) {
-            performanceData.innerHTML = `
+        const currentProvider = document.querySelector('.api-button.active')?.dataset.api;
+    
+        if (!currentProvider) {
+            performanceData.innerHTML = '<div class="error">No provider selected</div>';
+            return;
+        }
+    
+        performanceData.innerHTML = `
+            <div class="loading-container">
                 <div class="loading-spinner visible"></div>
-            `;
-            
+                <div class="loading-text">Loading performance data for ${currentProvider}...</div>
+            </div>
+        `;
+    
+        if (!['rimunace', 'helixmind', 'electronhub', 'nobrandai'].includes(currentProvider)) {
             setTimeout(() => {
                 performanceData.innerHTML = `
-                    <div class="under-construction">
-                        🚧 Under Construction 🚧<br>
-                        Visit <a href="https://cas.zukijourney.com/" target="_blank">https://cas.zukijourney.com/</a> in the meantime
-                    </div>`;
+                    <div class="loading-container">
+                        <div class="under-construction">
+                            🚧 Under Construction 🚧<br>
+                            Visit <a href="https://cas.zukijourney.com/" target="_blank">https://cas.zukijourney.com/</a> in the meantime
+                        </div>
+                    </div>
+                `;
             }, 500);
             return;
         }
-
-        performanceData.innerHTML = `
-            <div class="loading-spinner visible"></div>
-        `;
-
+    
         try {
             const response = await fetch(`/.netlify/functions/get-performance?provider=${currentProvider}&model=${selectedModel}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch performance data');
+            }
             const data = await response.json();
-            
             this.renderPerformanceData(data);
         } catch (error) {
-            performanceData.innerHTML = '<div class="error">Error loading performance data</div>';
+            console.error('Error loading performance data:', error);
+            performanceData.innerHTML = `
+                <div class="error-container">
+                    <div class="error-message">
+                        Failed to load performance data for ${currentProvider}
+                        <button class="retry-button" onclick="window.performanceManager.loadPerformanceData()">Retry</button>
+                    </div>
+                </div>`;
         }
     }
 

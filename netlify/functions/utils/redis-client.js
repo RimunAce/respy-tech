@@ -101,20 +101,28 @@ async function waitForConnection(timeout = 3000) {
 
 async function getFromCache(key) {
   try {
-    const client = await createRedisClient();
-    if (!client) return null;
+      const client = await createRedisClient();
+      if (!client) return null;
 
-    const data = await Promise.race([
-      client.get(key),
-      new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Get operation timeout')), 2000)
-      )
-    ]);
+      // Use pipelining for multiple gets
+      const pipeline = client.pipeline();
+      pipeline.get(key);
+      pipeline.get(`stale:${key}`);
 
-    return data ? JSON.parse(data) : null;
+      const results = await Promise.race([
+          pipeline.exec(),
+          new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Get operation timeout')), 2000)
+          )
+      ]);
+
+      // Return fresh data if available, otherwise stale data
+      const [freshData, staleData] = results.map(r => r[1]);
+      return freshData ? JSON.parse(freshData) : (staleData ? JSON.parse(staleData) : null);
+
   } catch (error) {
-    console.error('Redis Get Error:', error);
-    return null;
+      console.error('Redis Get Error:', error);
+      return null;
   }
 }
 

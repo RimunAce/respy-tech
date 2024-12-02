@@ -360,46 +360,83 @@ async function handleApiButtonClick(event) {
     const button = event.target.closest('.api-button');
     if (shouldIgnoreClick(button)) return;
 
-    const elements = {
-        modelContainer: document.getElementById('modelContainer'),
-        modelCountElement: document.getElementById('modelCount'),
-        loadingElement: document.getElementById('loading'),
-        apiDescription: document.getElementById('apiDescription')
-    };
-
-    if (!elements.modelContainer || !elements.modelCountElement || 
-        !elements.loadingElement || !elements.apiDescription) {
-        console.error('Required DOM elements not found');
-        return;
-    }
-
-    setLoadingState(true, elements);
-    setButtonsState(true);
+    const provider = getProviderFromButton(button);
+    const modelContainer = document.getElementById('modelContainer');
+    const modelCountElement = document.getElementById('modelCount');
     
-    document.querySelectorAll('.view-button').forEach(button => {
-        button.disabled = true;
-        button.style.opacity = '0.5';
-        button.style.cursor = 'not-allowed';
-    });
+    modelContainer.innerHTML = `
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading ${provider} models...</div>
+        </div>
+    `;
+    modelCountElement.textContent = '...';
 
     try {
-        const provider = getProviderFromButton(button);
-        await updateProviderUI(provider);
+        updateProviderMetadata(provider);
+        const modelsPromise = fetchProviderModels(provider);
+        await updateProviderInfo(provider);
+        const models = await modelsPromise;
+        modelData = models;
+        displayModels();
+    } catch (error) {
+        console.error('Error switching provider:', error);
+        modelContainer.innerHTML = `
+            <div class="error-container">
+                <div class="error-message">
+                    Failed to load models. Please try again.
+                    <button class="retry-button" data-provider="${provider}">Retry</button>
+                </div>
+            </div>
+        `;
         
-        const performanceView = document.getElementById('performanceView');
-        if (performanceView.style.display === 'block') {
-            await window.performanceManager.loadPerformanceData();
+        // Add event listener for retry button
+        const retryButton = modelContainer.querySelector('.retry-button');
+        if (retryButton) {
+            retryButton.addEventListener('click', handleRetryClick);
         }
-    } finally {
-        setLoadingState(false, elements);
-        setButtonsState(false);
-        
-        document.querySelectorAll('.view-button').forEach(button => {
-            button.disabled = false;
-            button.style.opacity = '1';
-            button.style.cursor = 'pointer';
-        });
     }
+}
+
+function updateProviderMetadata(provider) {
+    document.querySelectorAll('.api-button').forEach(btn => 
+        btn.classList.toggle('active', btn.dataset.api === provider)
+    );
+    currentProvider = provider;
+    updateRating(provider);
+    updateApiDescription(provider);
+}
+
+async function updateProviderInfo(provider) {
+    const owner = ownerInfo[provider];
+    const providerInfoBox = document.getElementById('providerInfoBox');
+    
+    if (owner) {
+        renderProviderInfo(owner, providerInfoBox);
+    } else if (provider === 'rimunace') {
+        renderProviderInfo(ownerInfo.rimunace, providerInfoBox);
+    }
+}
+
+async function fetchProviderModels(provider) {
+    const cachedModels = getCachedData('allModels');
+    if (isCacheValid(cachedModels, provider)) {
+        return cachedModels[provider];
+    }
+
+    const response = await fetch(`/.netlify/functions/api-handler/${provider}`);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const { data, source } = await response.json();
+    
+    if (source === 'api') {
+        const allModels = { ...getCachedData('allModels'), [provider]: data };
+        setCachedData('allModels', allModels);
+    }
+    
+    return data;
 }
 
 function shouldIgnoreClick(button) {
@@ -516,3 +553,40 @@ function createProviderButton(provider) {
 window.addEventListener('resize', debounce(() => {
     adjustLayout(modelContainer);
 }, 250));
+
+async function handleRetryClick(event) {
+    const button = event.currentTarget;
+    const provider = button.dataset.provider;
+    if (!provider) return;
+
+    const modelContainer = document.getElementById('modelContainer');
+    
+    modelContainer.innerHTML = `
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading ${provider} models...</div>
+        </div>
+    `;
+
+    try {
+        const models = await fetchProviderModels(provider);
+        modelData = models;
+        displayModels();
+    } catch (error) {
+        console.error('Retry failed:', error);
+        modelContainer.innerHTML = `
+            <div class="error-container">
+                <div class="error-message">
+                    Failed to load models. Please try again.
+                    <button class="retry-button" data-provider="${provider}">Retry</button>
+                </div>
+            </div>
+        `;
+        
+        // Reattach event listener to new retry button
+        const newRetryButton = modelContainer.querySelector('.retry-button');
+        if (newRetryButton) {
+            newRetryButton.addEventListener('click', handleRetryClick);
+        }
+    }
+}
