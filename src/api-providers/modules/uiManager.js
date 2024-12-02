@@ -56,6 +56,16 @@ export function displayError(message, modelContainer) {
 }
 
 export function displayWarning(errorMessages, modelContainer) {
+    const container = modelContainer || document.getElementById('modelContainer') || document.querySelector('.container');
+    
+    if (!container) {
+        console.error('No suitable container found for warning message');
+        return;
+    }
+
+    const existingWarnings = document.querySelectorAll('.warning-message');
+    existingWarnings.forEach(warning => warning.remove());
+
     const warningDiv = document.createElement('div');
     warningDiv.className = 'warning-message';
     
@@ -66,7 +76,6 @@ export function displayWarning(errorMessages, modelContainer) {
     if (errorMessages.size > 0) {
         const details = document.createElement('div');
         details.className = 'warning-details';
-        details.style.display = 'none';
         
         errorMessages.forEach((message, provider) => {
             const providerError = document.createElement('div');
@@ -74,18 +83,10 @@ export function displayWarning(errorMessages, modelContainer) {
             details.appendChild(providerError);
         });
         
-        const toggleButton = document.createElement('button');
-        toggleButton.textContent = 'Show Details';
-        toggleButton.onclick = () => {
-            details.style.display = details.style.display === 'none' ? 'block' : 'none';
-            toggleButton.textContent = details.style.display === 'none' ? 'Show Details' : 'Hide Details';
-        };
-        
-        warningDiv.appendChild(toggleButton);
         warningDiv.appendChild(details);
     }
 
-    modelContainer.insertAdjacentElement('beforebegin', warningDiv);
+    container.insertAdjacentElement('afterbegin', warningDiv);
     
     setTimeout(() => {
         warningDiv.style.opacity = '0';
