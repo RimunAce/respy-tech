@@ -3,10 +3,18 @@ const { MongoClient } = require('mongodb');
 exports.handler = async function(event, context) {
     const { provider, model } = event.queryStringParameters;
     
-    if (!['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4fpro'].includes(provider)) {
+    const supportedProviders = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4fpro'];
+    
+    if (!supportedProviders.includes(provider)) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ error: 'Only rimunace, helixmind, electronhub, and nobrandai providers are supported currently' })
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify({ 
+                error: 'Provider not supported for performance metrics'
+            })
         };
     }
 
@@ -31,11 +39,19 @@ exports.handler = async function(event, context) {
 
         return {
             statusCode: 200,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ results })
         };
     } catch (error) {
         return {
             statusCode: 500,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ error: error.message })
         };
     } finally {

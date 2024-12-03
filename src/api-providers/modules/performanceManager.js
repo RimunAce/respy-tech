@@ -78,13 +78,15 @@ export class PerformanceManager {
             </div>
         `;
     
-        if (!['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4fpro'].includes(currentProvider)) {
+        const supportedProviders = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4fpro'];
+    
+        if (!supportedProviders.includes(currentProvider)) {
             setTimeout(() => {
                 performanceData.innerHTML = `
                     <div class="loading-container">
                         <div class="under-construction">
                             🚧 Under Construction 🚧<br>
-                            Visit <a href="https://cas.zukijourney.com/" target="_blank">https://cas.zukijourney.com/</a> in the meantime
+                            Performance metrics coming soon
                         </div>
                     </div>
                 `;
@@ -93,18 +95,26 @@ export class PerformanceManager {
         }
     
         try {
-            const response = await fetch(`/.netlify/functions/get-performance?provider=${currentProvider}&model=${selectedModel}`);
+            const response = await fetch(`/.netlify/functions/get-performance?provider=${encodeURIComponent(currentProvider)}&model=${encodeURIComponent(selectedModel)}`);
+            
             if (!response.ok) {
-                throw new Error('Failed to fetch performance data');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to fetch performance data');
             }
+            
             const data = await response.json();
+            
+            if (!data.results || !Array.isArray(data.results)) {
+                throw new Error('Invalid performance data format');
+            }
+            
             this.renderPerformanceData(data);
         } catch (error) {
             console.error('Error loading performance data:', error);
             performanceData.innerHTML = `
                 <div class="error-container">
                     <div class="error-message">
-                        Failed to load performance data for ${currentProvider}
+                        ${error.message}
                         <button class="retry-button" onclick="window.performanceManager.loadPerformanceData()">Retry</button>
                     </div>
                 </div>`;
