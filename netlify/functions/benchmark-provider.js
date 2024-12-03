@@ -53,10 +53,9 @@ async function benchmarkProvider(provider) {
         throw new Error(`Missing configuration for provider ${provider}`);
     }
 
-    const results = [];
     const TIMEOUT_MS = 10000;
     
-    for (const [genericModel, providerModel] of Object.entries(modelMappings[provider])) {
+    const testPromises = Object.entries(modelMappings[provider]).map(async ([genericModel, providerModel]) => {
         const startTime = Date.now();
         let response, data, error, timedOut = false;
         
@@ -100,7 +99,7 @@ async function benchmarkProvider(provider) {
         const endTime = Date.now();
         const timeTaken = endTime - startTime;
 
-        results.push({
+        return {
             provider,
             model: genericModel,
             providerModel,
@@ -115,10 +114,10 @@ async function benchmarkProvider(provider) {
                 status: response.status,
                 statusText: response.statusText
             } : null
-        });
-    }
+        };
+    });
 
-    return results;
+    return Promise.all(testPromises);
 }
 
 exports.handler = async function(event, context) {
@@ -139,16 +138,24 @@ exports.handler = async function(event, context) {
         await client.connect();
         const db = client.db('benchmark');
         
-        // Test providers
         const providers = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4f.pro'];
-        for (const provider of providers) {
-            const results = await benchmarkProvider(provider);
-            await db.collection(provider).insertMany(results);
-        }
+        
+        // Run all provider benchmarks concurrently
+        const benchmarkPromises = providers.map(async (provider) => {
+            try {
+                const results = await benchmarkProvider(provider);
+                await db.collection(provider).insertMany(results);
+                return { provider, success: true };
+            } catch (error) {
+                return { provider, success: false, error: error.message };
+            }
+        });
+
+        const results = await Promise.all(benchmarkPromises);
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ success: true })
+            body: JSON.stringify({ results })
         };
     } catch (error) {
         return {
