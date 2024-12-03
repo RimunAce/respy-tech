@@ -78,7 +78,7 @@ export class PerformanceManager {
             </div>
         `;
     
-        if (!['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', g4fpro].includes(currentProvider)) {
+        if (!['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4fpro'].includes(currentProvider)) {
             setTimeout(() => {
                 performanceData.innerHTML = `
                     <div class="loading-container">
