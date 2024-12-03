@@ -209,7 +209,7 @@ export const contentGenerators = {
     skailar: generateSkailarContent,
     helixmind: generateHelixmindContent,
     hareproxy: generateHareproxyContent,
-    'g4f.pro': generateg4fproContent,
+    g4fpro: generateg4fproContent,
     webraftai: generateWebraftaiContent,
     nobrandai: generateNobrandaiContent,
     voidai: generateVoidAiContent

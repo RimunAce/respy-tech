@@ -26,6 +26,21 @@ const modelMappings = {
         'gpt-4o': 'gpt-4o',
         'gemini-1.5-pro': 'gemini-1.5-pro-002',
         'claude-3-5-sonnet': 'claude-3-5-sonnet-20241022'
+    },
+    zukijourney: {
+        'gpt-4o': 'gpt-4o',
+        'gemini-1.5-pro': 'gemini-1.5-pro-latest',
+        'claude-3-5-sonnet': 'claude-3-5-sonnet-20241022'
+    },
+    fresedgpt: {
+        'gpt-4o': 'gpt-4o',
+        'gemini-1.5-pro': 'gemini-1.5-pro-002',
+        'claude-3-5-sonnet': 'claude-3-5-sonnet-20241022'
+    },
+    g4fpro: {
+        'gpt-4o': 'gpt-4o',
+        'gemini-1.5-pro': 'gemini-1.5-pro-latest',
+        'claude-3-5-sonnet': 'claude-3.5-sonnet-20241022'
     }
 };
 
@@ -125,7 +140,7 @@ exports.handler = async function(event, context) {
         const db = client.db('benchmark');
         
         // Test providers
-        const providers = ['rimunace', 'helixmind', 'electronhub', 'nobrandai'];
+        const providers = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4f.pro'];
         for (const provider of providers) {
             const results = await benchmarkProvider(provider);
             await db.collection(provider).insertMany(results);

@@ -15,7 +15,7 @@ const providerRatings = {
     skailar: 'S+',
     helixmind: 'S+',
     hareproxy: 'S+',
-    'g4f.pro': 'S+',
+    g4fpro: 'S+',
     webraftai: 'S+',
     nobrandai: 'S+',
     voidai: 'S+'
@@ -38,7 +38,7 @@ const providerRatingsComment = {
     skailar: 'Goated Developer',
     helixmind: 'Goated Developer',
     hareproxy: 'Goated Developer',
-    'g4f.pro': 'Goated Developer',
+    g4fpro: 'Goated Developer',
     webraftai: 'Goated Developer',
     nobrandai: 'Goated Developer',
     voidai: 'Goated Developer'
@@ -185,7 +185,7 @@ const ownerInfo = {
             { url: "https://github.com/sm1945", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     },
-    'g4f.pro': {
+    g4fpro: {
         description: "Vneq",
         avatars: ["../assets/avatar/vneq.gif"],
         links: [
