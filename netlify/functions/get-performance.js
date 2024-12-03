@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 exports.handler = async function(event, context) {
     const { provider, model } = event.queryStringParameters;
     
-    const supportedProviders = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4fpro'];
+    const supportedProviders = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'fresedgpt', 'g4fpro'];
     
     if (!supportedProviders.includes(provider)) {
         return {

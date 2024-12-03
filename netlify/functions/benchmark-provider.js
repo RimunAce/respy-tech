@@ -138,7 +138,7 @@ exports.handler = async function(event, context) {
         await client.connect();
         const db = client.db('benchmark');
         
-        const providers = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4fpro'];
+        const providers = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'fresedgpt', 'g4fpro'];
         
         // Run all provider benchmarks concurrently
         const benchmarkPromises = providers.map(async (provider) => {

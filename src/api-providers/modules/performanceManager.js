@@ -78,7 +78,7 @@ export class PerformanceManager {
             </div>
         `;
     
-        const supportedProviders = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'zukijourney', 'fresedgpt', 'g4fpro'];
+        const supportedProviders = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'fresedgpt', 'g4fpro'];
     
         if (!supportedProviders.includes(currentProvider)) {
             setTimeout(() => {
@@ -86,7 +86,8 @@ export class PerformanceManager {
                     <div class="loading-container">
                         <div class="under-construction">
                             🚧 Under Construction 🚧<br>
-                            Performance metrics coming soon
+                            Performance metrics coming soon<br>
+                            In the meantime, visit <a href="https://cas.zukijourney.com/" target="_blank">cas.zukijourney.com</a>
                         </div>
                     </div>
                 `;
