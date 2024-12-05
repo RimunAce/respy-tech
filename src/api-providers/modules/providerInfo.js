@@ -22,7 +22,7 @@ const providerRatings = {
 };
 
 const providerRatingsComment = {
-    rimunace: 'Team is a weeb. James made too much meme.',
+    rimunace: 'Team is a weeb. James made too much meme. No one here is sane',
     zanity: 'Goated Developer',
     anyai: 'Goated Developer',
     cablyai: 'Goated Developer',

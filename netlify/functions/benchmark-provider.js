@@ -27,11 +27,6 @@ const modelMappings = {
         'gemini-1.5-pro': 'gemini-1.5-pro-002',
         'claude-3-5-sonnet': 'claude-3-5-sonnet-20241022'
     },
-    zukijourney: {
-        'gpt-4o': 'gpt-4o',
-        'gemini-1.5-pro': 'gemini-1.5-pro-latest',
-        'claude-3-5-sonnet': 'claude-3-5-sonnet-20241022'
-    },
     fresedgpt: {
         'gpt-4o': 'gpt-4o',
         'gemini-1.5-pro': 'gemini-1.5-pro-002',
