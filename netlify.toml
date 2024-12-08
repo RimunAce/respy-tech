@@ -1,6 +1,13 @@
 [build]
   publish = "src"
+  command = "npm run build"
   functions = "netlify/functions"
+
+[[headers]]
+  for = "/dist/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "application/javascript"
 
 [[headers]]
   for = "/*"
