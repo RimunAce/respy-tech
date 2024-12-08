@@ -1,238 +1,245 @@
-// Animated background
-const bg = document.querySelector('.animated-bg');
-const objectCounts = {
-    star: 200,
-    planet: 8,  // Changed to 8 for the planets in our solar system
-    asteroid: 10,
-    galaxy: 2,
-    shikanoko: 1
-};
+import { CubeAnimation } from './three-animation.js';
 
-const planetNames = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
+const pages = document.querySelectorAll('.page');
+const navLinks = document.querySelectorAll('.nav-link');
+const overlay = document.querySelector('.transition-overlay');
+const copyButton = document.querySelector('.copy-button');
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const navContainer = document.querySelector('.nav-links');
+let isTransitioning = false;
+let isMobileMenuOpen = false;
 
-function createSpaceObject(className, count, speedMultiplier = 1) {
-    const fragment = document.createDocumentFragment();
-    for (let i = 0; i < count; i++) {
-        let obj;
-        if (className === 'planet') {
-            obj = createPlanetElement(planetNames[i]);
-        } else {
-            obj = createSpaceObjectElement(className);
-        }
-        setSpaceObjectStyle(obj, className);
-        fragment.appendChild(obj);
-        animateObject(obj, speedMultiplier, className);
+async function transition(pageId) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    const currentPage = document.querySelector('.page.active');
+    const nextPage = document.querySelector(pageId);
+
+    if (currentPage === nextPage) {
+        isTransitioning = false;
+        return;
     }
-    bg.appendChild(fragment);
+
+    // Prepare next page
+    nextPage.style.display = 'flex';
+
+    // Slide overlay up
+    overlay.style.transform = 'translateY(0)';
+    overlay.style.transition = 'transform 0.7s var(--ease)';
+
+    await new Promise(resolve => setTimeout(resolve, 700));
+
+    // Switch pages
+    currentPage.classList.remove('active');
+    nextPage.classList.add('active');
+
+    // Slide overlay down
+    overlay.style.transform = 'translateY(-100%)';
+
+    await new Promise(resolve => setTimeout(resolve, 700));
+
+    // Reset overlay position
+    overlay.style.transition = 'none';
+    overlay.style.transform = 'translateY(100%)';
+
+    // Clean up
+    currentPage.style.display = '';
+    isTransitioning = false;
 }
 
-function createPlanetElement(planetName) {
-    const obj = document.createElement('div');
-    obj.className = 'planet';
-    obj.style.backgroundImage = `url('images/${planetName}.png')`;
-    obj.style.backgroundSize = 'cover';
-    return obj;
-}
-
-function animateObject(obj, speedMultiplier, className) {
-    const speed = (0.05 + Math.random() * 0.05) * speedMultiplier;
-    let currentTop = parseFloat(obj.style.top);
-    
-    function move() {
-        currentTop = updatePosition(currentTop, speed);
-        obj.style.top = `${currentTop}%`;
-        if (currentTop <= -5) {
-            resetObjectPosition(obj, className);
-        }
-        requestAnimationFrame(move);
-    }
-    move();
-}
-
-function createSpaceObjectElement(className) {
-    const obj = document.createElement('div');
-    obj.className = className;
-    return obj;
-}
-
-function setSpaceObjectStyle(obj, className) {
-    const styleCreators = {
-        star: () => ({}),
-        planet: createPlanetStyle,
-        galaxy: createGalaxyStyle,
-        shikanoko: () => ({ display: 'none' }),
-        asteroid: () => ({})
-    };
-
-    const style = styleCreators[className](obj);
-    Object.assign(obj.style, {
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
-        ...style
+// Event Listeners for Navigation Links
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageId = link.getAttribute('href');
+        transition(pageId);
     });
-}
+});
 
-function createPlanetStyle(obj) {
-    const planetSizes = {
-        mercury: 10,
-        venus: 15,
-        earth: 16,
-        mars: 14,
-        jupiter: 35,
-        saturn: 30,
-        uranus: 25,
-        neptune: 24
-    };
+// Enhanced copy functionality
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+    textArea.style.padding = '0';
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+    textArea.style.background = 'transparent';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
 
-    const planetName = obj.style.backgroundImage.match(/images\/(\w+)\.png/)[1];
-    const size = planetSizes[planetName];
-
-    return {
-        width: `${size}px`,
-        height: `${size}px`,
-        borderRadius: '50%'
-    };
-}
-
-function createGalaxyStyle() {
-    const size = 100 + Math.random() * 100;
-    return {
-        width: `${size}px`,
-        height: `${size / 2}px`,
-        transform: `rotate(${Math.random() * 360}deg)`
-    };
-}
-
-function updatePosition(currentTop, speed) {
-    currentTop += speed;
-    if (currentTop > 100) {
-        currentTop = -5;
-    }
-    return currentTop;
-}
-
-function resetObjectPosition(obj, className) {
-    obj.style.left = `${Math.random() * 100}%`;
-    if (className === 'shikanoko') {
-        obj.style.display = Math.random() < 0.2 ? 'block' : 'none';
+    try {
+        document.execCommand('copy');
+        return true;
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+        return false;
+    } finally {
+        document.body.removeChild(textArea);
     }
 }
 
-function splitTextIntoSpans(elementId) {
-    const element = document.getElementById(elementId);
-    const text = element.textContent;
-    element.textContent = '';
+async function copyTextToClipboard(text) {
+    if (!navigator.clipboard) {
+        return fallbackCopyTextToClipboard(text);
+    }
+
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+        return fallbackCopyTextToClipboard(text);
+    }
+}
+
+// Event Listener for Copy Button
+copyButton.addEventListener('click', async () => {
+    const success = await copyTextToClipboard('contact@respy.tech');
+    if (success) {
+        copyButton.classList.add('copied');
+        const originalText = copyButton.textContent;
+        copyButton.textContent = 'Copied!';
+        
+        setTimeout(() => {
+            copyButton.classList.remove('copied');
+            copyButton.textContent = originalText;
+        }, 2000);
+    }
+});
+
+// Mobile Menu System
+function initializeMobileMenu() {
+    // Set initial state
+    navContainer.style.display = window.innerWidth <= 768 ? 'none' : 'flex';
     
-    for (let i = 0; i < text.length; i++) {
-        if (text[i] === '|') {
-            // Add a space element
-            element.appendChild(document.createTextNode(' '));
-            continue;
-        }
+    function openMobileMenu() {
+        navContainer.style.display = 'flex';
+        navContainer.style.flexDirection = 'column';
+        navContainer.style.alignItems = 'center';
+        navContainer.style.gap = '1.5rem';
+        navContainer.style.transform = 'translateY(-20px)';
+        navContainer.style.opacity = '0';
         
-        const span = document.createElement('span');
-        span.textContent = text[i];
-        span.setAttribute('data-text', text[i]);
+        // Trigger animation
+        requestAnimationFrame(() => {
+            navContainer.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            navContainer.style.transform = 'translateY(0)';
+            navContainer.style.opacity = '1';
+        });
         
-        element.appendChild(span);
+        // Animate nav links
+        navLinks.forEach((link, index) => {
+            link.style.opacity = '0';
+            link.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                link.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                link.style.opacity = '1';
+                link.style.transform = 'translateY(0)';
+            }, 100 + (index * 50));
+        });
+        
+        mobileMenuBtn.classList.add('active');
+        isMobileMenuOpen = true;
     }
-}
 
-function setupTextAnimation() {
-    splitTextIntoSpans('animatedTitle');
-    animateLogoText();
-}
-
-function animateLogoText() {
-    const logoSpans = document.querySelectorAll('#animatedTitle span');
-    const lastSpanIndex = logoSpans.length - 1;
-
-    logoSpans.forEach((span, index) => {
-        animateSpan(span, index, lastSpanIndex);
-    });
-}
-
-function animateSpan(span, index, lastSpanIndex) {
-    gsap.to(span, {
-        opacity: 1,
-        duration: 0.5,
-        delay: index * 0.05,
-        ease: "power1.inOut",
-        onComplete: () => {
-            addGlowEffect(span);
-            if (index === lastSpanIndex) {
-                animateButtons();
+    function closeMobileMenu() {
+        navContainer.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        navContainer.style.transform = 'translateY(-20px)';
+        navContainer.style.opacity = '0';
+        
+        // Animate nav links out
+        navLinks.forEach((link, index) => {
+            link.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+            link.style.opacity = '0';
+            link.style.transform = 'translateY(-10px)';
+        });
+        
+        setTimeout(() => {
+            if (!isMobileMenuOpen) { // Check if menu should still be closed
+                navContainer.style.display = 'none';
+                // Reset styles for desktop view
+                navLinks.forEach(link => {
+                    link.style.opacity = '';
+                    link.style.transform = '';
+                    link.style.transition = '';
+                });
             }
+        }, 300);
+        
+        mobileMenuBtn.classList.remove('active');
+        isMobileMenuOpen = false;
+    }
+
+    // Mobile Menu Button Click
+    mobileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isMobileMenuOpen) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+    });
+
+    // Close menu when clicking navigation links
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768 && isMobileMenuOpen) {
+                closeMobileMenu();
+            }
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && 
+            isMobileMenuOpen && 
+            !e.target.closest('.nav-links') && 
+            !e.target.closest('.mobile-menu-btn')) {
+            closeMobileMenu();
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            navContainer.style.display = 'flex';
+            navContainer.style.opacity = '1';
+            navContainer.style.transform = '';
+            navContainer.style.flexDirection = 'row';
+            navContainer.style.transition = '';
+            // Reset nav links styles
+            navLinks.forEach(link => {
+                link.style.opacity = '';
+                link.style.transform = '';
+                link.style.transition = '';
+            });
+            mobileMenuBtn.classList.remove('active');
+            isMobileMenuOpen = false;
+        } else if (!isMobileMenuOpen) {
+            navContainer.style.display = 'none';
         }
     });
 }
 
-function addEnhancedGlowEffect(span) {
-    const glowTimeline = gsap.timeline({ repeat: -1, yoyo: true });
-    
-    glowTimeline.to(span, {
-        textShadow: "0 0 10px #fff, 0 0 20px #ff00de, 0 0 30px #ff00de",
-        duration: 1,
-        ease: "sine.inOut"
-    }).to(span, {
-        textShadow: "0 0 5px #fff, 0 0 10px #ff00de",
-        duration: 1,
-        ease: "sine.inOut"
-    });
-}
+// Initialize mobile menu system
+initializeMobileMenu();
 
-// Modify the existing addGlowEffect function
-function addGlowEffect(span) {
-    addEnhancedGlowEffect(span); // Use the enhanced glow effect
-}
-
-function animateButtons() {
-    gsap.to('.button-container, .credit', {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        delay: 0.5,
-        ease: "power2.out",
-        stagger: 0.5
-    });
-}
-
-// Animate the title on page load
-function animateTitleEntrance() {
-    const titleElement = document.getElementById('animatedTitle');
-    gsap.from(titleElement, {
-        duration: 1.5,
-        y: -50,
-        opacity: 0,
-        ease: "power3.out"
-    });
-}
-
-// Add scaling animation on hover
-function addTitleHoverEffect() {
-    const titleElement = document.getElementById('animatedTitle');
-    
-    titleElement.addEventListener('mouseover', () => {
-        gsap.to(titleElement, { scale: 1.2, duration: 0.3, ease: "power1.out" });
-    });
-
-    titleElement.addEventListener('mouseout', () => {
-        gsap.to(titleElement, { scale: 1, duration: 0.3, ease: "power1.out" });
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    Object.entries(objectCounts).forEach(([className, count]) => {
-        const speedMultiplier = {
-            planet: 0.5,
-            asteroid: 1.5,
-            galaxy: 0.2,
-            shikanoko: 0.3
-        }[className] || 1;
-        createSpaceObject(className, count, speedMultiplier);
-    });
-
-    setupTextAnimation();
-    animateTitleEntrance(); // Call the entrance animation
-    addTitleHoverEffect();   // Add hover effects to the title
+document.addEventListener('DOMContentLoaded', () => {
+    // Only initialize Three.js animation for desktop
+    if (window.innerWidth >= 1024) {
+        const cubeAnimation = new CubeAnimation();
+        const homeContent = document.querySelector('#home .content');
+        const animationContainer = document.createElement('div');
+        animationContainer.className = 'animation-container';
+        animationContainer.appendChild(cubeAnimation.getRenderer());
+        homeContent.appendChild(animationContainer);
+    }
 });

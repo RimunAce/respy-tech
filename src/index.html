@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preload" as="script" href="/vendor/gsap.min.js">
     <script src="/vendor/gsap.min.js" defer></script>
-    <script src="main.js" defer></script>
+    <script type="module" src="main.js"></script>
 
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self'; 
@@ -38,33 +38,85 @@
     <script src="/dist/bundle.js" defer></script>
 </head>
 <body>
-    <div class="top-site-buttons">
-        <a href="https://discord.gg/respy-tech" class="discord-button" target="_blank" rel="noopener noreferrer" aria-label="Contact on Discord">
-            <img src="https://downloadr2.apkmirror.com/wp-content/uploads/2018/03/5aab4a4cdddc1.png" loading="lazy" width="24" height="24" alt="Discord">
-            Discord
-        </a>
-        <a href="https://github.com/rimunace" class="github-button" target="_blank" rel="noopener noreferrer" aria-label="View GitHub Profile">
-            <img src="https://seeklogo.com/images/G/github-logo-7880D80B8D-seeklogo.com.png" loading="lazy" width="24" height="24" alt="GitHub">
-            Github
-        </a>
-    </div>
+    <div class="transition-overlay"></div>
 
-    <div class="animated-bg"></div>
+    <nav>
+        <div class="nav-content">
+            <a href="#home" class="logo">respy.tech</a>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#api-providers" class="nav-link">API Providers</a>
+                <a href="#rimunace" class="nav-link">Rimunace API</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
 
-    <div class="container" role="main">
-        <div class="content-box">
-            <header>
-                <h1 id="animatedTitle" class="logo">Respy.Tech</h1>
-            </header>
-    
-            <nav>
-                <div class="button-container">
-                    <a href="/api-providers" class="cta-button" aria-label="Explore LLM API Providers">LLM API Providers</a>
-                    <a href="https://api.rimunace.xyz" class="cta-button" target="_blank" rel="noopener noreferrer" aria-label="Visit Rimunace LLM API">Rimunace LLM API</a>
+    <div class="page-container">
+        <div id="home" class="page active">
+            <div class="content">
+                <div class="text-content">
+                    <div class="title-container">
+                        <div class="light"></div>
+                        <h1>Welcome!</h1>
+                    </div>
+                    <p>Made with Claude 3.5 Sonnet. Navigate the site through the buttons</p>
+                    <div class="social-buttons">
+                        <a href="https://discord.gg/respy-tech" class="social-button discord" target="_blank" rel="noopener noreferrer">
+                            <img src="https://downloadr2.apkmirror.com/wp-content/uploads/2018/03/5aab4a4cdddc1.png" alt="Discord" width="24" height="24">
+                            <span class="tooltip">Join our Discord</span>
+                        </a>
+                        <a href="https://github.com/rimunace" class="social-button github" target="_blank" rel="noopener noreferrer">
+                            <img src="https://seeklogo.com/images/G/github-logo-5F384D0265-seeklogo.com.png" alt="GitHub" width="24" height="24">
+                            <span class="tooltip">Visit our GitHub</span>
+                        </a>
+                    </div>
                 </div>
-            </nav>
-    
-            <div class="credit">Created with Claude 3.5 Sonnet Ability</div>
+            </div>
+        </div>
+
+        <div id="api-providers" class="page">
+            <div class="content">
+                <div class="title-container">
+                    <div class="light"></div>
+                    <h1>AI API Providers</h1>
+                </div>
+                <p>Discover LLM API provider in one singular list</p>
+                <p>
+                    <a href="/api-providers" class="button">View API Providers</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="rimunace" class="page">
+            <div class="content">
+                <div class="title-container">
+                    <div class="light"></div>
+                    <h1>Rimunace API</h1>
+                </div>
+                <p>Respy.Tech's API service, Rimunace API, providing LLM access and other Functionalities</p>
+                <p>
+                    <a href="https://api.rimunace.xyz" class="button">Access Rimunace API</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="contact" class="page">
+            <div class="content">
+                <div class="title-container">
+                    <div class="light"></div>
+                    <h1>Reach out to us</h1>
+                </div>
+                <div class="email-container">
+                    <span class="email">contact@respy.tech</span>
+                    <button class="copy-button">Email</button>
+                </div>
+            </div>
         </div>
     </div>
 

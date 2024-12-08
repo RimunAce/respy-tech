@@ -4,7 +4,7 @@
   "main": "main.js",
   "license": "MIT",
   "scripts": {
-    "build": "esbuild src/main.js --bundle --minify --outfile=src/dist/bundle.js",
+    "build": "node esbuild.config.js",
     "start": "esbuild src/main.js --bundle --minify --outfile=src/dist/bundle.js --servedir=src"
   },
   "dependencies": {
@@ -16,7 +16,8 @@
     "lambda-rate-limiter": "^4.0.0",
     "mongodb": "^6.11.0",
     "node-fetch": "^3.3.2",
-    "respy-tech": "file:"
+    "respy-tech": "file:",
+    "three": "^0.160.1"
   },
   "devDependencies": {
     "esbuild": "^0.14.0"
