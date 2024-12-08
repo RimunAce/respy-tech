@@ -101,28 +101,36 @@ async function waitForConnection(timeout = 3000) {
 
 async function getFromCache(key) {
   try {
-      const client = await createRedisClient();
-      if (!client) return null;
+    const client = await createRedisClient();
+    if (!client) return null;
 
-      // Use pipelining for multiple gets
-      const pipeline = client.pipeline();
-      pipeline.get(key);
-      pipeline.get(`stale:${key}`);
+    const pipeline = client.pipeline();
+    pipeline.get(key);
+    pipeline.get(`stale:${key}`);
+    pipeline.ttl(key);
 
-      const results = await Promise.race([
-          pipeline.exec(),
-          new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Get operation timeout')), 2000)
-          )
-      ]);
+    const results = await Promise.race([
+      pipeline.exec(),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Get operation timeout')), 2000)
+      )
+    ]);
 
-      // Return fresh data if available, otherwise stale data
-      const [freshData, staleData] = results.map(r => r[1]);
-      return freshData ? JSON.parse(freshData) : (staleData ? JSON.parse(staleData) : null);
+    const [freshData, staleData, ttl] = results.map(r => r[1]);
 
-  } catch (error) {
-      console.error('Redis Get Error:', error);
+    if (freshData) {
+      return JSON.parse(freshData);
+    }
+
+    if (staleData && ttl <= 0) {
+      client.del(`stale:${key}`).catch(console.error);
       return null;
+    }
+
+    return staleData ? JSON.parse(staleData) : null;
+  } catch (error) {
+    console.error('Redis Get Error:', error);
+    return null;
   }
 }
 
@@ -132,10 +140,10 @@ async function setToCache(key, data, expirySeconds = 300) {
     if (!client) return;
 
     const pipeline = client.pipeline();
-    
+    const staleExpiry = Math.min(expirySeconds * 2, 3600); // Max 1 hour stale data
+
     pipeline.setex(key, expirySeconds, JSON.stringify(data));
-    
-    pipeline.setex(`stale:${key}`, 86400, JSON.stringify(data));
+    pipeline.setex(`stale:${key}`, staleExpiry, JSON.stringify(data));
 
     await Promise.race([
       pipeline.exec(),
@@ -160,6 +168,46 @@ async function checkRedisConnection() {
   }
 }
 
+async function getCacheStatus() {
+  try {
+    const client = await createRedisClient();
+    if (!client) return { connected: false };
+
+    const pipeline = client.pipeline();
+    pipeline.ping();
+    pipeline.info();
+    pipeline.dbsize();
+    
+    const results = await Promise.race([
+      pipeline.exec(),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Status check timeout')), 2000)
+      )
+    ]);
+
+    const [ping, info, dbsize] = results.map(r => r[1]);
+    
+    // Parse Redis INFO command output
+    const infoObj = info.split('\r\n').reduce((acc, line) => {
+      const [key, value] = line.split(':');
+      if (key) acc[key.trim()] = value?.trim();
+      return acc;
+    }, {});
+
+    return {
+      connected: ping === 'PONG',
+      uptime: parseInt(infoObj.uptime_in_seconds) || 0,
+      lastSave: infoObj.rdb_last_save_time ? new Date(parseInt(infoObj.rdb_last_save_time) * 1000) : null,
+      keysCount: parseInt(dbsize) || 0,
+      version: infoObj.redis_version,
+      memory: infoObj.used_memory_human
+    };
+  } catch (error) {
+    console.error('Cache status check failed:', error);
+    return { connected: false };
+  }
+}
+
 process.on('SIGTERM', async () => {
   if (redisClient) {
     try {
@@ -173,5 +221,6 @@ process.on('SIGTERM', async () => {
 module.exports = {
   getFromCache,
   setToCache,
-  checkRedisConnection
+  checkRedisConnection,
+  getCacheStatus
 };

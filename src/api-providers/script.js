@@ -498,14 +498,54 @@ async function updateRedisStatus() {
     const redisStatus = document.getElementById('redisStatus');
     try {
         const response = await fetch('/.netlify/functions/check-cache');
-        const { connected } = await response.json();
+        const status = await response.json();
         
-        redisStatus.textContent = connected ? 'Connected' : 'Disconnected';
-        redisStatus.className = connected ? 'connected' : 'disconnected';
+        if (status.connected) {
+            const lastSaveTime = status.lastSave ? new Date(status.lastSave) : null;
+            const uptime = formatUptime(status.uptime);
+            const keysCount = status.keysCount || 0;
+            
+            redisStatus.innerHTML = `
+                <span class="status connected">Connected</span>
+                <div class="cache-details">
+                    ${lastSaveTime ? `Last Update: ${formatDate(lastSaveTime)}<br>` : ''}
+                    ${keysCount ? `Cached Items: ${keysCount}<br>` : ''}
+                    Uptime: ${uptime}
+                </div>
+            `;
+            redisStatus.className = 'connected';
+        } else {
+            redisStatus.innerHTML = '<span class="status disconnected">Disconnected</span>';
+            redisStatus.className = 'disconnected';
+        }
     } catch (error) {
-        redisStatus.textContent = 'Disconnected';
-        redisStatus.className = 'disconnected';
+        redisStatus.innerHTML = '<span class="status error">Error</span>';
+        redisStatus.className = 'error';
     }
+}
+
+function formatDate(date) {
+    const now = new Date();
+    const diff = now - date;
+    
+    if (diff < 60000) { // Less than 1 minute
+        return 'Just now';
+    } else if (diff < 3600000) { // Less than 1 hour
+        const minutes = Math.floor(diff / 60000);
+        return `${minutes}m ago`;
+    } else if (diff < 86400000) { // Less than 1 day
+        const hours = Math.floor(diff / 3600000);
+        return `${hours}h ago`;
+    }
+    return date.toLocaleString();
+}
+
+function formatUptime(seconds) {
+    if (!seconds || seconds < 0) return '0s';
+    if (seconds < 60) return `${seconds}s`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
+    return `${Math.floor(seconds / 86400)}d`;
 }
 
 updateRedisStatus();

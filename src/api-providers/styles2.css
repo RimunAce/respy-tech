@@ -868,12 +868,63 @@ transform: translateY(-50%);
 
 .status-box {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 12px 20px;
+    background: rgba(30, 30, 45, 0.7);
+    padding: 15px;
     border-radius: 8px;
     min-width: 200px;
+}
+
+.status-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#redisStatus {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cache-details {
+    font-size: 0.85em;
+    color: #aaa;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+#redisStatus .status {
+    font-weight: 500;
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.status-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+}
+
+#redisStatus.connected .status {
+    color: #00ff99;
+}
+
+#redisStatus.disconnected .status {
+    color: #ff4444;
+}
+
+#redisStatus.error .status {
+    color: #ffaa00;
+}
+
+#redisStatus small {
+    color: #aaa;
+    display: inline-block;
+    margin-top: 2px;
 }
 
 .status-icon {

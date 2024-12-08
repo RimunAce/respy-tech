@@ -187,7 +187,7 @@ const ownerInfo = {
     },
     g4fpro: {
         description: "Vneq",
-        avatars: ["../assets/avatar/vneq.gif"],
+        avatars: ["../assets/avatar/vneq.webp"],
         links: [
             { url: "https://g4f.pro/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/rQJMcHmS", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
