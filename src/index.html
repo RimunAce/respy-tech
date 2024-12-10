@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preload" as="script" href="/vendor/gsap.min.js">
     <script src="/vendor/gsap.min.js" defer></script>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="/main.js?v=1.0.0"></script>
 
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -26,7 +26,7 @@
           .catch(err => console.error('ServiceWorker registration failed:', err));
       }
     </script>
-    <script src="/dist/bundle.js" defer></script>
+    <script src="/dist/bundle.js?v=1.0.0" defer></script>
 </head>
 <body>
     <div class="transition-overlay"></div>
@@ -59,11 +59,11 @@
                     <p>Made with Claude 3.5 Sonnet. Navigate the site through the buttons</p>
                     <div class="social-buttons">
                         <a href="https://discord.gg/respy-tech" class="social-button discord" target="_blank" rel="noopener noreferrer">
-                            <img src="https://downloadr2.apkmirror.com/wp-content/uploads/2018/03/5aab4a4cdddc1.png" alt="Discord" width="24" height="24">
+                            <img src="images/discord-icon.png" alt="Discord" width="24" height="24">
                             <span class="tooltip">Join our Discord</span>
                         </a>
                         <a href="https://github.com/rimunace" class="social-button github" target="_blank" rel="noopener noreferrer">
-                            <img src="https://seeklogo.com/images/G/github-logo-5F384D0265-seeklogo.com.png" alt="GitHub" width="24" height="24">
+                            <img src="images/github-icon.png" alt="GitHub" width="24" height="24">
                             <span class="tooltip">Visit our GitHub</span>
                         </a>
                     </div>

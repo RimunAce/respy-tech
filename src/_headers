@@ -1,7 +1,9 @@
 # Global headers
 /*
-  X-Robots-Tag: index
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://scripts.simpleanalyticscdn.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://queue.simpleanalyticscdn.com; connect-src 'self'; font-src 'self'; frame-src 'self'; media-src 'self'; object-src 'none'; manifest-src 'self'
   X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
 
 # Specific headers for multi-model-tester
@@ -10,3 +12,12 @@
 
 # Prevent duplicate headers
 !X-Robots-Tag
+
+/dist/*
+  Cache-Control: public, max-age=0, must-revalidate
+  
+/*.js
+  Cache-Control: public, max-age=0, must-revalidate
+  
+/*.css
+  Cache-Control: public, max-age=0, must-revalidate

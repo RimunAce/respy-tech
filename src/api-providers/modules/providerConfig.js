@@ -3,7 +3,7 @@ const apiDescriptions = {
     zanity: 'This API is made by Voidi, zukijourney\'s dev and has a good API support & stability',
     anyai: "This API doesn't require an API key for free tier user, a plug and play API",
     cablyai: "This API requires 10 valid invites to be used or behind a 20$ paywall (negotiable)",
-    fresedgpt: "This API is very recommended for everyone but (some) Claude model requires payment. Respected developer",
+    fresedgpt: "This API is very recommended for everyone and all model can now be accessed for free. Respected developer",
     heckerai: "This API is made by a great mastermind, hecker. Claude access are gated behind monthly subscription",
     shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. I know what you're thinking about shard-ai, but just accept it that their services are top-notch",
     zukijourney: "This API is practically leading the API provider scene. Largest API provider with 6,000 members",

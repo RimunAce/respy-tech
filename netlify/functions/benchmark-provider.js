@@ -85,6 +85,19 @@ async function benchmarkProvider(provider) {
             
             if (!timedOut) {
                 data = await response.json();
+                
+                const isValidResponse = data && 
+                    data.choices && 
+                    Array.isArray(data.choices) && 
+                    data.choices.length > 0 &&
+                    data.choices[0].message &&
+                    typeof data.choices[0].message.content === 'string' &&
+                    data.choices[0].message.content.trim() !== '';
+
+                if (!isValidResponse) {
+                    error = 'Invalid or empty response from model';
+                    response.status = 503;
+                }
             }
             
         } catch (e) {
