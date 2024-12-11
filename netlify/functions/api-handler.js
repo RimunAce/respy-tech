@@ -1,4 +1,4 @@
-const { getFromCache, setToCache } = require('./utils/redis-client');
+const { getFromCache, setToCache, checkRedisConnection } = require('./utils/redis-client');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -48,18 +48,30 @@ exports.handler = async (event, context) => {
     return { statusCode: 204, headers };
   }
 
+  console.log('API Handler called with path:', event.path);
   const provider = event.path.split('/').pop();
   const cacheKey = `provider:${provider}:models`;
 
   try {
-    // Check Redis cache first
-    const cachedData = await getFromCache(cacheKey);
-    if (cachedData) {
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ data: cachedData, source: 'cache' })
-      };
+    // Check Redis connection first
+    const isRedisConnected = await checkRedisConnection();
+    console.log('Redis connection status:', isRedisConnected);
+
+    if (!isRedisConnected) {
+      console.warn('Redis is not connected, proceeding without cache');
+    } else {
+      // Check Redis cache
+      console.log('Checking Redis cache for key:', cacheKey);
+      const cachedData = await getFromCache(cacheKey);
+      if (cachedData) {
+        console.log('Cache hit for provider:', provider);
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ data: cachedData, source: 'cache' })
+        };
+      }
+      console.log('Cache miss for provider:', provider);
     }
 
     // If not in cache, fetch from API
@@ -80,7 +92,7 @@ exports.handler = async (event, context) => {
       skailar: 'https://test.skailar.it/v1/models',
       helixmind: 'https://helixmind.online/v1/models',
       hareproxy: 'https://unified.hareproxy.io.vn/v1/models',
-      g4fpro: 'https://g4f.pro/v1/models',
+      g4fpro: 'https://lumii-api.com/v1/models',
       webraftai: 'https://api.webraft.in/v2/models',
       nobrandai: 'https://nobrandai.com/v1/models',
       voidai: 'https://voidai.xyz/v1/models'

@@ -159,10 +159,17 @@ export function generateHareproxyContent(model) {
 }
 
 export function generateg4fproContent(model) {
+    const restrictions = Object.entries(model.restrictions || {})
+        .filter(([_, v]) => v)
+        .map(([k]) => k.charAt(0).toUpperCase() + k.slice(1))
+        .join(', ');
+
     return `
-        <p>Object: ${model.object || 'N/A'}</p> 
-        <p>Multiplier: ${model.multiplier || 'N/A'}</p>
+        <p>Object: ${model.object || 'N/A'}</p>
         <p>Owned By: ${model.owned_by || 'N/A'}</p>
+        <p>Input Cost: ${model.pricing?.input ? '$' + model.pricing.input : 'Free'}</p>
+        <p>Output Cost: ${model.pricing?.output ? '$' + model.pricing.output : 'Free'}</p>
+        <p>Access Tiers: ${restrictions || 'None'}</p>
     `;
 }
 

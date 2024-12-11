@@ -72,3 +72,13 @@
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.respy.tech https://*.netlify.app https://api.rimunace.xyz https://api.electronhub.top https://helixmind.online https://nobrandai.com https://api.naga.ac https://api.shuttleai.app https://api.shard-ai.xyz https://api.webraft.in https://api.llmplayground.net https://fresedgpt.space https://heckerai.com https://zukijourney.xyzbot.net https://shadowjourney.xyz https://app.oxyapi.uk https://test.skailar.it https://unified.hareproxy.io.vn https://g4f.pro https://voidai.xyz https://cablyai.com https://api.zanity.net;"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

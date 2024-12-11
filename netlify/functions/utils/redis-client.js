@@ -16,29 +16,42 @@ const REDIS_CONFIG = {
   enableReadyCheck: true,
   lazyConnect: true,
   retryStrategy(times) {
-    console.log(`Retry attempt ${times}`);
+    const delay = Math.min(times * 1000, 3000);
+    console.log(`Redis retry attempt ${times}, delay: ${delay}ms`);
     if (times > 3) {
       console.error('Redis retry limit reached');
       return null;
     }
-    return Math.min(times * 1000, 3000);
+    return delay;
   },
   reconnectOnError(err) {
-    console.error('Redis reconnection error:', err);
-    return false;
+    console.error('Redis reconnection error:', err.message);
+    return true; // Try to reconnect on all errors
   }
 };
 
 async function createRedisClient() {
-  if (redisClient?.status === 'ready') return redisClient;
-  if (isConnecting) return waitForConnection();
+  if (redisClient?.status === 'ready') {
+    console.log('Using existing Redis connection');
+    return redisClient;
+  }
+  
+  if (isConnecting) {
+    console.log('Connection in progress, waiting...');
+    return waitForConnection();
+  }
 
   isConnecting = true;
   clearTimeout(connectionTimeout);
   reconnectAttempts++;
 
   try {
-    console.log('Creating new Redis client...');
+    console.log('Creating new Redis client...', { uri: process.env.REDIS_URI ? 'URI present' : 'URI missing' });
+    
+    if (!process.env.REDIS_URI) {
+      throw new Error('REDIS_URI environment variable is not set');
+    }
+
     const client = new Redis(process.env.REDIS_URI, REDIS_CONFIG);
 
     client.on('connecting', () => {
@@ -54,7 +67,7 @@ async function createRedisClient() {
     });
 
     client.on('error', (err) => {
-      console.error('Redis Client Error:', err);
+      console.error('Redis Client Error:', err.message, err.stack);
       if (redisClient === client) {
         redisClient = null;
       }
@@ -67,10 +80,13 @@ async function createRedisClient() {
       }
     });
 
+    // Test connection with timeout
     await Promise.race([
-      client.ping(),
+      client.ping().then(() => {
+        console.log('Initial Redis ping successful');
+      }),
       new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Initial ping timeout')), 5000)
+        setTimeout(() => reject(new Error('Initial Redis ping timeout after 5000ms')), 5000)
       )
     ]);
 
@@ -78,7 +94,7 @@ async function createRedisClient() {
   } catch (error) {
     isConnecting = false;
     clearTimeout(connectionTimeout);
-    console.error('Redis Connection Error:', error);
+    console.error('Redis Connection Error:', error.message, error.stack);
 
     if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
       console.error('Max reconnection attempts reached');
