@@ -1,63 +1,86 @@
-const CACHE_NAME = 'respy-tech-v1.0.0';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/main.js',
-  '/styles.css',
-  '/dist/bundle.js',
-  '/vendor/gsap.min.js'
+const CACHE_NAME = 'respy-cache-v1';
+const ALLOWED_HOSTS = [
+    'self',
+    'scripts.simpleanalyticscdn.com',
+    'cdn.skypack.dev',
+    'queue.simpleanalyticscdn.com'
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
-  );
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                return cache.addAll([
+                    '/',
+                    '/index.html',
+                    '/api-providers/index.html',
+                    '/api-providers/styles2.css',
+                    '/api-providers/script.js',
+                    '/api-providers/bgImageLoader.js'
+                ]);
+            })
+    );
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cache => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
         })
-      );
-    })
-  );
+    );
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle HTTP(S) requests
-  if (!event.request.url.startsWith('http')) {
-    return;
-  }
+    // Skip non-GET requests
+    if (event.request.method !== 'GET') return;
 
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Always try the network first
-        return fetch(event.request)
-          .then((networkResponse) => {
-            // If network request succeeds, update the cache
-            if (networkResponse && networkResponse.status === 200) {
-              const responseToCache = networkResponse.clone();
-              caches.open(CACHE_NAME)
-                .then((cache) => {
-                  // Only cache same-origin requests
-                  if (new URL(event.request.url).origin === location.origin) {
-                    cache.put(event.request, responseToCache);
-                  }
+    // Skip chrome-extension requests
+    if (event.request.url.startsWith('chrome-extension://')) return;
+
+    // Check if the request is for allowed hosts
+    const url = new URL(event.request.url);
+    const isAllowedHost = ALLOWED_HOSTS.some(host => {
+        return host === 'self' ? 
+            url.origin === self.location.origin : 
+            url.hostname.includes(host);
+    });
+
+    if (!isAllowedHost) return;
+
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                if (response) {
+                    return response;
+                }
+
+                return fetch(event.request).then(response => {
+                    // Check if we received a valid response
+                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                        return response;
+                    }
+
+                    // Clone the response
+                    const responseToCache = response.clone();
+
+                    caches.open(CACHE_NAME)
+                        .then(cache => {
+                            cache.put(event.request, responseToCache);
+                        })
+                        .catch(err => console.warn('Caching failed:', err));
+
+                    return response;
                 });
-            }
-            return networkResponse;
-          })
-          .catch(() => {
-            // If network fails, serve from cache
-            return response;
-          });
-      })
-  );
+            })
+            .catch(error => {
+                console.warn('Fetch failed:', error);
+                return new Response('Network error', { status: 408, statusText: 'Network error' });
+            })
+    );
 });
