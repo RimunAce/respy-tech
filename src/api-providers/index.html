@@ -221,10 +221,22 @@
     <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-          .then(registration => console.log('ServiceWorker registered'))
-          .catch(err => console.error('ServiceWorker registration failed:', err));
-      }
+        // Unregister any existing service workers first
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(registration => {
+            registration.unregister();
+            });
+        }).then(() => {
+            // Register the new service worker
+            navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+            .then(registration => {
+                console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+                console.error('ServiceWorker registration failed:', err);
+            });
+        });
+        }
     </script>
 </body>
 </html>

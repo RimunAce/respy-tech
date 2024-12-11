@@ -30,6 +30,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // Only handle HTTP(S) requests
+  if (!event.request.url.startsWith('http')) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
@@ -41,7 +46,10 @@ self.addEventListener('fetch', (event) => {
               const responseToCache = networkResponse.clone();
               caches.open(CACHE_NAME)
                 .then((cache) => {
-                  cache.put(event.request, responseToCache);
+                  // Only cache same-origin requests
+                  if (new URL(event.request.url).origin === location.origin) {
+                    cache.put(event.request, responseToCache);
+                  }
                 });
             }
             return networkResponse;
