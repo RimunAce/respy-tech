@@ -19,13 +19,6 @@
 
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(registration => console.log('ServiceWorker registered'))
-          .catch(err => console.error('ServiceWorker registration failed:', err));
-      }
-    </script>
     <script src="/dist/bundle.js?v=1.0.0" defer></script>
 </head>
 <body>
