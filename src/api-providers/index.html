@@ -13,13 +13,12 @@
     <meta property="og:url" content="https://respy.tech/api-providers">
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self'; 
-        script-src 'self' 'unsafe-inline' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev https://ingesteer.services-prod.nsvcs.net;
+        script-src 'self' 'unsafe-inline' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev;
         style-src 'self' 'unsafe-inline'; 
         font-src 'self'; 
         img-src 'self' https://queue.simpleanalyticscdn.com https://downloadr2.apkmirror.com https://seeklogo.com; 
-        connect-src 'self' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev https://ingesteer.services-prod.nsvcs.net https://voidai.xyz https://heckerai.com https://fresedgpt.space https://api.shard-ai.xyz https://zukijourney.xyzbot.net https://shadowjourney.xyz/ https://api.shuttleai.app https://api.electronhub.top https://app.oxyapi.uk http://api.llmplayground.net https://api.rimunace.xyz https://api.zanity.net https://cablyai.com https://api.naga.ac https://test.skailar.it https://helixmind.online https://unified.hareproxy.io.vn http://api.tryastra.pro https://api.webraft.in https://nobrandai.com; 
-        form-action 'self'; 
-        upgrade-insecure-requests;
+        connect-src 'self' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev https://ingesteer.services-prod.nsvcs.net https://voidai.xyz https://heckerai.com https://fresedgpt.space https://api.shard-ai.xyz https://zukijourney.xyzbot.net https://shadowjourney.xyz/ https://api.shuttleai.app https://api.electronhub.top https://app.oxyapi.uk http://api.llmplayground.net https://api.rimunace.xyz https://api.zanity.net https://cablyai.com https://api.naga.ac https://test.skailar.it https://helixmind.online https://unified.hareproxy.io.vn http://api.tryastra.pro https://api.webraft.in https://nobrandai.com;
+        form-action 'self';
     ">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -219,26 +218,5 @@
     <script src="../api-providers/bgImageLoader.js" defer></script>
     <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
     <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', async () => {
-            try {
-                // Unregister existing service workers
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (let registration of registrations) {
-                    await registration.unregister();
-                }
-                
-                // Only register new service worker if we're in production
-                if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-                    const registration = await navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
-                    console.log('ServiceWorker registration successful');
-                }
-            } catch (error) {
-                console.warn('ServiceWorker registration failed:', error);
-            }
-        });
-      }
-    </script>
 </body>
 </html>
