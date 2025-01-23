@@ -15,7 +15,6 @@ const providerImageExtensions = {
     skailar: 'webp',
     helixmind: 'gif',
     hareproxy: 'webp',
-    g4fpro: 'webp',
     webraftai: 'webp',
     nobrandai: 'webp',
     voidai: 'gif'

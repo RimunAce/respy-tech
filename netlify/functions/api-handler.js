@@ -77,7 +77,7 @@ exports.handler = async (event, context) => {
     // If not in cache, fetch from API
     const apiEndpoints = {
       rimunace: 'https://api.rimunace.xyz/v1/models',
-      zanity: 'https://api.zanity.net/v1/models',
+      zanity: 'https://api.zanity.xyz/v1/models',
       anyai: 'https://api.llmplayground.net/v1/models',
       cablyai: 'https://cablyai.com/v1/models',
       fresedgpt: 'https://fresedgpt.space/v1/models',
@@ -92,7 +92,6 @@ exports.handler = async (event, context) => {
       skailar: 'https://test.skailar.it/v1/models',
       helixmind: 'https://helixmind.online/v1/models',
       hareproxy: 'https://unified.hareproxy.io.vn/v1/models',
-      g4fpro: 'https://lumii-api.com/v1/models',
       webraftai: 'https://api.webraft.in/v2/models',
       nobrandai: 'https://nobrandai.com/v1/models',
       voidai: 'https://voidai.xyz/v1/models'

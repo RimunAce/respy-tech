@@ -15,7 +15,6 @@ const providerRatings = {
     skailar: 'S+',
     helixmind: 'S+',
     hareproxy: 'S+',
-    g4fpro: 'S+',
     webraftai: 'S+',
     nobrandai: 'S+',
     voidai: 'S+'
@@ -38,7 +37,6 @@ const providerRatingsComment = {
     skailar: 'Goated Developer',
     helixmind: 'Goated Developer',
     hareproxy: 'Goated Developer',
-    g4fpro: 'Goated Developer',
     webraftai: 'Goated Developer',
     nobrandai: 'Goated Developer',
     voidai: 'Goated Developer'
@@ -170,7 +168,7 @@ const ownerInfo = {
     },
     helixmind: {
         description: "Faer1x",
-        avatars: ["../assets/avatar/phantasifae.gif"],
+        avatars: ["../assets/avatar/phantasifae.webp"],
         links: [
             { url: "https://helixmind.online", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/n7RpEtH8J8", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
@@ -183,15 +181,6 @@ const ownerInfo = {
             { url: "https://api.hareproxy.io.vn/", text: "Website", icon: "../assets/icons/web.png", color: "website"},
             { url: "https://discord.com/invite/7TAXPFvUzf", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
             { url: "https://github.com/sm1945", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
-        ]
-    },
-    g4fpro: {
-        description: "Vneq",
-        avatars: ["../assets/avatar/vneq.webp"],
-        links: [
-            { url: "https://g4f.pro/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
-            { url: "https://discord.gg/rQJMcHmS", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
-            { url: "https://github.com/vneqisntreal", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     },
     webraftai: {
