@@ -115,8 +115,8 @@ const ownerInfo = {
         ]
     },
     shadowjourney: {
-        description: "ichatei",
-        avatars: ["../assets/avatar/ichate.webp"],
+        description: "ichate, katz",
+        avatars: ["../assets/avatar/ichate.webp", "../assets/avatar/katz.webp"],
         links: [
             { url: "https://shadowjourney.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.com/invite/yB2YZJUA3F", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },

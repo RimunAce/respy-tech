@@ -7,7 +7,7 @@ const apiDescriptions = {
     heckerai: "This API is made by a great mastermind, hecker (Sakura Izayoi). Idk man, something just goes south and north everywhere!",
     shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. I know what you're thinking about shard-ai, but just accept it that their services are top-notch",
     zukijourney: "This API is practically leading the API provider scene. Largest API provider with 6,000 members",
-    shadowjourney: "This API is made by \"The Honoured One\" or just call him ichatei (Ichate). Will be sitting in a comfortable zone for API usage",
+    shadowjourney: "This API is made by \"The Honoured One\" or just call him Ichate. Co-owned with katz. Will be sitting in a comfortable zone for API usage",
     shuttleai: 'This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model. Claim 1$ credits for free every month',
     electronhub: 'This API uses token based pricing and so far has gone further and beyond by releasing a Character Card feature for roleplayers. Recommended for those who want to RP and wanting a POE alternative',
     oxygen: 'This API has changed to pay-as-you-go and updated their dashboard layout. Still a good service nonetheless',
