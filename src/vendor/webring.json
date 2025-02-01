@@ -1,0 +1,27 @@
+{
+    "version": 1,
+    "name": "PAKB",
+    "root": "https://github.com/xjunko/webrings",
+    "ring": [
+        {
+            "name": "junko",
+            "link": "kafu.ovh"
+        },
+        {
+            "name": "mystia",
+            "link": "mystialorelei.neocities.org"
+        },
+        {
+            "name": "arissa",
+            "link": "muhsillythoughts.neocities.org"
+        },
+        {
+            "name": "zavents",
+            "link": "zavents.ovh"
+        },
+        {
+            "name": "respy",
+            "link": "respy.tech"
+        }
+    ]
+}

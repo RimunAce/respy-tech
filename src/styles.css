@@ -470,39 +470,81 @@ p {
 }
 
 .webring-container {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(20, 20, 35, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 2rem;
     margin-top: 2rem;
     backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Custom styles for webring element */
 webring-element {
     --webring-background: transparent;
-    --webring-border: 1px solid rgba(255, 255, 255, 0.1);
+    --webring-border: none;
     --webring-text: var(--text);
     --webring-link: var(--text);
     --webring-link-hover: rgba(255, 255, 255, 0.8);
     font-family: inherit;
+    width: 100%;
 }
 
 webring-element::part(container) {
     padding: 1rem;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 webring-element::part(button) {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
     transition: all 0.3s var(--ease);
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-block;
 }
 
 webring-element::part(button):hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    .webring-container {
+        padding: 1rem;
+        margin: 1rem;
+        width: auto;
+    }
+    
+    webring-element::part(container) {
+        padding: 0.5rem;
+        gap: 1rem;
+    }
+    
+    webring-element::part(button) {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        width: 100%;
+        text-align: center;
+    }
+    
+    webring-element .ring-body {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    webring-element .ring-body a {
+        width: 100%;
+    }
 }

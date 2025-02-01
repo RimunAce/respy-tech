@@ -16,10 +16,23 @@
     <link rel="preload" as="script" href="/vendor/gsap.min.js">
     <script src="/vendor/gsap.min.js" defer></script>
     <script type="module" src="/main.js?v=1.0.0"></script>
-    <script src="https://cdn.jsdelivr.net/gh/diamondburned/libwebring@nightly/dist/webring-element.js" type="module"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/diamondburned/libwebring@nightly/dist/webring.css"/>
+    <script src="/vendor/libwebring-element.js" type="module"></script>
+    <link rel="stylesheet" href="/vendor/libwebring.css"/>
 
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev 'unsafe-inline' 'unsafe-eval'; 
+        script-src-elem 'self' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev; 
+        style-src 'self' 'unsafe-inline'; 
+        style-src-elem 'self'; 
+        img-src 'self' data: https:; 
+        connect-src 'self' https://raw.githubusercontent.com; 
+        font-src 'self'; 
+        frame-src 'self'; 
+        media-src 'self'; 
+        object-src 'none'; 
+        manifest-src 'self'">
+
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <script src="/dist/bundle.js?v=1.0.0" defer></script>
 </head>
@@ -103,17 +116,18 @@
                     <span class="email">contact@respy.tech</span>
                     <button class="copy-button">Email</button>
                 </div>
-                <div id="webring" class="page">
-                    <div class="content">
-                        <div class="title-container">
-                            <div class="light"></div>
-                            <h1>Webring</h1>
-                        </div>
-                        <p>A collection of websites in our community</p>
-                        <div class="webring-container">
-                            <webring-element name="respy" src="https://raw.githubusercontent.com/xjunko/webrings/master/webring.json" />
-                        </div>
-                    </div>
+            </div>
+        </div>
+
+        <div id="webring" class="page">
+            <div class="content">
+                <div class="title-container">
+                    <div class="light"></div>
+                    <h1>Webring</h1>
+                </div>
+                <p>A collection of websites in our friends</p>
+                <div class="webring-container">
+                    <webring-element name="respy" src="/vendor/webring.json" />
                 </div>
             </div>
         </div>
