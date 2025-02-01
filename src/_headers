@@ -1,6 +1,6 @@
 # Global headers
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://scripts.simpleanalyticscdn.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://queue.simpleanalyticscdn.com; connect-src 'self'; font-src 'self'; frame-src 'self'; media-src 'self'; object-src 'none'; manifest-src 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev https://cdn.jsdelivr.net 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https://queue.simpleanalyticscdn.com; connect-src 'self' https://raw.githubusercontent.com; font-src 'self'; frame-src 'self'; media-src 'self'; object-src 'none'; manifest-src 'self'
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   X-XSS-Protection: 1; mode=block

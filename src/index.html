@@ -16,6 +16,8 @@
     <link rel="preload" as="script" href="/vendor/gsap.min.js">
     <script src="/vendor/gsap.min.js" defer></script>
     <script type="module" src="/main.js?v=1.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/gh/diamondburned/libwebring@nightly/dist/webring-element.js" type="module"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/diamondburned/libwebring@nightly/dist/webring.css"/>
 
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -36,6 +38,7 @@
                 <a href="#home" class="nav-link">Home</a>
                 <a href="#api-providers" class="nav-link">API Providers</a>
                 <a href="#rimunace" class="nav-link">Rimunace API</a>
+                <a href="#webring" class="nav-link">Webring</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
         </div>
@@ -99,6 +102,18 @@
                 <div class="email-container">
                     <span class="email">contact@respy.tech</span>
                     <button class="copy-button">Email</button>
+                </div>
+                <div id="webring" class="page">
+                    <div class="content">
+                        <div class="title-container">
+                            <div class="light"></div>
+                            <h1>Webring</h1>
+                        </div>
+                        <p>A collection of websites in our community</p>
+                        <div class="webring-container">
+                            <webring-element name="respy" src="https://raw.githubusercontent.com/xjunko/webrings/master/webring.json" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

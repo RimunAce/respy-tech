@@ -468,3 +468,41 @@ p {
         transform: translate(-50%, -50%);
     }
 }
+
+.webring-container {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+/* Custom styles for webring element */
+webring-element {
+    --webring-background: transparent;
+    --webring-border: 1px solid rgba(255, 255, 255, 0.1);
+    --webring-text: var(--text);
+    --webring-link: var(--text);
+    --webring-link-hover: rgba(255, 255, 255, 0.8);
+    font-family: inherit;
+}
+
+webring-element::part(container) {
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+webring-element::part(button) {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s var(--ease);
+}
+
+webring-element::part(button):hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
