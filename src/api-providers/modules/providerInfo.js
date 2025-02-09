@@ -206,7 +206,7 @@ const ownerInfo = {
         avatars: ["../assets/avatar/acatto.webp"],
         links: [
             { url: "https://voidai.xyz/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
-            { url: "https://discord.gg/BFaM7GbS", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
+            { url: "https://discord.gg/pQab7kukfu", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" }
         ]
     }
 };
