@@ -5,7 +5,6 @@ const providerRatings = {
     cablyai: 'S+',
     fresedgpt: 'S+',
     heckerai: 'S+',
-    shardai: 'S+',
     zukijourney: 'S+',
     shadowjourney: 'S+',
     shuttleai: 'S+',
@@ -27,7 +26,6 @@ const providerRatingsComment = {
     cablyai: 'Goated Developer',
     fresedgpt: 'Goated Developer',
     heckerai: 'Goated Developer',
-    shardai: 'Goated Developer',
     zukijourney: 'Goated Developer',
     shadowjourney: 'Goated Developer',
     shuttleai: 'Goated Developer',
@@ -62,7 +60,7 @@ const ownerInfo = {
     },
     anyai: {
         description: "meow_18838",
-        avatars: ["../assets/avatar/meow.gif"],
+        avatars: ["../assets/avatar/meow.webp"],
         links: [
             { url: "https://api.airforce/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.com/invite/q55gsH8z5F ", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
@@ -71,7 +69,7 @@ const ownerInfo = {
     },
     cablyai: {
         description: "meow_18838",
-        avatars: ["../assets/avatar/meow.gif"],
+        avatars: ["../assets/avatar/meow.webp"],
         links: [
             { url: "https://cablyai.com/", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/2k4j4PxE", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
@@ -94,15 +92,6 @@ const ownerInfo = {
             { url: "https://heckerai.com", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/Hg7jw8K8", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
             { url: "https://github.com/LiveGamer101", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
-        ]
-    },
-    shardai: {
-        description: ".puzzy. & quartzwarrior",
-        avatars: ["../assets/avatar/puzzy.webp", "../assets/avatar/quartz.webp"],
-        links: [
-            { url: "https://shard-ai.xyz", text: "Website", icon: "../assets/icons/web.png", color: "website" },
-            { url: "https://discord.shard-ai.xyz/", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
-            { url: "https://github.com/Puzzy124", text: "GitHub", icon: "../assets/icons/github.png", color: "github" }
         ]
     },
     zukijourney: {

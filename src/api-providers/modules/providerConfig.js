@@ -5,7 +5,6 @@ const apiDescriptions = {
     cablyai: "This API requires 10 valid invites to be used or behind a 20$ paywall (negotiable)",
     fresedgpt: "This API is very recommended for everyone and all model can now be accessed for free. Respected developer",
     heckerai: "This API is made by a great mastermind, hecker (Sakura Izayoi). Idk man, something just goes south and north everywhere!",
-    shardai: "This API is made by yet another great mastermind(s), puzzy and quartz. I know what you're thinking about shard-ai, but just accept it that their services are top-notch",
     zukijourney: "This API is practically leading the API provider scene. Largest API provider with 6,000 members",
     shadowjourney: "This API is made by \"The Honoured One\" or just call him Ichate. Co-owned with katz. Will be sitting in a comfortable zone for API usage",
     shuttleai: 'This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model. Claim 1$ credits for free every month',
@@ -22,7 +21,7 @@ const apiDescriptions = {
 
 const providers = [
     'rimunace', 'zanity', 'anyai', 'cablyai', 'fresedgpt', 
-    'heckerai', 'shardai', 'zukijourney', 'shadowjourney', 
+    'heckerai', 'zukijourney', 'shadowjourney', 
     'shuttleai', 'electronhub', 'oxygen', 'nagaai', 'skailar', 
     'helixmind', 'hareproxy', 'webraftai', 'nobrandai',
     'voidai'

@@ -57,19 +57,6 @@ export function generateHeckerContent(model) {
     `;
 }
 
-export function generateShardaiContent(model) {
-    return `
-        <p>Owner: ${model.owned_by}</p>
-        <p>Type: ${model.type}</p>
-        <p>Cost: ${model.cost}/1k tokens</p>
-        <p>Max Tokens: ${model.max_tokens || 'N/A'}</p>
-        <p>Access: ${Object.entries(model.access)
-            .filter(([k, v]) => v)
-            .map(([k]) => k.charAt(0).toUpperCase() + k.slice(1))
-            .join(', ')}</p>
-        ${model.note ? `<p>Note: ${model.note}</p>` : ''}
-    `;
-}
 
 export function generateZukijourneyContent(model) {
     return `
@@ -191,7 +178,6 @@ export const contentGenerators = {
     cablyai: generateCablyaiContent,
     fresedgpt: generateFresedgptContent,
     heckerai: generateHeckerContent,
-    shardai: generateShardaiContent,
     zukijourney: generateZukijourneyContent,
     shadowjourney: generateShadowjourneyContent,
     shuttleai: generateShuttleaiContent,

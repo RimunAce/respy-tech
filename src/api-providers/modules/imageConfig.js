@@ -5,7 +5,6 @@ const providerImageExtensions = {
     cablyai: 'gif',
     fresedgpt: 'webp',
     heckerai: 'webp',
-    shardai: 'webp',
     zukijourney: 'gif',
     shadowjourney: 'webp',
     shuttleai: 'gif',

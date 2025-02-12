@@ -78,7 +78,7 @@ export class PerformanceManager {
             </div>
         `;
     
-        const supportedProviders = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'fresedgpt'];
+        const supportedProviders = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'fresedgpt', 'cablyai'];
     
         if (!supportedProviders.includes(currentProvider)) {
             setTimeout(() => {

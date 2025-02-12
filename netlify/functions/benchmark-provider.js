@@ -31,6 +31,11 @@ const modelMappings = {
         'gpt-4o': 'gpt-4o',
         'gemini-1.5-pro': 'gemini-1.5-pro-002',
         'claude-3-5-sonnet': 'claude-3-5-sonnet-20241022'
+    },
+    cablyai: {
+        "gpt-4o": "gpt-4o",
+        "gemini-1.5-pro": "gemini-1.5-pro",
+        "claude-3-5-sonnet": "claude-3-5-sonnet-20241022"
     }
 };
 
@@ -141,7 +146,7 @@ exports.handler = async function(event, context) {
         await client.connect();
         const db = client.db('benchmark');
         
-        const providers = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'fresedgpt'];
+        const providers = ['rimunace', 'helixmind', 'electronhub', 'nobrandai', 'fresedgpt', 'cablyai'];
         
         // Run all provider benchmarks concurrently
         const benchmarkPromises = providers.map(async (provider) => {
