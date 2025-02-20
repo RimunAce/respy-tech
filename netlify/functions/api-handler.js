@@ -121,15 +121,15 @@ exports.handler = async (event, context) => {
     const data = await fetchWithTimeout(apiEndpoints[provider], fetchOptions);
     
     // Validate data structure before caching
-    if (Array.isArray(data?.data)) {
+    if (provider === 'rimunace' ? Array.isArray(data?.models) : Array.isArray(data?.data)) {
       // Cache valid data with provider-specific TTL
       const ttl = provider === 'rimunace' ? 600 : 300; // 10 mins for rimunace, 5 mins for others
-      await setToCache(cacheKey, data.data, ttl);
+      await setToCache(cacheKey, provider === 'rimunace' ? data.data : data.data, ttl);
       
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ data: data.data, source: 'api' })
+        body: JSON.stringify({ data: provider === 'rimunace' ? data.data : data.data, source: 'api' })
       };
     } else {
       throw new Error('Invalid data structure received from provider');

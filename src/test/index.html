@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goofy Animation</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://files.catbox.moe data:">
+    <title>Goofy Deer</title>
     <style>
         /* CSS for animation and styling */
         body {
@@ -30,15 +31,27 @@
         .gif {
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            width: 400px;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="message">Oi you, what chu looking at, wanna fight?</div>
-        <!-- Tenor GIF embed for a goofy animation -->
-        <div class="tenor-gif-embed" data-postid="15765346010345821198" data-share-method="host" data-aspect-ratio="0.891566" data-width="100%"><a href="https://tenor.com/view/shikanoko-nokonoko-koshitantan-%E9%B9%BF%E4%B9%83%E5%AD%90%E4%B9%83%E5%AD%90%E8%99%8E%E8%A6%96%E7%9C%88%E7%9C%88-my-deer-friend-nokotan-fight-gif-15765346010345821198">Shikanoko Nokonoko Koshitantan 鹿乃子乃子虎視眈眈 GIF</a>from <a href="https://tenor.com/search/shikanoko+nokonoko+koshitantan-gifs">Shikanoko Nokonoko Koshitantan GIFs</a></div>
-        <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+        <!-- Using direct GIF -->
+        <img 
+            src="https://files.catbox.moe/wu7d3q.gif" 
+            alt="Goofy Fighting Animation" 
+            class="gif"
+            loading="eager"
+            decoding="async"
+            width="400"
+            height="300"
+        >
     </div>
 </body>
 </html>

@@ -9,8 +9,6 @@ export function generateRimunaceContent(model) {
         <p>Owner: ${model.owned_by}</p>
         <p>Cost: ${model.cost} / request</p>
         ${accessTiers ? `<p>Access: ${accessTiers}</p>` : ''}
-        <p>Available: ${model.available ? 'Yes' : 'No'}</p>
-        <p>Added: ${model.added}</p>
     `;
 }
 

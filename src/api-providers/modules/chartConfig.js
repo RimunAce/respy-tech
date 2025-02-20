@@ -1,28 +1,3 @@
-import {
-    Chart,
-    LineController,
-    LineElement,
-    PointElement,
-    LinearScale,
-    TimeScale,
-    Title,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    Filler
-} from 'https://cdn.skypack.dev/chart.js';
+const Chart = window.Chart;
 
-Chart.register(
-    LineController,
-    LineElement,
-    PointElement,
-    LinearScale,
-    TimeScale,
-    Title,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    Filler
-);
-
-export { Chart }; 
+export { Chart };
