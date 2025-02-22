@@ -20,7 +20,7 @@
     "three": "^0.160.1"
   },
   "devDependencies": {
-    "esbuild": "^0.14.0"
+    "esbuild": "^0.25.0"
   },
   "description": "[![Netlify Status](https://api.netlify.com/api/v1/badges/d44acd85-173f-495e-bb6a-9288cfac1932/deploy-status)](https://respy.tech/)",
   "keywords": [],
