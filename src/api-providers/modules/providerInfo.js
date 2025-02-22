@@ -113,7 +113,7 @@ const ownerInfo = {
     },
     shuttleai: {
         description: "xtristan",
-        avatars: ["../assets/avatar/tristan.gif"],
+        avatars: ["../assets/avatar/tristan.webp"],
         links: [
             { url: "https://shuttleai.app", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.com/invite/shuttleai", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
@@ -122,7 +122,7 @@ const ownerInfo = {
     },
     electronhub: {
         description: "Soukyo & Kasu",
-        avatars: ["../assets/avatar/soukyo.webp", "../assets/avatar/kasu.webp"],
+        avatars: ["../assets/avatar/soukyo.gif", "../assets/avatar/kasu.webp"],
         links: [
             { url: "https://api.electronhub.top", text: "Website", icon: "../assets/icons/web.png", color: "website" },
             { url: "https://discord.gg/apUUqbxCBQ", text: "Discord", icon: "../assets/icons/discord.png", color: "discord" },
