@@ -92,7 +92,6 @@ exports.handler = async (event, context) => {
       helixmind: 'https://helixmind.online/v1/models',
       hareproxy: 'https://unified.hareproxy.io.vn/v1/models',
       webraftai: 'https://api.webraft.in/v2/models',
-      nobrandai: 'https://nobrandai.com/v1/models',
       voidai: 'https://api.voidai.xyz/v1/models'
     };
 

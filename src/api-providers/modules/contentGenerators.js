@@ -146,18 +146,8 @@ export function generateHareproxyContent(model) {
 export function generateWebraftaiContent(model) {
     return `
         <p>Object: ${model.object || 'N/A'}</p>
-        <p>Endpoint: ${model.endpoint || 'N/A'}</p>
         <p>Premium: ${model.premium !== undefined ? (model.premium ? 'Yes' : 'No') : 'N/A'}</p>
         <p>Free Credits: ${model.free_credits !== undefined ? model.free_credits : 'N/A'}</p>
-    `;
-}
-
-export function generateNobrandaiContent(model) {
-    return `
-        <p>Object: ${model.object || 'N/A'}</p>
-        <p>Cost: ${model.cost || 'N/A'}</p>
-        <p>Provider: ${model.provider || 'N/A'}</p>
-        <p>Created: ${model.created || 'N/A'}</p>
     `;
 }
 
@@ -186,6 +176,5 @@ export const contentGenerators = {
     helixmind: generateHelixmindContent,
     hareproxy: generateHareproxyContent,
     webraftai: generateWebraftaiContent,
-    nobrandai: generateNobrandaiContent,
     voidai: generateVoidAiContent
 };
