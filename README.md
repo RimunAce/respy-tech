@@ -37,6 +37,10 @@ Respy.Tech is an interactive web platform featuring free AI API providers
 | <img src="src/assets/icons/voidai.gif" width="20"> VoidAI | <img src="src/assets/avatar/acatto.webp" width="30"> acatto | [Website](https://voidai.xyz) • [Discord](https://discord.com/invite/pQab7kukfu) • [GitHub](https://github.com/acatto) | This API is made by acatto. Fairly new API so not much to comment about it. In owner's word, "stable, fast, and reliable API". May success comes through |
 
 
+## 🔒 Security
+
+We take the security of Respy.Tech seriously. If you believe you have found a security vulnerability, please read our [Security Policy](SECURITY.md) for instructions on responsible disclosure.
+
 ## 📄 License
 
 This project is licensed under the MIT License. For details, see the [LICENSE](LICENSE) file.
