@@ -224,7 +224,7 @@ const ownerInfo = {
     avatars: ["../assets/avatar/tristan.webp"],
     links: [
       {
-        url: "https://shuttleai.app",
+        url: "https://shuttleai.com",
         text: "Website",
         icon: "../assets/icons/web.png",
         color: "website",
