@@ -218,14 +218,6 @@ export function generateHelixmindContent(model) {
   return `
         <p>Object: ${model.object || "N/A"}</p>
         <p>Owned By: ${model.owned_by || "N/A"}</p>
-        <p>Endpoint: ${model.endpoint || "N/A"}</p>
-    `;
-}
-
-export function generateHareproxyContent(model) {
-  return `
-        <p>Object: ${model.object || "N/A"}</p>
-        <p>Owned By: ${model.owned_by || "N/A"}</p>
     `;
 }
 
@@ -264,7 +256,6 @@ export const contentGenerators = {
   nagaai: generateNagaaiContent,
   skailar: generateSkailarContent,
   helixmind: generateHelixmindContent,
-  hareproxy: generateHareproxyContent,
   webraftai: generateWebraftaiContent,
   voidai: generateVoidAiContent,
 };

@@ -13,7 +13,6 @@ const providerRatings = {
   nagaai: "S+",
   skailar: "S+",
   helixmind: "S+",
-  hareproxy: "S+",
   webraftai: "S+",
   voidai: "S+",
 };
@@ -33,7 +32,6 @@ const providerRatingsComment = {
   nagaai: "Goated Developer",
   skailar: "Goated Developer",
   helixmind: "Goated Developer",
-  hareproxy: "Goated Developer",
   webraftai: "Goated Developer",
   voidai: "Goated Developer",
 };
@@ -348,30 +346,6 @@ const ownerInfo = {
         text: "Discord",
         icon: "../assets/icons/discord.png",
         color: "discord",
-      },
-    ],
-  },
-  hareproxy: {
-    description: "yongdong",
-    avatars: ["../assets/avatar/yongdung.webp"],
-    links: [
-      {
-        url: "https://api.hareproxy.io.vn/",
-        text: "Website",
-        icon: "../assets/icons/web.png",
-        color: "website",
-      },
-      {
-        url: "https://discord.com/invite/7TAXPFvUzf",
-        text: "Discord",
-        icon: "../assets/icons/discord.png",
-        color: "discord",
-      },
-      {
-        url: "https://github.com/sm1945",
-        text: "GitHub",
-        icon: "../assets/icons/github.png",
-        color: "github",
       },
     ],
   },

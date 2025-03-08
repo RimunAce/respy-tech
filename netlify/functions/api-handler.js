@@ -95,8 +95,7 @@ exports.handler = async (event, context) => {
       nagaai: "https://api.naga.ac/v1/models",
       skailar: "https://test.skailar.it/v1/models",
       helixmind: "https://helixmind.online/v1/models",
-      hareproxy: "https://unified.hareproxy.io.vn/v1/models",
-      webraftai: "https://api.webraft.in/v2/models",
+      webraftai: "https://api.webraft.in/v1/models",
       voidai: "https://api.voidai.xyz/v1/models",
     };
 

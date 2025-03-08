@@ -1,211 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Free LLM APIs & ChatGPT Alternatives | Respy.Tech</title>
-    <link rel="icon" type="image/png" href="../images/shikanoko.png">
-    <meta name="description" content="Discover free AI and LLM APIs including ChatGPT alternatives, Claude, GPT-4, and other AI models. Access multiple providers for text, image, and audio generation without cost.">
-    <meta property="og:title" content="Free LLM APIs & ChatGPT Alternatives | Respy.Tech">
-    <meta property="og:description" content="Discover free AI and LLM APIs including ChatGPT alternatives, Claude, GPT-4, and other AI models. Access multiple providers for text, image, and audio generation without cost.">
-    <meta property="og:image" content="https://respy.tech/images/shikanoko.png">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://respy.tech/api-providers">
-    <meta http-equiv="Content-Security-Policy" content="
+    <link rel="icon" type="image/png" href="../images/shikanoko.png" />
+    <meta
+      name="description"
+      content="Discover free AI and LLM APIs including ChatGPT alternatives, Claude, GPT-4, and other AI models. Access multiple providers for text, image, and audio generation without cost."
+    />
+    <meta
+      property="og:title"
+      content="Free LLM APIs & ChatGPT Alternatives | Respy.Tech"
+    />
+    <meta
+      property="og:description"
+      content="Discover free AI and LLM APIs including ChatGPT alternatives, Claude, GPT-4, and other AI models. Access multiple providers for text, image, and audio generation without cost."
+    />
+    <meta
+      property="og:image"
+      content="https://respy.tech/images/shikanoko.png"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://respy.tech/api-providers" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
         default-src 'self'; 
         script-src 'self' 'unsafe-inline' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev https://cdn.jsdelivr.net;
         style-src 'self' 'unsafe-inline'; 
         font-src 'self'; 
         img-src 'self' https://queue.simpleanalyticscdn.com https://downloadr2.apkmirror.com https://seeklogo.com; 
-        connect-src 'self' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev https://cdn.jsdelivr.net https://ingesteer.services-prod.nsvcs.net https://api.voidai.xyz https://heckerai.com https://fresedgpt.space https://zukijourney.xyzbot.net https://shadowjourney.xyz/ https://api.shuttleai.com https://api.electronhub.top https://app.oxyapi.uk http://api.llmplayground.net https://api.rimunace.xyz https://api.zanity.net https://cablyai.com https://api.naga.ac https://test.skailar.it https://helixmind.online https://unified.hareproxy.io.vn http://api.tryastra.pro https://api.webraft.in;
+        connect-src 'self' https://scripts.simpleanalyticscdn.com https://cdn.skypack.dev https://cdn.jsdelivr.net https://ingesteer.services-prod.nsvcs.net https://api.voidai.xyz https://heckerai.com https://fresedgpt.space https://zukijourney.xyzbot.net https://shadowjourney.xyz/ https://api.shuttleai.com https://api.electronhub.top https://app.oxyapi.uk http://api.llmplayground.net https://api.rimunace.xyz https://api.zanity.net https://cablyai.com https://api.naga.ac https://test.skailar.it https://helixmind.online http://api.tryastra.pro https://api.webraft.in;
         form-action 'self';
-    ">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <link rel="stylesheet" href="../api-providers/styles2.css">
-    <meta name="keywords" content="free llm api, free chatgpt, chatgpt alternative, free ai api, gpt-4 api, claude api, ai text generation, free ai models">
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Respire">
-    <link rel="canonical" href="https://respy.tech/api-providers">
-    <link rel="preload" href="../assets/background/bgavif.avif" as="image">
-    <link rel="preconnect" href="https://api.rimunace.xyz">
-    <link rel="preconnect" href="https://scripts.simpleanalyticscdn.com">
-    <link rel="dns-prefetch" href="https://api.rimunace.xyz">
-    <link rel="dns-prefetch" href="https://scripts.simpleanalyticscdn.com">
-    <link rel="preload" href="../assets/background/bgavif-mobile.avif" as="image" media="(max-width: 768px)">
-    <link rel="preload" href="../assets/background/bgavif.avif" as="image" media="(min-width: 769px)">
-    <link rel="preload" href="../fonts/Roboto-Regular.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="preload" href="../fonts/Roboto-Medium.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="preconnect" href="https://api.rimunace.xyz" crossorigin>
-    <link rel="preconnect" href="https://scripts.simpleanalyticscdn.com" crossorigin>
-    <link rel="preconnect" href="https://queue.simpleanalyticscdn.com" crossorigin>
-    <link rel="dns-prefetch" href="https://downloadr2.apkmirror.com">
-    <link rel="dns-prefetch" href="https://seeklogo.com">
-    <link rel="preload" href="../assets/background/bgavif.avif" as="image" type="image/avif">
-    <link rel="preload" href="../assets/icons/cache.png" as="image" type="image/png">
-    <link rel="preload" href="../api-providers/styles2.css" as="style">
-    <link rel="preload" href="../assets/background/bgavif-mobile.avif" as="image" type="image/avif" media="(max-width: 768px)">
-</head>
-<body>
+    "
+    />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <link rel="stylesheet" href="../api-providers/styles2.css" />
+    <meta
+      name="keywords"
+      content="free llm api, free chatgpt, chatgpt alternative, free ai api, gpt-4 api, claude api, ai text generation, free ai models"
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Respire" />
+    <link rel="canonical" href="https://respy.tech/api-providers" />
+    <link rel="preload" href="../assets/background/bgavif.avif" as="image" />
+    <link rel="preconnect" href="https://api.rimunace.xyz" />
+    <link rel="preconnect" href="https://scripts.simpleanalyticscdn.com" />
+    <link rel="dns-prefetch" href="https://api.rimunace.xyz" />
+    <link rel="dns-prefetch" href="https://scripts.simpleanalyticscdn.com" />
+    <link
+      rel="preload"
+      href="../assets/background/bgavif-mobile.avif"
+      as="image"
+      media="(max-width: 768px)"
+    />
+    <link
+      rel="preload"
+      href="../assets/background/bgavif.avif"
+      as="image"
+      media="(min-width: 769px)"
+    />
+    <link
+      rel="preload"
+      href="../fonts/Roboto-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="../fonts/Roboto-Medium.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link rel="preconnect" href="https://api.rimunace.xyz" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://scripts.simpleanalyticscdn.com"
+      crossorigin
+    />
+    <link
+      rel="preconnect"
+      href="https://queue.simpleanalyticscdn.com"
+      crossorigin
+    />
+    <link rel="dns-prefetch" href="https://downloadr2.apkmirror.com" />
+    <link rel="dns-prefetch" href="https://seeklogo.com" />
+    <link
+      rel="preload"
+      href="../assets/background/bgavif.avif"
+      as="image"
+      type="image/avif"
+    />
+    <link
+      rel="preload"
+      href="../assets/icons/cache.png"
+      as="image"
+      type="image/png"
+    />
+    <link rel="preload" href="../api-providers/styles2.css" as="style" />
+    <link
+      rel="preload"
+      href="../assets/background/bgavif-mobile.avif"
+      as="image"
+      type="image/avif"
+      media="(max-width: 768px)"
+    />
+  </head>
+  <body>
     <div class="bg-image"></div>
     <div class="container">
-        <h1><span class="title-text">AI MODEL DIRECTORY</span></h1>
-        <div class="subtitle">Explore AI models from multiple providers</div>
-        <div class="disclaimer">Disclaimer: The listed API providers (except rimunace) are not affiliated with me. This is for informational purposes only. Use at your own risk.</div>
-        <div class="status-boxes">
-            <div class="status-box">
-                <div class="status-icon">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="currentColor"/>
-                    </svg>
-                </div>
-                <div class="status-text">
-                    Last Updated: <span id="lastUpdateTime">February 22nd, 2025</span>
-                </div>
-            </div>
-            
-            <div class="status-box">
-                <div class="status-icon">
-                    <img src="../assets/icons/cache.png" alt="Cache Status Icon">
-                </div>
-                <div class="status-text">
-                    Cache: <div id="redisStatus">
-                        <span class="status">Checking...</span>
-                        <div class="cache-details"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="status-box">
-                <div class="status-icon">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="currentColor"/>
-                    </svg>
-                </div>
-                <div class="status-text">
-                    Providers: <span id="providersTotal">0</span>
-                </div>
-            </div>
+      <h1><span class="title-text">AI MODEL DIRECTORY</span></h1>
+      <div class="subtitle">Explore AI models from multiple providers</div>
+      <div class="disclaimer">
+        Disclaimer: The listed API providers (except rimunace) are not
+        affiliated with me. This is for informational purposes only. Use at your
+        own risk.
+      </div>
+      <div class="status-boxes">
+        <div class="status-box">
+          <div class="status-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <div class="status-text">
+            Last Updated: <span id="lastUpdateTime">February 22nd, 2025</span>
+          </div>
         </div>
-        <div class="api-buttons">
-            <button class="api-button active" data-api="rimunace">
-                <img src="../assets/icons/rimunace.gif" alt="Rimunace" class="provider-icon">
-                Rimunace
-            </button>
-            <button class="api-button" data-api="zanity">
-                <img src="../assets/icons/zanity.webp" alt="Zanity" class="provider-icon">
-                Zanity
-            </button>
-            <button class="api-button" data-api="anyai">
-                <img src="../assets/icons/anyai.gif" alt="AnyAI" class="provider-icon">
-                AnyAI
-            </button>
-            <button class="api-button" data-api="cablyai">
-                <img src="../assets/icons/cablyai.gif" alt="CablyAI" class="provider-icon">
-                CablyAI
-            </button>
-            <button class="api-button" data-api="fresedgpt">
-                <img src="../assets/icons/fresedgpt.webp" alt="FresedGPT" class="provider-icon">
-                FresedGPT
-            </button>
-            <button class="api-button" data-api="heckerai">
-                <img src="../assets/icons/heckerai.webp" alt="HeckerAI" class="provider-icon">
-                HeckerAI (HXA)
-            </button>
-            <button class="api-button" data-api="zukijourney">
-                <img src="../assets/icons/zukijourney.gif" alt="ZukiJourney" class="provider-icon">
-                ZukiJourney
-            </button>
-            <button class="api-button" data-api="shadowjourney">
-                <img src="../assets/icons/shadowjourney.webp" alt="ShadowJourney" class="provider-icon">
-                ShadowJourney
-            </button>
-            <button class="api-button" data-api="shuttleai">
-                <img src="../assets/icons/shuttleai.gif" alt="Shuttle AI" class="provider-icon">
-                Shuttle AI
-            </button>
-            <button class="api-button" data-api="electronhub">
-                <img src="../assets/icons/electronhub.webp" alt="Electron Hub" class="provider-icon">
-                Electron Hub
-            </button>
-            <button class="api-button" data-api="oxygen">
-                <img src="../assets/icons/oxygen.webp" alt="Oxygen" class="provider-icon">
-                Oxygen
-            </button>
-            <button class="api-button" data-api="nagaai">
-                <img src="../assets/icons/nagaai.webp" alt="Naga AI" class="provider-icon">
-                Naga AI
-            </button>
-            <button class="api-button" data-api="skailar">
-                <img src="../assets/icons/skailar.webp" alt="Skailar" class="provider-icon">
-                Skailar
-            </button>
-            <button class="api-button" data-api="helixmind">
-                <img src="../assets/icons/helixmind.gif" alt="HelixMind" class="provider-icon">
-                HelixMind
-            </button>
-            <button class="api-button" data-api="hareproxy">
-                <img src="../assets/icons/hareproxy.webp" alt="HareProxy" class="provider-icon">
-                HareProxy
-            </button>
-            <button class="api-button" data-api="webraftai">
-                <img src="../assets/icons/webraftai.webp" alt="WebraftAI" class="provider-icon">
-                WebraftAI
-            </button>
-            <button class="api-button" data-api="voidai">
-                <img src="../assets/icons/voidai.gif" alt="VoidAI" class="provider-icon">
-                VoidAI
-            </button>
-        </div>
-        <div class="view-buttons">
-            <button class="view-button active" data-view="models">Models List</button>
-            <button class="view-button" data-view="performance">Models Performance</button>
-        </div>
-        <div id="providerInfoBox" class="provider-info-box">
-            Loading...
-        </div>
-        <div class="api-description loading" id="apiDescription">Loading...</div>
-        <div id="performanceView" class="performance-view hidden">
-            <div class="performance-header">
-                <h3>API Models Performance Metrics</h3>
-                <div class="model-selector">
-                    <select id="modelSelector">
-                        <option value="gpt-4o">GPT-4o</option>
-                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-                        <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
-                    </select>
-                </div>
+
+        <div class="status-box">
+          <div class="status-icon">
+            <img src="../assets/icons/cache.png" alt="Cache Status Icon" />
+          </div>
+          <div class="status-text">
+            Cache:
+            <div id="redisStatus">
+              <span class="status">Checking...</span>
+              <div class="cache-details"></div>
             </div>
-            <div id="performanceData" class="performance-data">
-                <div class="performance-loading">Loading performance data...</div>
-                <canvas id="performanceChart"></canvas>
-            </div>
+          </div>
         </div>
-        <div id="modelView">
-            <div class="model-counter-wrapper">
-                <div id="modelCounter" class="model-counter">Total Models: <span id="modelCount">Loading...</span></div>
-                <div id="providerRating" class="provider-rating">
-                    Rating: <span id="ratingValue">Loading...</span>
-                    <div class="rating-tooltip" id="ratingTooltip"></div>
-                </div>
-            </div>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search models...">
-                <span class="search-icon">🔍</span>
-            </div>
-            <div id="loading">Loading models...</div>
-            <div id="modelContainer"></div>
+
+        <div class="status-box">
+          <div class="status-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <div class="status-text">
+            Providers: <span id="providersTotal">0</span>
+          </div>
         </div>
+      </div>
+      <div class="api-buttons">
+        <button class="api-button active" data-api="rimunace">
+          <img
+            src="../assets/icons/rimunace.gif"
+            alt="Rimunace"
+            class="provider-icon"
+          />
+          Rimunace
+        </button>
+        <button class="api-button" data-api="zanity">
+          <img
+            src="../assets/icons/zanity.webp"
+            alt="Zanity"
+            class="provider-icon"
+          />
+          Zanity
+        </button>
+        <button class="api-button" data-api="anyai">
+          <img
+            src="../assets/icons/anyai.gif"
+            alt="AnyAI"
+            class="provider-icon"
+          />
+          AnyAI
+        </button>
+        <button class="api-button" data-api="cablyai">
+          <img
+            src="../assets/icons/cablyai.gif"
+            alt="CablyAI"
+            class="provider-icon"
+          />
+          CablyAI
+        </button>
+        <button class="api-button" data-api="fresedgpt">
+          <img
+            src="../assets/icons/fresedgpt.webp"
+            alt="FresedGPT"
+            class="provider-icon"
+          />
+          FresedGPT
+        </button>
+        <button class="api-button" data-api="heckerai">
+          <img
+            src="../assets/icons/heckerai.webp"
+            alt="HeckerAI"
+            class="provider-icon"
+          />
+          HeckerAI (HXA)
+        </button>
+        <button class="api-button" data-api="zukijourney">
+          <img
+            src="../assets/icons/zukijourney.gif"
+            alt="ZukiJourney"
+            class="provider-icon"
+          />
+          ZukiJourney
+        </button>
+        <button class="api-button" data-api="shadowjourney">
+          <img
+            src="../assets/icons/shadowjourney.webp"
+            alt="ShadowJourney"
+            class="provider-icon"
+          />
+          ShadowJourney
+        </button>
+        <button class="api-button" data-api="shuttleai">
+          <img
+            src="../assets/icons/shuttleai.gif"
+            alt="Shuttle AI"
+            class="provider-icon"
+          />
+          Shuttle AI
+        </button>
+        <button class="api-button" data-api="electronhub">
+          <img
+            src="../assets/icons/electronhub.webp"
+            alt="Electron Hub"
+            class="provider-icon"
+          />
+          Electron Hub
+        </button>
+        <button class="api-button" data-api="oxygen">
+          <img
+            src="../assets/icons/oxygen.webp"
+            alt="Oxygen"
+            class="provider-icon"
+          />
+          Oxygen
+        </button>
+        <button class="api-button" data-api="nagaai">
+          <img
+            src="../assets/icons/nagaai.webp"
+            alt="Naga AI"
+            class="provider-icon"
+          />
+          Naga AI
+        </button>
+        <button class="api-button" data-api="skailar">
+          <img
+            src="../assets/icons/skailar.webp"
+            alt="Skailar"
+            class="provider-icon"
+          />
+          Skailar
+        </button>
+        <button class="api-button" data-api="helixmind">
+          <img
+            src="../assets/icons/helixmind.gif"
+            alt="HelixMind"
+            class="provider-icon"
+          />
+          HelixMind
+        </button>
+        <button class="api-button" data-api="webraftai">
+          <img
+            src="../assets/icons/webraftai.webp"
+            alt="WebraftAI"
+            class="provider-icon"
+          />
+          WebraftAI
+        </button>
+        <button class="api-button" data-api="voidai">
+          <img
+            src="../assets/icons/voidai.gif"
+            alt="VoidAI"
+            class="provider-icon"
+          />
+          VoidAI
+        </button>
+      </div>
+      <div class="view-buttons">
+        <button class="view-button active" data-view="models">
+          Models List
+        </button>
+        <button class="view-button" data-view="performance">
+          Models Performance
+        </button>
+      </div>
+      <div id="providerInfoBox" class="provider-info-box">Loading...</div>
+      <div class="api-description loading" id="apiDescription">Loading...</div>
+      <div id="performanceView" class="performance-view hidden">
+        <div class="performance-header">
+          <h3>API Models Performance Metrics</h3>
+          <div class="model-selector">
+            <select id="modelSelector">
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+              <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+            </select>
+          </div>
+        </div>
+        <div id="performanceData" class="performance-data">
+          <div class="performance-loading">Loading performance data...</div>
+          <canvas id="performanceChart"></canvas>
+        </div>
+      </div>
+      <div id="modelView">
+        <div class="model-counter-wrapper">
+          <div id="modelCounter" class="model-counter">
+            Total Models: <span id="modelCount">Loading...</span>
+          </div>
+          <div id="providerRating" class="provider-rating">
+            Rating: <span id="ratingValue">Loading...</span>
+            <div class="rating-tooltip" id="ratingTooltip"></div>
+          </div>
+        </div>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search models..." />
+          <span class="search-icon">🔍</span>
+        </div>
+        <div id="loading">Loading models...</div>
+        <div id="modelContainer"></div>
+      </div>
     </div>
     <footer>
-        &copy; 2025 Respire. All rights reserved.
-        <div class="contact-info">Discord: respire (188610034849021952)</div>
+      &copy; 2025 Respire. All rights reserved.
+      <div class="contact-info">Discord: respire (188610034849021952)</div>
     </footer>
     <button id="scrollToTop" title="Scroll to Top">↑</button>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="../api-providers/script.js"></script>
     <script src="../api-providers/bgImageLoader.js" defer></script>
-    <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-    <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
-</body>
+    <script
+      async
+      defer
+      src="https://scripts.simpleanalyticscdn.com/latest.js"
+    ></script>
+    <noscript
+      ><img
+        src="https://queue.simpleanalyticscdn.com/noscript.gif"
+        alt=""
+        referrerpolicy="no-referrer-when-downgrade"
+    /></noscript>
+  </body>
 </html>

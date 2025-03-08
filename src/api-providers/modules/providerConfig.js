@@ -27,8 +27,6 @@ const apiDescriptions = {
     "This API was never used by me but regardless, this api itself is in a good shape",
   helixmind:
     "This API is owner has a goal to provide Stable and Reliable service. Fastest API to add new models on-demand/on-request so far I have ever seen (this might be off by certain metrics)",
-  hareproxy:
-    "This API is pretty damn good with their stability and performance. Running on multiple endpoint for different corporate models. Recently released a unified endpoint",
   webraftai:
     "This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list. Not much to update",
   voidai:
@@ -50,7 +48,6 @@ const providers = [
   "nagaai",
   "skailar",
   "helixmind",
-  "hareproxy",
   "webraftai",
   "voidai",
 ];
