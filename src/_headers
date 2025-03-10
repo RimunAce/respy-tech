@@ -7,9 +7,6 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Robots-Tag: index, follow
 
-# Prevent duplicate headers
-!X-Robots-Tag
-
 /dist/*
   Cache-Control: public, max-age=0, must-revalidate
   
