@@ -13,8 +13,8 @@ const apiDescriptions = {
     "This API is made by a great mastermind, hecker (Sakura Izayoi). Also the owner of NEXEON AI (NEX)",
   zukijourney:
     "This API is practically leading the API provider scene. Largest API provider with 6,000 members",
-  shadowjourney:
-    'This API is made by "The Honoured One" or just call him Ichate. Co-owned with katz. Will be sitting in a comfortable zone for API usage',
+  feathrai:
+    "Rebranded from ShadowJourney to FeathrAI. Changing focus into 100% lightweight model, and might be adding own trained models.",
   shuttleai:
     "This API run with the basis of pay-as-you-go with a clean dashboard management and focus solely on own trained model. Claim 1$ credits for free every month",
   electronhub:
@@ -42,7 +42,7 @@ const providers = [
   "fresedgpt",
   "heckerai",
   "zukijourney",
-  "shadowjourney",
+  "feathrai",
   "shuttleai",
   "electronhub",
   "oxygen",

@@ -88,7 +88,7 @@ exports.handler = async (event, context) => {
       fresedgpt: "https://fresedgpt.space/v1/models",
       heckerai: "https://heckerai.com/v1/models",
       zukijourney: "https://zukijourney.xyzbot.net/v1/models",
-      shadowjourney: "https://shadowjourney.xyz/v1/models",
+      feathrai: "https://shadowjourney.xyz/v1/models",
       shuttleai: "https://api.shuttleai.com/v1/models",
       electronhub: "https://api.electronhub.top/v1/models",
       oxygen: "https://app.oxyapi.uk/v1/models",

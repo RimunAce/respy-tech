@@ -6,15 +6,15 @@ const providerImageExtensions = {
   fresedgpt: "webp",
   heckerai: "webp",
   zukijourney: "gif",
-  shadowjourney: "webp",
+  feathrai: "webp",
   shuttleai: "gif",
   electronhub: "webp",
   oxygen: "webp",
   nagaai: "webp",
   skailar: "webp",
-  helixmind: "webp",
+  helixmind: "gif",
   webraftai: "webp",
-  voidai: "webp",
+  voidai: "gif",
   hareproxy: "webp",
 };
 

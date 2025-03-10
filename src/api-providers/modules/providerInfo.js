@@ -6,7 +6,7 @@ const providerRatings = {
   fresedgpt: "S+",
   heckerai: "S+",
   zukijourney: "S+",
-  shadowjourney: "S+",
+  feathrai: "S+",
   shuttleai: "S+",
   electronhub: "S+",
   oxygen: "S+",
@@ -26,7 +26,7 @@ const providerRatingsComment = {
   fresedgpt: "Goated Developer",
   heckerai: "Goated Developer",
   zukijourney: "Goated Developer",
-  shadowjourney: "Goated Developer",
+  feathrai: "Goated Developer",
   shuttleai: "Goated Developer",
   electronhub: "Goated Developer",
   oxygen: "Goated Developer",
@@ -201,7 +201,7 @@ const ownerInfo = {
       },
     ],
   },
-  shadowjourney: {
+  feathrai: {
     description: "ichate, katz",
     avatars: ["../assets/avatar/ichate.webp", "../assets/avatar/katz.webp"],
     links: [

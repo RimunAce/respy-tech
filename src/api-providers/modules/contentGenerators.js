@@ -66,7 +66,7 @@ export function generateZukijourneyContent(model) {
     `;
 }
 
-export function generateShadowjourneyContent(model) {
+export function generateFeathraiContent(model) {
   const cost =
     model.cost === "free"
       ? "False"
@@ -249,7 +249,7 @@ export const contentGenerators = {
   fresedgpt: generateFresedgptContent,
   heckerai: generateHeckerContent,
   zukijourney: generateZukijourneyContent,
-  shadowjourney: generateShadowjourneyContent,
+  feathrai: generateFeathraiContent,
   shuttleai: generateShuttleaiContent,
   electronhub: generateElectronhubContent,
   oxygen: generateOxygenContent,
