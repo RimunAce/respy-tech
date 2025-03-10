@@ -518,7 +518,9 @@ async function updateProviderUI(provider) {
 function handleModelFetchResult(allModels, provider) {
   if (allModels[provider] === "error") {
     displayError("Error Fetching Models. Try Refreshing");
-    modelCountElement.textContent = "0";
+    if (modelCountElement) {
+      modelCountElement.textContent = "0";
+    }
   } else {
     modelData = allModels[provider] || [];
     displayModels();
