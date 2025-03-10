@@ -16,6 +16,7 @@ const providerRatings = {
   webraftai: "S+",
   voidai: "S+",
   hareproxy: "S+",
+  clashai: "S+",
 };
 
 const providerRatingsComment = {
@@ -36,6 +37,7 @@ const providerRatingsComment = {
   webraftai: "Goated Developer",
   voidai: "Goated Developer",
   hareproxy: "Goated Developer",
+  clashai: "Goated Developer",
 };
 
 const ownerInfo = {
@@ -408,6 +410,30 @@ const ownerInfo = {
         text: "Discord",
         icon: "../assets/icons/discord.png",
         color: "discord",
+      },
+    ],
+  },
+  clashai: {
+    description: "invalidsian & by.holy.samurai",
+    avatars: ["../assets/avatar/sian.webp", "../assets/avatar/samurai.webp"],
+    links: [
+      {
+        url: "https://clashai.eu",
+        text: "Website",
+        icon: "../assets/icons/web.png",
+        color: "website",
+      },
+      {
+        url: "https://discord.gg/KfCauDuM7T",
+        text: "Discord",
+        icon: "../assets/icons/discord.png",
+        color: "discord",
+      },
+      {
+        url: "https://github.com/invalidsian",
+        text: "GitHub",
+        icon: "../assets/icons/github.png",
+        color: "github",
       },
     ],
   },

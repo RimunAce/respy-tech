@@ -241,6 +241,29 @@ export function generateVoidAiContent(model) {
     `;
 }
 
+export function generateHareproxyContent(model) {
+  return `
+        <p>Object: ${model.object || "N/A"}</p>
+        <p>Owned By: ${model.owned_by || "N/A"}</p>
+        <p>Type: ${model.type || "N/A"}</p>
+    `;
+}
+
+export function generateClashaiContent(model) {
+  const accessTiers = Object.entries(model.access || {})
+    .filter(([_, v]) => v)
+    .map(([k]) => k.charAt(0).toUpperCase() + k.slice(1))
+    .join(", ");
+
+  return `
+        <p>Owned By: ${model.owned_by || "N/A"}</p>
+        <p>Type: ${model.type || "N/A"}</p>
+        <p>Cost: ${model.cost !== undefined ? model.cost : "N/A"}</p>
+        ${accessTiers ? `<p>Access: ${accessTiers}</p>` : ""}
+        <p>Available: ${model.available ? "Yes" : "No"}</p>
+    `;
+}
+
 export const contentGenerators = {
   rimunace: generateRimunaceContent,
   zanity: generateZanityContent,
@@ -258,4 +281,6 @@ export const contentGenerators = {
   helixmind: generateHelixmindContent,
   webraftai: generateWebraftaiContent,
   voidai: generateVoidAiContent,
+  hareproxy: generateHareproxyContent,
+  clashai: generateClashaiContent,
 };

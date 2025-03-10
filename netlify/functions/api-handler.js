@@ -98,6 +98,7 @@ exports.handler = async (event, context) => {
       webraftai: "https://api.webraft.in/v1/models",
       voidai: "https://api.voidai.xyz/v1/models",
       hareproxy: "https://api.hareproxy.com/api/pricing",
+      clashai: "https://api.clashai.eu/v1/models",
     };
 
     if (!apiEndpoints[provider]) {

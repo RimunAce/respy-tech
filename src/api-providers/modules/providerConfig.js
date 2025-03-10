@@ -12,7 +12,7 @@ const apiDescriptions = {
   heckerai:
     "This API is made by a great mastermind, hecker (Sakura Izayoi). Also the owner of NEXEON AI (NEX)",
   zukijourney:
-    "This API is practically leading the API provider scene. Largest API provider with 6,000 members",
+    "This API is practically leading the API provider scene. Largest API provider with 7,000 members",
   feathrai:
     "Rebranded from ShadowJourney to FeathrAI. Changing focus into 100% lightweight model, and might be adding own trained models.",
   shuttleai:
@@ -32,6 +32,8 @@ const apiDescriptions = {
   voidai:
     'This API is made by acatto. Fairly new API so not much to comment about it. In owner\'s word, "stable, fast, and reliable API". May success comes through',
   hareproxy: "Returned from long slumber. Thus, readded again",
+  clashai:
+    "In my own eyes, this API is just like every other API. Their discord design looks cool though. (Oh, also affordable plans)",
 };
 
 const providers = [
@@ -52,6 +54,7 @@ const providers = [
   "webraftai",
   "voidai",
   "hareproxy",
+  "clashai",
 ];
 
 export { apiDescriptions, providers };

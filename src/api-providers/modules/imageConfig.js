@@ -16,6 +16,7 @@ const providerImageExtensions = {
   webraftai: "webp",
   voidai: "gif",
   hareproxy: "webp",
+  clashai: "webp",
 };
 
 export { providerImageExtensions };
