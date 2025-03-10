@@ -15,6 +15,7 @@ const providerRatings = {
   helixmind: "S+",
   webraftai: "S+",
   voidai: "S+",
+  hareproxy: "S+",
 };
 
 const providerRatingsComment = {
@@ -34,6 +35,7 @@ const providerRatingsComment = {
   helixmind: "Goated Developer",
   webraftai: "Goated Developer",
   voidai: "Goated Developer",
+  hareproxy: "Goated Developer",
 };
 
 const ownerInfo = {
@@ -385,6 +387,24 @@ const ownerInfo = {
       },
       {
         url: "https://discord.gg/pQab7kukfu",
+        text: "Discord",
+        icon: "../assets/icons/discord.png",
+        color: "discord",
+      },
+    ],
+  },
+  hareproxy: {
+    description: "yondong",
+    avatars: ["../assets/avatar/yongdong.webp"],
+    links: [
+      {
+        url: "https://api.hareproxy.com/",
+        text: "Website",
+        icon: "../assets/icons/web.png",
+        color: "website",
+      },
+      {
+        url: "https://discord.gg/EVC4NbwEau",
         text: "Discord",
         icon: "../assets/icons/discord.png",
         color: "discord",

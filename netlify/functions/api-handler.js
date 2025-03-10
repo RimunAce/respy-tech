@@ -97,6 +97,7 @@ exports.handler = async (event, context) => {
       helixmind: "https://helixmind.online/v1/models",
       webraftai: "https://api.webraft.in/v1/models",
       voidai: "https://api.voidai.xyz/v1/models",
+      hareproxy: "https://api.hareproxy.com/api/pricing",
     };
 
     if (!apiEndpoints[provider]) {
@@ -128,16 +129,37 @@ exports.handler = async (event, context) => {
     // Validate data structure before caching
     if (
       (provider === "rimunace" && Array.isArray(data?.data)) ||
-      (provider !== "rimunace" && Array.isArray(data?.data))
+      (provider !== "rimunace" && Array.isArray(data?.data)) ||
+      (provider === "hareproxy" && Array.isArray(data?.data))
     ) {
+      // For hareproxy, we need to transform the data to match the expected format
+      let processedData = data.data;
+
+      if (provider === "hareproxy") {
+        // Transform hareproxy data to match the expected format
+        processedData = data.data.map((model) => ({
+          id: model.model_name,
+          object: "model",
+          created: Date.now(),
+          owned_by: model.owner_by || "hareproxy",
+        }));
+      }
+
       // Cache valid data with provider-specific TTL
       const ttl = provider === "rimunace" ? 600 : 300; // 10 mins for rimunace, 5 mins for others
-      await setToCache(cacheKey, data.data, ttl);
+      await setToCache(
+        cacheKey,
+        provider === "hareproxy" ? processedData : data.data,
+        ttl
+      );
 
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ data: data.data, source: "api" }),
+        body: JSON.stringify({
+          data: provider === "hareproxy" ? processedData : data.data,
+          source: "api",
+        }),
       };
     } else {
       throw new Error("Invalid data structure received from provider");

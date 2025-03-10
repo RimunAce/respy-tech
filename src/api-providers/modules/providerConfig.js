@@ -31,6 +31,7 @@ const apiDescriptions = {
     "This API is made by DS_GAMER and made a return after a long recovery from illness. The API is once again in a great shape. The list here is fromt the v2 model list. Not much to update",
   voidai:
     'This API is made by acatto. Fairly new API so not much to comment about it. In owner\'s word, "stable, fast, and reliable API". May success comes through',
+  hareproxy: "Returned from long slumber. Thus, readded again",
 };
 
 const providers = [
@@ -50,6 +51,7 @@ const providers = [
   "helixmind",
   "webraftai",
   "voidai",
+  "hareproxy",
 ];
 
 export { apiDescriptions, providers };

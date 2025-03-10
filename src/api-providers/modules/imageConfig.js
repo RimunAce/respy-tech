@@ -15,6 +15,7 @@ const providerImageExtensions = {
   helixmind: "webp",
   webraftai: "webp",
   voidai: "webp",
+  hareproxy: "webp",
 };
 
 export { providerImageExtensions };
