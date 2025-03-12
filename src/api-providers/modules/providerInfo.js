@@ -184,7 +184,7 @@ const ownerInfo = {
     avatars: ["../assets/avatar/ZukiJourney.png"],
     links: [
       {
-        url: "https://zukijourney.xyz",
+        url: "https://zukijourney.com",
         text: "Website",
         icon: "../assets/icons/web.png",
         color: "website",
