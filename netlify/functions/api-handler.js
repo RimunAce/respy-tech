@@ -87,7 +87,7 @@ exports.handler = async (event, context) => {
       cablyai: "https://cablyai.com/v1/models",
       fresedgpt: "https://fresedgpt.space/v1/models",
       heckerai: "https://heckerai.com/v1/models",
-      zukijourney: "https://zukijourney.xyzbot.net/v1/models",
+      zukijourney: "https://api.zukijourney.com/v1/models",
       feathrai: "https://shadowjourney.xyz/v1/models",
       shuttleai: "https://api.shuttleai.com/v1/models",
       electronhub: "https://api.electronhub.top/v1/models",

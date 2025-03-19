@@ -12,7 +12,7 @@ const apiDescriptions = {
   heckerai:
     "This API is made by a great mastermind, hecker (Sakura Izayoi). Also the owner of NEXEON AI (NEX)",
   zukijourney:
-    "This API is practically leading the API provider scene. Largest API provider with 7,000 members",
+    'This API is practically leading the API provider scene. Largest API provider with 7,000 members. Recently launched project ORNE - "Access All Services With One Endpoint" allowing users to collect and manage all API providers in one place.',
   feathrai:
     "Rebranded from ShadowJourney to FeathrAI. Changing focus into 100% lightweight model, and might be adding own trained models.",
   shuttleai:

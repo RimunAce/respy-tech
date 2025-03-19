@@ -58,11 +58,25 @@ export function generateHeckerContent(model) {
 }
 
 export function generateZukijourneyContent(model) {
+  let pricing = "";
+  if (model.pricing) {
+    pricing = `
+        <p>Pricing: ${model.pricing.price} (Multiplier: ${model.pricing.multiplier}x)</p>
+    `;
+  }
+
   return `
         <p>Owner: ${model.owned_by}</p>
-        <p>Type: ${model.type}</p>
-        <p>Supports Vision: ${model.supports_vision ? "Yes" : "No"}</p>
+        <p>Object: ${model.object}</p>
         <p>Is Free: ${model.is_free ? "Yes" : "No"}</p>
+        ${pricing}
+        <p>Context Window: ${model.context_window || "N/A"}</p>
+        <p>Max Output: ${model.max_output || "N/A"}</p>
+        ${
+          model.for_internet_access
+            ? '<p>Internet Access: Available (append ":online" to model name)</p>'
+            : ""
+        }
     `;
 }
 
